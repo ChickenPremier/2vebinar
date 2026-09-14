@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра: Четверти и знаки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        .game-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 2px solid #2A2E3A;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .score-display {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .score-value {
+            color: #FBBF24;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .timer {
+            font-size: 2rem;
+            color: #22D3EE;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .main-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .angles-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+        }
+        
+        .angles-panel h2 {
+            color: #FBBF24;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .angles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .angle-card {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        
+        .angle-card:hover {
+            transform: scale(1.05);
+            border-color: #FBBF24;
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .angle-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .angle-value {
+            font-size: 1.8rem;
+            color: #FBBF24;
+            font-weight: 700;
+        }
+        
+        .quadrants-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+        }
+        
+        .quadrants-panel h2 {
+            color: #FBBF24;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .quadrants-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            height: 100%;
+        }
+        
+        .quadrant-drop {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 3px dashed #2A2E3A;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+            transition: all 0.3s;
+        }
+        
+        .quadrant-drop.drag-over {
+            border-color: #FBBF24;
+            background: linear-gradient(135deg, #2A2418 0%, #352D20 100%);
+            transform: scale(1.02);
+        }
+        
+        .quadrant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2A2E3A;
+        }
+        
+        .quadrant-title {
+            color: #FBBF24;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .quadrant-range {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .quadrant-info {
+            color: #22D3EE;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        
+        .dropped-angles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .dropped-angle {
+            background: #2A2E3A;
+            border: 2px solid #FBBF24;
+            border-radius: 6px;
+            padding: 8px 15px;
+            color: #FBBF24;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .dropped-angle:hover {
+            transform: scale(1.05);
+            background: #FBBF24;
+            color: #0F1117;
+        }
+        
+        .dropped-angle.correct {
+            background: #10B981;
+            border-color: #10B981;
+            color: #fff;
+            animation: correctPulse 0.5s;
+        }
+        
+        .dropped-angle.incorrect {
+            background: #EF4444;
+            border-color: #EF4444;
+            color: #fff;
+            animation: incorrectShake 0.5s;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+        }
+        
+        .results-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 17, 23, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .results-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+        
+        .results-content {
+            background: #171A23;
+            border-radius: 15px;
+            padding: 50px;
+            border: 3px solid #FBBF24;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .results-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+        
+        .results-title {
+            color: #FBBF24;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value.correct { color: #10B981; }
+        .stat-value.incorrect { color: #EF4444; }
+        .stat-value.time { color: #22D3EE; }
+        .stat-value.score { color: #FBBF24; }
+        
+        .stat-label {
+            color: #9CA3AF;
+            font-size: 0.95rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hint-panel {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .hint-title {
+            color: #22D3EE;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .hint-text {
+            color: #D1D5DB;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-area {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .angles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quadrants-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Игра: Четверти и знаки</h1>
+        <div class="subtitle">Перетаскивайте углы в соответствующие четверти</div>
+        
+        <div class="game-panel">
+            <div class="score-display">
+                <div class="score-item">
+                    <div class="score-label">Правильно</div>
+                    <div class="score-value" id="correctScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Неправильно</div>
+                    <div class="score-value" id="incorrectScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Осталось</div>
+                    <div class="score-value" id="remainingScore">12</div>
+                </div>
+            </div>
+            <div class="timer" id="timer">00:00</div>
+        </div>
+        
+        <div class="main-area">
+            <div class="angles-panel">
+                <h2>Углы для распределения:</h2>
+                <div class="angles-grid" id="anglesGrid"></div>
+                
+                <div class="hint-panel">
+                    <div class="hint-title">💡 Подсказка</div>
+                    <div class="hint-text">
+                        <strong>I четверть (0°—90°):</strong> Все функции положительны<br>
+                        <strong>II четверть (90°—180°):</strong> Только sin > 0<br>
+                        <strong>III четверть (180°—270°):</strong> Только tg и ctg > 0<br>
+                        <strong>IV четверть (270°—360°):</strong> Только cos > 0
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quadrants-panel">
+                <h2>Четверти единичной окружности</h2>
+                <div class="quadrants-grid">
+                    <div class="quadrant-drop" data-quadrant="1" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="quadrant-header">
+                            <span class="quadrant-title">I четверть</span>
+                            <span class="quadrant-range">0°—90°</span>
+                        </div>
+                        <div class="quadrant-info">Все функции положительны</div>
+                        <div class="dropped-angles" id="quadrant1"></div>
+                    </div>
+                    
+                    <div class="quadrant-drop" data-quadrant="2" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="quadrant-header">
+                            <span class="quadrant-title">II четверть</span>
+                            <span class="quadrant-range">90°—180°</span>
+                        </div>
+                        <div class="quadrant-info">Только sin > 0</div>
+                        <div class="dropped-angles" id="quadrant2"></div>
+                    </div>
+                    
+                    <div class="quadrant-drop" data-quadrant="3" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="quadrant-header">
+                            <span class="quadrant-title">III четверть</span>
+                            <span class="quadrant-range">180°—270°</span>
+                        </div>
+                        <div class="quadrant-info">Только tg и ctg > 0</div>
+                        <div class="dropped-angles" id="quadrant3"></div>
+                    </div>
+                    
+                    <div class="quadrant-drop" data-quadrant="4" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="quadrant-header">
+                            <span class="quadrant-title">IV четверть</span>
+                            <span class="quadrant-range">270°—360°</span>
+                        </div>
+                        <div class="quadrant-info">Только cos > 0</div>
+                        <div class="dropped-angles" id="quadrant4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="checkAnswers()">Проверить ответы</button>
+            <button class="btn btn-secondary" onclick="resetGame()">Начать заново</button>
+        </div>
+    </div>
+    
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <div class="results-icon" id="resultsIcon">🎉</div>
+            <div class="results-title" id="resultsTitle">Отлично!</div>
+            <div class="results-stats">
+                <div class="stat-box">
+                    <div class="stat-value correct" id="finalCorrect">0</div>
+                    <div class="stat-label">Правильных</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value incorrect" id="finalIncorrect">0</div>
+                    <div class="stat-label">Неправильных</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value time" id="finalTime">00:00</div>
+                    <div class="stat-label">Время</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value score" id="finalScore">0%</div>
+                    <div class="stat-label">Точность</div>
+                </div>
+            </div>
+            <button class="btn" onclick="closeResults()">Закрыть</button>
+        </div>
+    </div>
+    
+    <script>
+        const angles = [
+            { value: 15, quadrant: 1 },
+            { value: 45, quadrant: 1 },
+            { value: 75, quadrant: 1 },
+            { value: 105, quadrant: 2 },
+            { value: 135, quadrant: 2 },
+            { value: 165, quadrant: 2 },
+            { value: 195, quadrant: 3 },
+            { value: 225, quadrant: 3 },
+            { value: 255, quadrant: 3 },
+            { value: 285, quadrant: 4 },
+            { value: 315, quadrant: 4 },
+            { value: 345, quadrant: 4 }
+        ];
+        
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let startTime = null;
+        let timerInterval = null;
+        let gameState = {};
+        
+        function initGame() {
+            const anglesGrid = document.getElementById('anglesGrid');
+            anglesGrid.innerHTML = '';
+            
+            // Shuffle angles
+            const shuffled = [...angles].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(angle => {
+                const card = document.createElement('div');
+                card.className = 'angle-card';
+                card.draggable = true;
+                card.dataset.angle = angle.value;
+                card.dataset.correctQuadrant = angle.quadrant;
+                card.innerHTML = `<div class="angle-value">${angle.value}°</div>`;
+                
+                card.addEventListener('dragstart', dragStart);
+                card.addEventListener('dragend', dragEnd);
+                
+                anglesGrid.appendChild(card);
+            });
+            
+            // Clear quadrants
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`quadrant${i}`).innerHTML = '';
+            }
+            
+            correctCount = 0;
+            incorrectCount = 0;
+            gameState = {};
+            updateScores();
+            
+            if (!startTime) {
+                startTime = Date.now();
+                startTimer();
+            }
+        }
+        
+        function dragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.outerHTML);
+            e.dataTransfer.setData('angle', e.target.dataset.angle);
+            e.dataTransfer.setData('correctQuadrant', e.target.dataset.correctQuadrant);
+        }
+        
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        
+        function allowDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+        
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+        
+        function drop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const angle = e.dataTransfer.getData('angle');
+            const correctQuadrant = e.dataTransfer.getData('correctQuadrant');
+            const quadrant = e.currentTarget.dataset.quadrant;
+            
+            // Remove from grid if exists
+            const cards = document.querySelectorAll('.angle-card');
+            cards.forEach(card => {
+                if (card.dataset.angle === angle) {
+                    card.remove();
+                }
+            });
+            
+            // Remove from other quadrants if exists
+            for (let i = 1; i <= 4; i++) {
+                const container = document.getElementById(`quadrant${i}`);
+                const existing = container.querySelector(`[data-angle="${angle}"]`);
+                if (existing) {
+                    existing.remove();
+                }
+            }
+            
+            // Add to this quadrant
+            const container = document.getElementById(`quadrant${quadrant}`);
+            const dropped = document.createElement('div');
+            dropped.className = 'dropped-angle';
+            dropped.dataset.angle = angle;
+            dropped.dataset.correctQuadrant = correctQuadrant;
+            dropped.textContent = `${angle}°`;
+            dropped.onclick = function() {
+                returnToGrid(this);
+            };
+            
+            container.appendChild(dropped);
+            
+            gameState[angle] = quadrant;
+            updateRemaining();
+        }
+        
+        function returnToGrid(element) {
+            const angle = element.dataset.angle;
+            const correctQuadrant = element.dataset.correctQuadrant;
+            
+            element.remove();
+            delete gameState[angle];
+            
+            const anglesGrid = document.getElementById('anglesGrid');
+            const card = document.createElement('div');
+            card.className = 'angle-card';
+            card.draggable = true;
+            card.dataset.angle = angle;
+            card.dataset.correctQuadrant = correctQuadrant;
+            card.innerHTML = `<div class="angle-value">${angle}°</div>`;
+            
+            card.addEventListener('dragstart', dragStart);
+            card.addEventListener('dragend', dragEnd);
+            
+            anglesGrid.appendChild(card);
+            updateRemaining();
+        }
+        
+        function checkAnswers() {
+            let correct = 0;
+            let incorrect = 0;
+            
+            for (let i = 1; i <= 4; i++) {
+                const container = document.getElementById(`quadrant${i}`);
+                const dropped = container.querySelectorAll('.dropped-angle');
+                
+                dropped.forEach(angle => {
+                    const correctQuadrant = angle.dataset.correctQuadrant;
+                    if (correctQuadrant === i.toString()) {
+                        angle.classList.add('correct');
+                        correct++;
+                    } else {
+                        angle.classList.add('incorrect');
+                        incorrect++;
+                    }
+                });
+            }
+            
+            correctCount = correct;
+            incorrectCount = incorrect;
+            updateScores();
+            
+            setTimeout(() => {
+                showResults();
+            }, 1500);
+        }
+        
+        function updateScores() {
+            document.getElementById('correctScore').textContent = correctCount;
+            document.getElementById('incorrectScore').textContent = incorrectCount;
+        }
+        
+        function updateRemaining() {
+            const remaining = angles.length - Object.keys(gameState).length;
+            document.getElementById('remainingScore').textContent = remaining;
+        }
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        function showResults() {
+            clearInterval(timerInterval);
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const accuracy = Math.round((correctCount / angles.length) * 100);
+            
+            document.getElementById('finalCorrect').textContent = correctCount;
+            document.getElementById('finalIncorrect').textContent = incorrectCount;
+            document.getElementById('finalTime').textContent = timeStr;
+            document.getElementById('finalScore').textContent = accuracy + '%';
+            
+            let icon = '🎉';
+            let title = 'Отлично!';
+            
+            if (accuracy === 100) {
+                icon = '🏆';
+                title = 'Идеально!';
+            } else if (accuracy >= 80) {
+                icon = '🌟';
+                title = 'Превосходно!';
+            } else if (accuracy >= 60) {
+                icon = '👍';
+                title = 'Хорошо!';
+            } else {
+                icon = '💪';
+                title = 'Попробуйте еще раз!';
+            }
+            
+            document.getElementById('resultsIcon').textContent = icon;
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+        
+        function closeResults() {
+            document.getElementById('resultsModal').classList.remove('show');
+        }
+        
+        function resetGame() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            startTime = null;
+            correctCount = 0;
+            incorrectCount = 0;
+            gameState = {};
+            initGame();
+        }
+        
+        // Initialize game
+        initGame();
+    </script>
+</body>
+</html>

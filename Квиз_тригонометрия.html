@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квиз: Тригонометрия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .score-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 2px solid #2A2E3A;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .score-value {
+            color: #FBBF24;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #2A2E3A;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .quiz-card {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 40px;
+            border: 2px solid #2A2E3A;
+            margin-bottom: 20px;
+        }
+        
+        .question-number {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .question-text {
+            color: #E5E7EB;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .option {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .option:hover {
+            border-color: #FBBF24;
+            transform: translateX(5px);
+        }
+        
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            background: #2A2E3A;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #9CA3AF;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .option-text {
+            color: #D1D5DB;
+            font-size: 1.1rem;
+        }
+        
+        .option.selected {
+            border-color: #FBBF24;
+            background: linear-gradient(135deg, #2A2418 0%, #352D20 100%);
+        }
+        
+        .option.selected .option-letter {
+            background: #FBBF24;
+            color: #0F1117;
+        }
+        
+        .option.correct {
+            border-color: #10B981;
+            background: linear-gradient(135deg, #0D2818 0%, #153525 100%);
+            animation: correctPulse 0.5s;
+        }
+        
+        .option.correct .option-letter {
+            background: #10B981;
+            color: #fff;
+        }
+        
+        .option.incorrect {
+            border-color: #EF4444;
+            background: linear-gradient(135deg, #2A1818 0%, #352020 100%);
+            animation: incorrectShake 0.5s;
+        }
+        
+        .option.incorrect .option-letter {
+            background: #EF4444;
+            color: #fff;
+        }
+        
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .feedback.correct {
+            background: linear-gradient(135deg, #0D2818 0%, #153525 100%);
+            border: 2px solid #10B981;
+        }
+        
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #2A1818 0%, #352020 100%);
+            border: 2px solid #EF4444;
+        }
+        
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .feedback.correct .feedback-title {
+            color: #10B981;
+        }
+        
+        .feedback.incorrect .feedback-title {
+            color: #EF4444;
+        }
+        
+        .feedback-text {
+            color: #D1D5DB;
+            line-height: 1.6;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results-card {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 50px;
+            border: 2px solid #FBBF24;
+            text-align: center;
+            display: none;
+        }
+        
+        .results-card.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .results-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+        
+        .results-title {
+            color: #FBBF24;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .results-score {
+            font-size: 3rem;
+            color: #E5E7EB;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .results-message {
+            color: #9CA3AF;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-item {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value.correct { color: #10B981; }
+        .stat-value.incorrect { color: #EF4444; }
+        .stat-value.percent { color: #FBBF24; }
+        
+        .stat-label {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .quiz-card {
+                padding: 25px;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+            
+            .results-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Квиз: Тригонометрия</h1>
+        
+        <div class="score-panel">
+            <div class="score-item">
+                <div class="score-label">Вопрос</div>
+                <div class="score-value"><span id="currentQuestion">1</span>/<span id="totalQuestions">15</span></div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Правильно</div>
+                <div class="score-value" id="correctCount">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Неправильно</div>
+                <div class="score-value" id="incorrectCount">0</div>
+            </div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div id="quizContainer"></div>
+        
+        <div class="results-card" id="resultsCard">
+            <div class="results-icon" id="resultsIcon">🎉</div>
+            <div class="results-title">Квиз завершен!</div>
+            <div class="results-score"><span id="finalScore">0</span>/<span id="finalTotal">15</span></div>
+            <div class="results-message" id="resultsMessage">Отличный результат!</div>
+            
+            <div class="results-stats">
+                <div class="stat-item">
+                    <div class="stat-value correct" id="finalCorrect">0</div>
+                    <div class="stat-label">Правильных ответов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value incorrect" id="finalIncorrect">0</div>
+                    <div class="stat-label">Неправильных ответов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value percent" id="finalPercent">0%</div>
+                    <div class="stat-label">Процент правильных</div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="restartQuiz()">Начать заново</button>
+        </div>
+    </div>
+    
+    <script>
+        const questions = [
+            {
+                question: "Чему равен sin 30°?",
+                options: ["1/2", "√2/2", "√3/2", "1"],
+                correct: 0,
+                explanation: "sin 30° = 1/2. Это одно из табличных значений, которое нужно помнить."
+            },
+            {
+                question: "Чему равен cos 60°?",
+                options: ["√3/2", "1/2", "√2/2", "0"],
+                correct: 1,
+                explanation: "cos 60° = 1/2. Заметьте, что cos 60° = sin 30°."
+            },
+            {
+                question: "Чему равен tg 45°?",
+                options: ["0", "1", "√3", "√3/3"],
+                correct: 1,
+                explanation: "tg 45° = 1, так как sin 45° = cos 45° = √2/2."
+            },
+            {
+                question: "В какой четверти sin положителен, а cos отрицателен?",
+                options: ["I четверть", "II четверть", "III четверть", "IV четверть"],
+                correct: 1,
+                explanation: "Во II четверти (90°—180°) только sin положителен, а cos отрицателен."
+            },
+            {
+                question: "Чему равно основное тригонометрическое тождество?",
+                options: ["sin α + cos α = 1", "sin²α + cos²α = 1", "sin α · cos α = 1", "tg α · ctg α = 1"],
+                correct: 1,
+                explanation: "Основное тригонометрическое тождество: sin²α + cos²α = 1."
+            },
+            {
+                question: "Чему равен sin 90°?",
+                options: ["0", "1", "-1", "√2/2"],
+                correct: 1,
+                explanation: "sin 90° = 1. Точка на единичной окружности имеет координаты (0; 1)."
+            },
+            {
+                question: "Чему равен cos 180°?",
+                options: ["0", "1", "-1", "√3/2"],
+                correct: 2,
+                explanation: "cos 180° = -1. Точка на единичной окружности имеет координаты (-1; 0)."
+            },
+            {
+                question: "В какой четверти все тригонометрические функции положительны?",
+                options: ["I четверть", "II четверть", "III четверть", "IV четверть"],
+                correct: 0,
+                explanation: "В I четверти (0°—90°) все функции положительны."
+            },
+            {
+                question: "Чему равен sin 210°?",
+                options: ["1/2", "-1/2", "√3/2", "-√3/2"],
+                correct: 1,
+                explanation: "210° = 180° + 30°. По формуле sin(180° + α) = -sin α, получаем sin 210° = -sin 30° = -1/2."
+            },
+            {
+                question: "Чему равен cos 45°?",
+                options: ["1/2", "√2/2", "√3/2", "1"],
+                correct: 1,
+                explanation: "cos 45° = √2/2 ≈ 0.707. Это табличное значение."
+            },
+            {
+                question: "Чему равно tg α?",
+                options: ["sin α / cos α", "cos α / sin α", "sin α · cos α", "1 / sin α"],
+                correct: 0,
+                explanation: "По определению tg α = sin α / cos α."
+            },
+            {
+                question: "В III четверти какие функции положительны?",
+                options: ["Все", "sin и cos", "tg и ctg", "Только cos"],
+                correct: 2,
+                explanation: "В III четверти (180°—270°) только tg и ctg положительны. sin и cos отрицательны."
+            },
+            {
+                question: "Чему равен ctg 90°?",
+                options: ["0", "1", "-1", "Не определен"],
+                correct: 0,
+                explanation: "ctg 90° = cos 90° / sin 90° = 0 / 1 = 0."
+            },
+            {
+                question: "Чему равен sin(90° - α)?",
+                options: ["sin α", "cos α", "-sin α", "-cos α"],
+                correct: 1,
+                explanation: "По формуле приведения: sin(90° - α) = cos α."
+            },
+            {
+                question: "Уравнение единичной окружности:",
+                options: ["x + y = 1", "x² + y² = 1", "x² - y² = 1", "xy = 1"],
+                correct: 1,
+                explanation: "Единичная окружность описывается уравнением x² + y² = 1."
+            }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let selectedAnswer = null;
+        let answered = false;
+        
+        function renderQuestion() {
+            const question = questions[currentQuestionIndex];
+            const container = document.getElementById('quizContainer');
+            
+            let optionsHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            
+            question.options.forEach((option, index) => {
+                optionsHTML += `
+                    <div class="option" onclick="selectOption(${index})">
+                        <div class="option-letter">${letters[index]}</div>
+                        <div class="option-text">${option}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = `
+                <div class="quiz-card">
+                    <div class="question-number">Вопрос ${currentQuestionIndex + 1} из ${questions.length}</div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options" id="optionsContainer">
+                        ${optionsHTML}
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                    <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Следующий вопрос</button>
+                </div>
+            `;
+            
+            updateProgress();
+        }
+        
+        function selectOption(index) {
+            if (answered) return;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            
+            selectedAnswer = index;
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        function nextQuestion() {
+            if (!answered) {
+                checkAnswer();
+            } else {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    answered = false;
+                    selectedAnswer = null;
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }
+        }
+        
+        function checkAnswer() {
+            if (selectedAnswer === null) return;
+            
+            answered = true;
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            options.forEach(opt => opt.classList.add('disabled'));
+            
+            if (selectedAnswer === question.correct) {
+                options[selectedAnswer].classList.add('correct');
+                feedback.className = 'feedback correct show';
+                feedback.innerHTML = `
+                    <div class="feedback-title">✓ Правильно!</div>
+                    <div class="feedback-text">${question.explanation}</div>
+                `;
+                correctAnswers++;
+                document.getElementById('correctCount').textContent = correctAnswers;
+            } else {
+                options[selectedAnswer].classList.add('incorrect');
+                options[question.correct].classList.add('correct');
+                feedback.className = 'feedback incorrect show';
+                feedback.innerHTML = `
+                    <div class="feedback-title">✗ Неправильно</div>
+                    <div class="feedback-text">${question.explanation}</div>
+                `;
+                incorrectAnswers++;
+                document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            }
+            
+            nextBtn.textContent = currentQuestionIndex === questions.length - 1 ? 'Показать результаты' : 'Следующий вопрос';
+        }
+        
+        function updateProgress() {
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = questions.length;
+            
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        function showResults() {
+            document.getElementById('quizContainer').style.display = 'none';
+            const resultsCard = document.getElementById('resultsCard');
+            resultsCard.classList.add('show');
+            
+            const percentage = Math.round((correctAnswers / questions.length) * 100);
+            
+            document.getElementById('finalScore').textContent = correctAnswers;
+            document.getElementById('finalTotal').textContent = questions.length;
+            document.getElementById('finalCorrect').textContent = correctAnswers;
+            document.getElementById('finalIncorrect').textContent = incorrectAnswers;
+            document.getElementById('finalPercent').textContent = percentage + '%';
+            
+            let icon = '🎉';
+            let message = 'Отличный результат!';
+            
+            if (percentage === 100) {
+                icon = '🏆';
+                message = 'Идеально! Вы знаете тригонометрию на отлично!';
+            } else if (percentage >= 80) {
+                icon = '🌟';
+                message = 'Превосходно! Вы отлично знаете материал!';
+            } else if (percentage >= 60) {
+                icon = '👍';
+                message = 'Хорошо! Есть над чем поработать.';
+            } else if (percentage >= 40) {
+                icon = '📚';
+                message = 'Неплохо, но стоит повторить материал.';
+            } else {
+                icon = '💪';
+                message = 'Нужно больше практики. Попробуйте еще раз!';
+            }
+            
+            document.getElementById('resultsIcon').textContent = icon;
+            document.getElementById('resultsMessage').textContent = message;
+            
+            document.getElementById('progressFill').style.width = '100%';
+        }
+        
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            incorrectAnswers = 0;
+            selectedAnswer = null;
+            answered = false;
+            
+            document.getElementById('correctCount').textContent = '0';
+            document.getElementById('incorrectCount').textContent = '0';
+            document.getElementById('resultsCard').classList.remove('show');
+            document.getElementById('quizContainer').style.display = 'block';
+            
+            renderQuestion();
+        }
+        
+        // Initial render
+        renderQuestion();
+    </script>
+</body>
+</html>

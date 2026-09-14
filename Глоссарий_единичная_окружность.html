@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глоссарий: Единичная окружность и тригонометрические функции</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+            font-weight: 400;
+        }
+        
+        .section {
+            background: #171A23;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 25px 0;
+            border: 1px solid #2A2E3A;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.1);
+        }
+        
+        h2 {
+            color: #FBBF24;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            color: #E5E7EB;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .definition {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 1px solid #FBBF24;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .definition::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%);
+        }
+        
+        .definition-title {
+            font-weight: 700;
+            color: #FBBF24;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            padding-left: 15px;
+        }
+        
+        .definition p, .definition ul {
+            padding-left: 15px;
+            color: #D1D5DB;
+        }
+        
+        .formula {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #FBBF24;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.2);
+        }
+        
+        .formula-label {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .formula strong {
+            color: #FBBF24;
+            font-size: 1.8rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 25px 0;
+            font-size: 1rem;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            padding: 15px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #2A2E3A;
+            background: #171A23;
+            color: #E5E7EB;
+        }
+        
+        tr:hover td {
+            background: #1E222E;
+        }
+        
+        .example {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border-left: 4px solid #22D3EE;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+        
+        .example-title {
+            font-weight: 700;
+            color: #22D3EE;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .example p {
+            color: #D1D5DB;
+            margin: 8px 0;
+        }
+        
+        .example strong {
+            color: #FBBF24;
+        }
+        
+        .quadrant-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .quadrant-box {
+            padding: 20px;
+            border: 2px solid #FBBF24;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            transition: all 0.3s;
+        }
+        
+        .quadrant-box:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 25px rgba(251, 191, 36, 0.3);
+        }
+        
+        .quadrant-title {
+            font-weight: 700;
+            color: #FBBF24;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .quadrant-box p {
+            color: #D1D5DB;
+            line-height: 1.8;
+        }
+        
+        .quadrant-box strong {
+            color: #22D3EE;
+        }
+        
+        .mnemonic {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 3px solid #FBBF24;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 6px 30px rgba(251, 191, 36, 0.2);
+        }
+        
+        .mnemonic-title {
+            font-weight: 700;
+            color: #FBBF24;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .mnemonic p {
+            color: #E5E7EB;
+            font-size: 1.1rem;
+            line-height: 2;
+        }
+        
+        .mnemonic strong {
+            color: #FBBF24;
+            font-size: 1.3rem;
+        }
+        
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+        }
+        
+        .fraction .num {
+            display: block;
+            border-bottom: 2px solid #FBBF24;
+            padding: 0 8px;
+        }
+        
+        .fraction .den {
+            display: block;
+            padding: 0 8px;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid #2A2E3A;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6B7280;
+        }
+        
+        .interactive-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 10px 5px;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .quadrant-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ГЛОССАРИЙ</h1>
+        <div class="subtitle">Единичная окружность и тригонометрические функции<br>10 класс, профильный уровень</div>
+        
+        <div class="section">
+            <h2>1. Основные определения</h2>
+            
+            <div class="definition">
+                <div class="definition-title">Единичная окружность</div>
+                <p>Окружность радиуса R = 1 с центром в начале координат O(0; 0).</p>
+                <p><strong>Уравнение:</strong> x² + y² = 1</p>
+            </div>
+            
+            <div class="definition">
+                <div class="definition-title">Тригонометрические функции на единичной окружности</div>
+                <p>Пусть P(x; y) — точка на единичной окружности, соответствующая углу α.</p>
+                <p><strong>Определения:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>cos α = x (абсцисса точки P)</li>
+                    <li>sin α = y (ордината точки P)</li>
+                    <li>tg α = y/x (при x ≠ 0)</li>
+                    <li>ctg α = x/y (при y ≠ 0)</li>
+                </ul>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 1</div>
+                <p>Для угла 90° точка P имеет координаты (0; 1).</p>
+                <p><strong>Следовательно:</strong> cos 90° = 0, sin 90° = 1, tg 90° не определён, ctg 90° = 0.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>2. Основное тригонометрическое тождество</h2>
+            
+            <div class="formula">
+                <div class="formula-label">Основное тождество</div>
+                <strong>sin²α + cos²α = 1</strong>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 2</div>
+                <p>Найдите sin²120° + cos²120°.</p>
+                <p><strong>Решение:</strong> По основному тождеству sin²α + cos²α = 1 для любого α.</p>
+                <p><strong>Ответ:</strong> 1</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>3. Значения тригонометрических функций для ключевых углов</h2>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Угол α</th>
+                        <th>sin α</th>
+                        <th>cos α</th>
+                        <th>tg α</th>
+                        <th>ctg α</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0°</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td>30°</td>
+                        <td>1/2</td>
+                        <td>√3/2</td>
+                        <td>√3/3</td>
+                        <td>√3</td>
+                    </tr>
+                    <tr>
+                        <td>45°</td>
+                        <td>√2/2</td>
+                        <td>√2/2</td>
+                        <td>1</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>60°</td>
+                        <td>√3/2</td>
+                        <td>1/2</td>
+                        <td>√3</td>
+                        <td>√3/3</td>
+                    </tr>
+                    <tr>
+                        <td>90°</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>—</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>180°</td>
+                        <td>0</td>
+                        <td>-1</td>
+                        <td>0</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td>270°</td>
+                        <td>-1</td>
+                        <td>0</td>
+                        <td>—</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>360°</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="example">
+                <div class="example-title">Пример 3</div>
+                <p>Найдите tg 60°.</p>
+                <p><strong>Решение:</strong> По таблице: tg 60° = √3.</p>
+                <p><strong>Ответ:</strong> √3</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>4. Знаки тригонометрических функций по четвертям</h2>
+            
+            <div class="quadrant-grid">
+                <div class="quadrant-box">
+                    <div class="quadrant-title">I четверть (0°—90°)</div>
+                    <p><strong>Все функции положительны</strong></p>
+                    <p>sin α > 0, cos α > 0<br>tg α > 0, ctg α > 0</p>
+                </div>
+                <div class="quadrant-box">
+                    <div class="quadrant-title">II четверть (90°—180°)</div>
+                    <p><strong>Только sin положителен</strong></p>
+                    <p>sin α > 0, cos α < 0<br>tg α < 0, ctg α < 0</p>
+                </div>
+                <div class="quadrant-box">
+                    <div class="quadrant-title">III четверть (180°—270°)</div>
+                    <p><strong>Только tg и ctg положительны</strong></p>
+                    <p>sin α < 0, cos α < 0<br>tg α > 0, ctg α > 0</p>
+                </div>
+                <div class="quadrant-box">
+                    <div class="quadrant-title">IV четверть (270°—360°)</div>
+                    <p><strong>Только cos положителен</strong></p>
+                    <p>sin α < 0, cos α > 0<br>tg α < 0, ctg α < 0</p>
+                </div>
+            </div>
+            
+            <div class="mnemonic">
+                <div class="mnemonic-title">Мнемоническое правило</div>
+                <p style="font-size: 1.4rem;"><strong>В</strong>се <strong>С</strong>туденты <strong>Т</strong>рекают <strong>К</strong>лассно</p>
+                <p>I четверть — <strong>В</strong>се (все положительны)<br>
+                II четверть — <strong>С</strong>туденты (только sin)<br>
+                III четверть — <strong>Т</strong>рекают (только tg и ctg)<br>
+                IV четверть — <strong>К</strong>лассно (только cos)</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 4</div>
+                <p>Определите знак cos 135°.</p>
+                <p><strong>Решение:</strong> 135° находится во II четверти (90° < 135° < 180°). Во II четверти cos α < 0.</p>
+                <p><strong>Ответ:</strong> cos 135° < 0</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>5. Формулы приведения</h2>
+            
+            <h3>Для углов вида 90° ± α:</h3>
+            <div class="formula">
+                <div class="formula-label">Формулы для 90° ± α</div>
+                <p>sin(90° + α) = cos α &nbsp;&nbsp;&nbsp; cos(90° + α) = -sin α</p>
+                <p>sin(90° - α) = cos α &nbsp;&nbsp;&nbsp; cos(90° - α) = sin α</p>
+            </div>
+            
+            <h3>Для углов вида 180° ± α:</h3>
+            <div class="formula">
+                <div class="formula-label">Формулы для 180° ± α</div>
+                <p>sin(180° + α) = -sin α &nbsp;&nbsp;&nbsp; cos(180° + α) = -cos α</p>
+                <p>sin(180° - α) = sin α &nbsp;&nbsp;&nbsp; cos(180° - α) = -cos α</p>
+            </div>
+            
+            <h3>Для углов вида 360° ± α:</h3>
+            <div class="formula">
+                <div class="formula-label">Формулы для 360° ± α</div>
+                <p>sin(360° + α) = sin α &nbsp;&nbsp;&nbsp; cos(360° + α) = cos α</p>
+                <p>sin(360° - α) = -sin α &nbsp;&nbsp;&nbsp; cos(360° - α) = cos α</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 5</div>
+                <p>Найдите sin 210°.</p>
+                <p><strong>Решение:</strong> 210° = 180° + 30°. Используем формулу: sin(180° + α) = -sin α.</p>
+                <p>sin 210° = sin(180° + 30°) = -sin 30° = -1/2</p>
+                <p><strong>Ответ:</strong> -1/2</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 6</div>
+                <p>Найдите cos 135°.</p>
+                <p><strong>Решение:</strong> 135° = 90° + 45°. Используем формулу: cos(90° + α) = -sin α.</p>
+                <p>cos 135° = cos(90° + 45°) = -sin 45° = -√2/2</p>
+                <p><strong>Ответ:</strong> -√2/2</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>6. Связь между функциями</h2>
+            
+            <div class="formula">
+                <div class="formula-label">Связь tg и ctg с sin и cos</div>
+                <p>tg α = <span class="fraction"><span class="num">sin α</span><span class="den">cos α</span></span> &nbsp;&nbsp;&nbsp; ctg α = <span class="fraction"><span class="num">cos α</span><span class="den">sin α</span></span></p>
+            </div>
+            
+            <div class="formula">
+                <div class="formula-label">Связь tg и ctg</div>
+                <p>tg α · ctg α = 1</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 7</div>
+                <p>Найдите tg 225° · ctg 225°.</p>
+                <p><strong>Решение:</strong> По формуле связи: tg α · ctg α = 1 для любого α.</p>
+                <p>tg 225° · ctg 225° = 1</p>
+                <p><strong>Ответ:</strong> 1</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Глоссарий подготовлен для подготовки к ЕГЭ по математике (профильный уровень)</p>
+            <p>Единичная окружность и тригонометрические функции | 10 класс</p>
+        </div>
+    </div>
+</body>
+</html>

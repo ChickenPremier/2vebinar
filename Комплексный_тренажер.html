@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комплексный тренажер: Тригонометрия</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: #171A23;
+            border-bottom: 2px solid #2A2E3A;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .logo {
+            color: #FBBF24;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            color: #D1D5DB;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .tab-btn:hover {
+            border-color: #FBBF24;
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border-color: #FBBF24;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .welcome-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .welcome-title {
+            color: #FBBF24;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .welcome-subtitle {
+            color: #9CA3AF;
+            font-size: 1.3rem;
+            margin-bottom: 50px;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .module-card {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: #FBBF24;
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.2);
+        }
+        
+        .module-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .module-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .module-title {
+            color: #FBBF24;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .module-description {
+            color: #9CA3AF;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .module-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #2A2E3A;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #22D3EE;
+            font-size: 0.9rem;
+        }
+        
+        iframe {
+            width: 100%;
+            height: calc(100vh - 160px);
+            border: none;
+            border-radius: 10px;
+            background: #0F1117;
+        }
+        
+        .progress-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+            margin-bottom: 30px;
+        }
+        
+        .progress-panel h2 {
+            color: #FBBF24;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .progress-item {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .progress-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FBBF24;
+            margin-bottom: 10px;
+        }
+        
+        .progress-label {
+            color: #9CA3AF;
+            font-size: 0.95rem;
+        }
+        
+        .achievement-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+            color: #0F1117;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 5px;
+        }
+        
+        .tips-section {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .tips-title {
+            color: #22D3EE;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .tips-list {
+            color: #D1D5DB;
+            line-height: 2;
+        }
+        
+        .tips-list li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .nav-tabs {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">📚 Тригонометрия: Единичная окружность</div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="showTab('home')">Главная</button>
+                <button class="tab-btn" onclick="showTab('glossary')">Глоссарий</button>
+                <button class="tab-btn" onclick="showTab('trainer')">Тренажер</button>
+                <button class="tab-btn" onclick="showTab('quiz')">Квиз</button>
+                <button class="tab-btn" onclick="showTab('game')">Игра</button>
+                <button class="tab-btn" onclick="showTab('formulas')">Формулы</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Home Section -->
+        <div id="home" class="section active">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Добро пожаловать!</h1>
+                <p class="welcome-subtitle">Интерактивный комплекс для изучения тригонометрии</p>
+            </div>
+            
+            <div class="progress-panel">
+                <h2>Ваш прогресс</h2>
+                <div class="progress-grid">
+                    <div class="progress-item">
+                        <div class="progress-value" id="totalTime">0:00</div>
+                        <div class="progress-label">Время обучения</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value" id="modulesCompleted">0/5</div>
+                        <div class="progress-label">Модулей пройдено</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value" id="achievementsCount">0</div>
+                        <div class="progress-label">Достижений</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <div style="color: #9CA3AF; margin-bottom: 15px; font-weight: 600;">Ваши достижения:</div>
+                    <div id="achievementsList">
+                        <span style="color: #6B7280;">Начните изучение, чтобы получить достижения!</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modules-grid">
+                <div class="module-card" onclick="showTab('glossary')">
+                    <div class="module-icon">📖</div>
+                    <div class="module-title">Глоссарий</div>
+                    <div class="module-description">
+                        Полный справочник по единичной окружности, формулам и определениям тригонометрических функций.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~10 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Теория</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('trainer')">
+                    <div class="module-icon">🎯</div>
+                    <div class="module-title">Интерактивный тренажер</div>
+                    <div class="module-description">
+                        Визуализация единичной окружности с динамическим отображением значений функций.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~15 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Практика</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('quiz')">
+                    <div class="module-icon">🎓</div>
+                    <div class="module-title">Квиз</div>
+                    <div class="module-description">
+                        15 вопросов с мгновенной проверкой и подробными объяснениями для закрепления знаний.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~20 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Тестирование</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('game')">
+                    <div class="module-icon">🎮</div>
+                    <div class="module-title">Игра: Четверти и знаки</div>
+                    <div class="module-description">
+                        Drag-and-drop игра для запоминания знаков функций в разных четвертях окружности.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~10 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Игра</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('formulas')">
+                    <div class="module-icon">📐</div>
+                    <div class="module-title">Формулы приведения</div>
+                    <div class="module-description">
+                        Пошаговый визуализатор для понимания и применения формул приведения.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~15 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Практика</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <div class="tips-title">💡 Рекомендации для эффективного обучения</div>
+                <ul class="tips-list">
+                    <li><strong>Начните с глоссария</strong> — изучите основные определения и формулы</li>
+                    <li><strong>Используйте тренажер</strong> — визуализация поможет лучше понять материал</li>
+                    <li><strong>Практикуйтесь с формулами</strong> — решайте разные примеры, пока не получится автоматически</li>
+                    <li><strong>Играйте в игру</strong> — игровой формат помогает запомнить знаки функций</li>
+                    <li><strong>Проверьте знания</strong> — пройдите квиз для закрепления материала</li>
+                    <li><strong>Повторяйте регулярно</strong> — возвращайтесь к материалу для лучшего запоминания</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Glossary Section -->
+        <div id="glossary" class="section">
+            <iframe src="Глоссарий_единичная_окружность.html"></iframe>
+        </div>
+        
+        <!-- Trainer Section -->
+        <div id="trainer" class="section">
+            <iframe src="Тренажер_единичная_окружность.html"></iframe>
+        </div>
+        
+        <!-- Quiz Section -->
+        <div id="quiz" class="section">
+            <iframe src="Квиз_тригонометрия.html"></iframe>
+        </div>
+        
+        <!-- Game Section -->
+        <div id="game" class="section">
+            <iframe src="Игра_четверти_и_знаки.html"></iframe>
+        </div>
+        
+        <!-- Formulas Section -->
+        <div id="formulas" class="section">
+            <iframe src="Визуализатор_формул_приведения.html"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        let startTime = Date.now();
+        let visitedModules = new Set();
+        
+        function showTab(tabName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Update tab buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Track visited modules
+            if (tabName !== 'home') {
+                visitedModules.add(tabName);
+                updateProgress();
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        function updateProgress() {
+            // Update modules completed
+            document.getElementById('modulesCompleted').textContent = `${visitedModules.size}/5`;
+            
+            // Check achievements
+            const achievements = [];
+            
+            if (visitedModules.has('glossary')) {
+                achievements.push('📖 Теоретик');
+            }
+            if (visitedModules.has('trainer')) {
+                achievements.push('🎯 Практик');
+            }
+            if (visitedModules.has('quiz')) {
+                achievements.push('🎓 Знаток');
+            }
+            if (visitedModules.has('game')) {
+                achievements.push('🎮 Игрок');
+            }
+            if (visitedModules.has('formulas')) {
+                achievements.push('📐 Математик');
+            }
+            if (visitedModules.size === 5) {
+                achievements.push('🏆 Мастер тригонометрии');
+            }
+            
+            document.getElementById('achievementsCount').textContent = achievements.length;
+            
+            const achievementsList = document.getElementById('achievementsList');
+            if (achievements.length > 0) {
+                achievementsList.innerHTML = achievements.map(a => 
+                    `<span class="achievement-badge">${a}</span>`
+                ).join('');
+            }
+        }
+        
+        // Update timer
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('totalTime').textContent = 
+                `${minutes}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+        
+        // Load progress from localStorage
+        const savedProgress = localStorage.getItem('trigProgress');
+        if (savedProgress) {
+            const data = JSON.parse(savedProgress);
+            visitedModules = new Set(data.modules);
+            updateProgress();
+        }
+        
+        // Save progress
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('trigProgress', JSON.stringify({
+                modules: Array.from(visitedModules),
+                timestamp: Date.now()
+            }));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный тренажер: Единичная окружность</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .canvas-container {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        canvas {
+            border: 2px solid #FBBF24;
+            border-radius: 8px;
+            background: #0F1117;
+            cursor: crosshair;
+        }
+        
+        .info-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+        }
+        
+        .angle-input {
+            margin-bottom: 25px;
+        }
+        
+        .angle-input label {
+            display: block;
+            color: #FBBF24;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #2A2E3A;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FBBF24;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FBBF24;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        
+        input[type="number"] {
+            width: 100px;
+            padding: 10px;
+            background: #2A2E3A;
+            border: 2px solid #FBBF24;
+            border-radius: 6px;
+            color: #E5E7EB;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .values-display {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #FBBF24;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .value-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #2A2E3A;
+        }
+        
+        .value-item:last-child {
+            border-bottom: none;
+        }
+        
+        .value-label {
+            color: #9CA3AF;
+            font-size: 1.1rem;
+        }
+        
+        .value-number {
+            color: #FBBF24;
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .quadrant-info {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .quadrant-info h3 {
+            color: #22D3EE;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .quadrant-info p {
+            color: #D1D5DB;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .legend {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #2A2E3A;
+            margin-top: 30px;
+        }
+        
+        .legend h3 {
+            color: #FBBF24;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #2A2E3A;
+        }
+        
+        .legend-text {
+            color: #D1D5DB;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .legend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Интерактивный тренажер: Единичная окружность</h1>
+        
+        <div class="main-grid">
+            <div class="canvas-container">
+                <canvas id="unitCircle" width="500" height="500"></canvas>
+                <div class="controls">
+                    <button class="btn" onclick="setAngle(0)">0°</button>
+                    <button class="btn" onclick="setAngle(30)">30°</button>
+                    <button class="btn" onclick="setAngle(45)">45°</button>
+                    <button class="btn" onclick="setAngle(60)">60°</button>
+                    <button class="btn" onclick="setAngle(90)">90°</button>
+                    <button class="btn" onclick="setAngle(120)">120°</button>
+                    <button class="btn" onclick="setAngle(135)">135°</button>
+                    <button class="btn" onclick="setAngle(150)">150°</button>
+                    <button class="btn" onclick="setAngle(180)">180°</button>
+                    <button class="btn" onclick="setAngle(210)">210°</button>
+                    <button class="btn" onclick="setAngle(225)">225°</button>
+                    <button class="btn" onclick="setAngle(240)">240°</button>
+                    <button class="btn" onclick="setAngle(270)">270°</button>
+                    <button class="btn" onclick="setAngle(300)">300°</button>
+                    <button class="btn" onclick="setAngle(315)">315°</button>
+                    <button class="btn" onclick="setAngle(330)">330°</button>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="angle-input">
+                    <label>Угол (градусы):</label>
+                    <div class="input-row">
+                        <input type="range" id="angleSlider" min="0" max="360" value="45" oninput="updateAngle(this.value)">
+                        <input type="number" id="angleInput" min="0" max="360" value="45" oninput="updateAngle(this.value)">
+                    </div>
+                </div>
+                
+                <div class="values-display">
+                    <div class="value-item">
+                        <span class="value-label">sin α =</span>
+                        <span class="value-number" id="sinValue">0.707</span>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-label">cos α =</span>
+                        <span class="value-number" id="cosValue">0.707</span>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-label">tg α =</span>
+                        <span class="value-number" id="tgValue">1.000</span>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-label">ctg α =</span>
+                        <span class="value-number" id="ctgValue">1.000</span>
+                    </div>
+                </div>
+                
+                <div class="quadrant-info" id="quadrantInfo">
+                    <h3>I четверть (0°—90°)</h3>
+                    <p>Все функции положительны<br>sin > 0, cos > 0, tg > 0, ctg > 0</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h3>Обозначения:</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FBBF24;"></div>
+                    <span class="legend-text">Единичная окружность</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #22D3EE;"></div>
+                    <span class="legend-text">Радиус-вектор</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F87171;"></div>
+                    <span class="legend-text">sin α (ордината)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #5B8CFF;"></div>
+                    <span class="legend-text">cos α (абсцисса)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('unitCircle');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 180;
+        
+        let currentAngle = 45;
+        
+        function drawCircle() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid
+            ctx.strokeStyle = '#2A2E3A';
+            ctx.lineWidth = 1;
+            for (let i = -2; i <= 2; i++) {
+                if (i === 0) continue;
+                // Vertical lines
+                ctx.beginPath();
+                ctx.moveTo(centerX + i * radius / 2, 0);
+                ctx.lineTo(centerX + i * radius / 2, canvas.height);
+                ctx.stroke();
+                // Horizontal lines
+                ctx.beginPath();
+                ctx.moveTo(0, centerY + i * radius / 2);
+                ctx.lineTo(canvas.width, centerY + i * radius / 2);
+                ctx.stroke();
+            }
+            
+            // Draw axes
+            ctx.strokeStyle = '#9CA3AF';
+            ctx.lineWidth = 2;
+            // X axis
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+            // Y axis
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+            
+            // Draw axis labels
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '16px sans-serif';
+            ctx.fillText('x', canvas.width - 25, centerY - 10);
+            ctx.fillText('y', centerX + 10, 25);
+            
+            // Draw unit circle
+            ctx.strokeStyle = '#FBBF24';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Calculate angle in radians
+            const angleRad = (currentAngle * Math.PI) / 180;
+            const x = Math.cos(angleRad);
+            const y = Math.sin(angleRad);
+            
+            // Point on circle
+            const pointX = centerX + x * radius;
+            const pointY = centerY - y * radius;
+            
+            // Draw cos line (vertical projection)
+            ctx.strokeStyle = '#5B8CFF';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(pointX, centerY);
+            ctx.stroke();
+            
+            // Draw sin line (horizontal projection)
+            ctx.strokeStyle = '#F87171';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(pointX, centerY);
+            ctx.lineTo(pointX, pointY);
+            ctx.stroke();
+            
+            // Draw radius vector
+            ctx.strokeStyle = '#22D3EE';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(pointX, pointY);
+            ctx.stroke();
+            
+            // Draw point
+            ctx.fillStyle = '#FBBF24';
+            ctx.beginPath();
+            ctx.arc(pointX, pointY, 8, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw angle arc
+            ctx.strokeStyle = '#FBBF24';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 40, 0, -angleRad, true);
+            ctx.stroke();
+            
+            // Draw angle label
+            ctx.fillStyle = '#FBBF24';
+            ctx.font = 'bold 18px sans-serif';
+            const labelAngle = -angleRad / 2;
+            const labelX = centerX + Math.cos(labelAngle) * 60;
+            const labelY = centerY - Math.sin(labelAngle) * 60;
+            ctx.fillText(currentAngle + '°', labelX, labelY);
+            
+            // Draw coordinate values
+            ctx.fillStyle = '#E5E7EB';
+            ctx.font = '14px monospace';
+            ctx.fillText(`(${x.toFixed(3)}, ${y.toFixed(3)})`, pointX + 15, pointY - 15);
+        }
+        
+        function updateValues() {
+            const angleRad = (currentAngle * Math.PI) / 180;
+            const sinVal = Math.sin(angleRad);
+            const cosVal = Math.cos(angleRad);
+            const tgVal = Math.tan(angleRad);
+            const ctgVal = 1 / Math.tan(angleRad);
+            
+            document.getElementById('sinValue').textContent = sinVal.toFixed(4);
+            document.getElementById('cosValue').textContent = cosVal.toFixed(4);
+            
+            if (Math.abs(cosVal) < 0.0001) {
+                document.getElementById('tgValue').textContent = '—';
+            } else {
+                document.getElementById('tgValue').textContent = tgVal.toFixed(4);
+            }
+            
+            if (Math.abs(sinVal) < 0.0001) {
+                document.getElementById('ctgValue').textContent = '—';
+            } else {
+                document.getElementById('ctgValue').textContent = ctgVal.toFixed(4);
+            }
+            
+            updateQuadrantInfo();
+        }
+        
+        function updateQuadrantInfo() {
+            const quadrantInfo = document.getElementById('quadrantInfo');
+            let html = '';
+            
+            if (currentAngle >= 0 && currentAngle < 90) {
+                html = '<h3>I четверть (0°—90°)</h3><p>Все функции положительны<br>sin > 0, cos > 0, tg > 0, ctg > 0</p>';
+            } else if (currentAngle >= 90 && currentAngle < 180) {
+                html = '<h3>II четверть (90°—180°)</h3><p>Только sin положителен<br>sin > 0, cos < 0, tg < 0, ctg < 0</p>';
+            } else if (currentAngle >= 180 && currentAngle < 270) {
+                html = '<h3>III четверть (180°—270°)</h3><p>Только tg и ctg положительны<br>sin < 0, cos < 0, tg > 0, ctg > 0</p>';
+            } else if (currentAngle >= 270 && currentAngle <= 360) {
+                html = '<h3>IV четверть (270°—360°)</h3><p>Только cos положителен<br>sin < 0, cos > 0, tg < 0, ctg < 0</p>';
+            }
+            
+            quadrantInfo.innerHTML = html;
+        }
+        
+        function updateAngle(value) {
+            currentAngle = parseFloat(value) % 360;
+            if (currentAngle < 0) currentAngle += 360;
+            
+            document.getElementById('angleSlider').value = currentAngle;
+            document.getElementById('angleInput').value = currentAngle;
+            
+            drawCircle();
+            updateValues();
+        }
+        
+        function setAngle(angle) {
+            updateAngle(angle);
+        }
+        
+        // Mouse interaction
+        canvas.addEventListener('click', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left - centerX;
+            const y = centerY - (event.clientY - rect.top);
+            
+            let angle = Math.atan2(y, x) * 180 / Math.PI;
+            if (angle < 0) angle += 360;
+            
+            updateAngle(Math.round(angle));
+        });
+        
+        // Initial draw
+        drawCircle();
+        updateValues();
+    </script>
+</body>
+</html>
