@@ -10,113 +10,127 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
             background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
             color: #E5E7EB;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
-        
+
         .container {
-            max-width: 1400px;
+            max-width: 1100px;
             margin: 0 auto;
         }
-        
+
         h1 {
             text-align: center;
             color: #FBBF24;
-            font-size: 2.2rem;
-            margin-bottom: 30px;
+            font-size: 2rem;
+            margin-bottom: 8px;
             text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
         }
-        
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
+
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 1rem;
+            margin-bottom: 24px;
         }
-        
-        .canvas-container {
+
+        .card {
             background: #171A23;
-            border-radius: 10px;
-            padding: 30px;
+            border-radius: 12px;
+            padding: 24px;
             border: 2px solid #2A2E3A;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin-bottom: 20px;
         }
-        
-        canvas {
+
+        .card-title {
+            color: #FBBF24;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .canvas-wrap {
+            position: relative;
+            width: 100%;
             border: 2px solid #FBBF24;
-            border-radius: 8px;
-            background: #0F1117;
-            max-width: 100%;
-            height: auto;
-        }
-        
-        .info-panel {
-            background: #171A23;
             border-radius: 10px;
-            padding: 30px;
-            border: 2px solid #2A2E3A;
+            background: #0F1117;
+            overflow: hidden;
         }
-        
-        .param-block {
-            margin-bottom: 25px;
+
+        #graphCanvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            touch-action: none;
+            cursor: crosshair;
         }
-        
+
+        .canvas-hint {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .row {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         .param-label {
             display: block;
-            color: #FBBF24;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+            color: #22D3EE;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
-        
-        .input-row {
-            display: flex;
-            gap: 15px;
-            align-items: center;
+
+        .control-wrap {
+            margin-bottom: 20px;
         }
-        
-        .input-row.column {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
+
         input[type="range"] {
             flex: 1;
+            min-width: 120px;
             height: 8px;
             border-radius: 5px;
             background: #2A2E3A;
             outline: none;
             -webkit-appearance: none;
+            appearance: none;
         }
-        
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #FBBF24;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
-        }
-        
-        input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: #FBBF24;
             cursor: pointer;
             border: none;
             box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
         }
-        
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #FBBF24;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
         input[type="number"] {
             width: 110px;
             padding: 10px;
@@ -126,509 +140,613 @@
             color: #E5E7EB;
             font-size: 1rem;
             text-align: center;
+            outline: none;
         }
-        
-        .values-display {
-            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
-            border: 2px solid #FBBF24;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
+
+        input[type="number"]:focus {
+            border-color: #22D3EE;
         }
-        
-        .value-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #2A2E3A;
-        }
-        
-        .value-item:last-child {
-            border-bottom: none;
-        }
-        
-        .value-label {
-            color: #9CA3AF;
-            font-size: 1.1rem;
-        }
-        
-        .value-number {
-            color: #FBBF24;
-            font-size: 1.2rem;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .monotonic-info {
-            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
-            border: 2px solid #22D3EE;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        .monotonic-info h3 {
-            color: #22D3EE;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-        
-        .monotonic-info p {
-            color: #D1D5DB;
-            font-size: 1rem;
-            line-height: 1.8;
-        }
-        
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 25px 0;
-        }
-        
+
         .btn {
-            padding: 12px 16px;
-            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
-            color: #0F1117;
-            border: none;
-            border-radius: 6px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            color: #D1D5DB;
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s;
         }
-        
+
         .btn:hover {
+            border-color: #FBBF24;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
         }
-        
+
         .btn.active {
-            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border-color: #FBBF24;
         }
-        
-        .compare-panel {
+
+        .preset-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .values-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .value-item {
             background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .value-label {
+            color: #9CA3AF;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .value-number {
+            color: #FBBF24;
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        .monotonic-info {
             border: 2px solid #22D3EE;
             border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 18px;
         }
-        
-        .compare-panel h3 {
+
+        .monotonic-info h3 {
             color: #22D3EE;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+            margin-bottom: 6px;
+            font-size: 1.15rem;
         }
-        
-        .compare-panel p {
+
+        .monotonic-info p {
             color: #D1D5DB;
-            line-height: 1.8;
+            font-size: 0.95rem;
+            line-height: 1.6;
         }
-        
-        .legend {
-            background: #171A23;
-            border-radius: 10px;
-            padding: 25px;
-            border: 2px solid #2A2E3A;
-            margin-top: 30px;
-        }
-        
-        .legend h3 {
-            color: #FBBF24;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        
-        .legend-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-        
-        .legend-item {
+
+        .compare-axis {
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
         }
-        
-        .legend-color {
-            width: 30px;
-            height: 20px;
-            border-radius: 4px;
-        }
-        
-        .legend-text {
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: #D1D5DB;
+            cursor: pointer;
             font-size: 0.95rem;
         }
-        
-        @media (max-width: 1000px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
+
+        .compare-exercise p {
+            color: #D1D5DB;
+            line-height: 1.7;
+            font-size: 0.95rem;
         }
-        
+
+        .compare-result {
+            color: #22D3EE;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-top: 10px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #2A2E3A;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #D1D5DB;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 26px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
         @media (max-width: 768px) {
             body {
-                padding: 12px;
+                padding: 10px;
             }
-            
+
             h1 {
-                font-size: 1.4rem;
-                margin-bottom: 20px;
+                font-size: 1.35rem;
             }
-            
-            .canvas-container,
-            .info-panel {
-                padding: 16px;
+
+            .card {
+                padding: 16px 12px;
             }
-            
-            .controls {
+
+            .row {
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 11px 13px;
+                font-size: 0.9rem;
+            }
+
+            .values-display {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
-            }
-            
-            .legend-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .input-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            input[type="number"] {
-                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📈 Тренажер: Показательная функция y = aˣ</h1>
-        
-        <div class="main-grid">
-            <div class="canvas-container">
-                <canvas id="graphCanvas" width="600" height="400"></canvas>
-                <div class="controls">
-                    <button class="btn active" onclick="setBase(0.5)">a = 0.5</button>
-                    <button class="btn" onclick="setBase(0.8)">a = 0.8</button>
-                    <button class="btn" onclick="setBase(1.5)">a = 1.5</button>
-                    <button class="btn" onclick="setBase(2)">a = 2</button>
-                    <button class="btn" onclick="setBase(3)">a = 3</button>
-                    <button class="btn" onclick="setBase(0.3)">a = 0.3</button>
-                    <button class="btn" onclick="setBase(4)">a = 4</button>
-                    <button class="btn" onclick="compareBoth()">Сравнить</button>
-                </div>
+        <h1>📈 Показательная функция y = aˣ</h1>
+        <div class="subtitle">График, свойства, сравнение степеней</div>
+
+        <div class="card">
+            <div class="canvas-wrap">
+                <canvas id="graphCanvas"></canvas>
             </div>
-            
-            <div class="info-panel">
-                <div class="param-block">
-                    <label class="param-label">Основание a:</label>
-                    <div class="input-row">
-                        <input type="range" id="baseSlider" min="1" max="400" value="200" oninput="updateBaseFromSlider(this.value)">
-                        <input type="number" id="baseInput" min="0.1" max="10" step="0.1" value="2" oninput="updateBaseFromInput(this.value)">
-                    </div>
+            <div class="canvas-hint">👆 Нажмите на график, чтобы выбрать точку x</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">1. Основание a</div>
+            <div class="control-wrap">
+                <div class="preset-row">
+                    <button class="btn active" data-base="2">a = 2</button>
+                    <button class="btn" data-base="0.5">a = 0.5</button>
+                    <button class="btn" data-base="3">a = 3</button>
+                    <button class="btn" data-base="1.5">a = 1.5</button>
+                    <button class="btn" data-base="4">a = 4</button>
+                    <button class="btn" data-base="0.3">a = 0.3</button>
                 </div>
-                
-                <div class="param-block">
-                    <label class="param-label">Точка x (для вычисления):</label>
-                    <div class="input-row">
-                        <input type="range" id="xSlider" min="-30" max="30" value="10" oninput="updateX(this.value)">
-                        <input type="number" id="xInput" min="-10" max="10" step="0.5" value="1" oninput="updateXInput(this.value)">
-                    </div>
-                </div>
-                
-                <div class="values-display">
-                    <div class="value-item">
-                        <span class="value-label">y = aˣ</span>
-                        <span class="value-number" id="yValue">2.000</span>
-                    </div>
-                    <div class="value-item">
-                        <span class="value-label">a⁻ˣ</span>
-                        <span class="value-number" id="invYValue">0.500</span>
-                    </div>
-                    <div class="value-item">
-                        <span class="value-label">Показатель взят</span>
-                        <span class="value-number" id="xDisplay">x = 1.0</span>
-                    </div>
-                </div>
-                
-                <div class="monotonic-info" id="monotonicInfo">
-                    <h3>a &gt; 1 — функция возрастает 📈</h3>
-                    <p>Больше аргумент — больше значение.<br>При решении неравенств знак сохраняется.</p>
-                </div>
-                
-                <div class="compare-panel">
-                    <h3>📌 Сравнение степеней без калькулятора</h3>
-                    <p>Введите два показателя: <span id="compareQuestion"></span></p>
-                    <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-                        <input type="number" id="cmpA" style="width:80px;" value="2">
-                        <input type="number" id="cmpB" style="width:80px;" value="5">
-                        <button class="btn" style="padding:10px 20px;" onclick="compareExponents()">Сравнить</button>
-                    </div>
-                    <p style="margin-top:10px;" id="compareResult"></p>
+                <label class="param-label">Основание a</label>
+                <div class="row">
+                    <input type="range" id="baseSlider" min="20" max="500" value="200">
+                    <input type="number" id="baseInput" min="0.2" max="5" step="0.1" value="2">
                 </div>
             </div>
         </div>
-        
-        <div class="legend">
-            <h3>Обозначения:</h3>
-            <div class="legend-grid">
+
+        <div class="card">
+            <div class="card-title">2. Точка на графике</div>
+            <label class="param-label">Координата x</label>
+            <div class="row">
+                <input type="range" id="xSlider" min="-40" max="40" value="10">
+                <input type="number" id="xInput" min="-4" max="4" step="0.5" value="1">
+            </div>
+
+            <div class="values-display">
+                <div class="value-item">
+                    <div class="value-label">x</div>
+                    <div class="value-number" id="xValue">1</div>
+                </div>
+                <div class="value-item">
+                    <div class="value-label">y = aˣ</div>
+                    <div class="value-number" id="yValue">2</div>
+                </div>
+                <div class="value-item">
+                    <div class="value-label">a⁻ˣ = 1/y</div>
+                    <div class="value-number" id="invYValue">0.5</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="monotonic-info" id="monotonicInfo">
+                <h3>a &gt; 1 — функция возрастает 📈</h3>
+                <p>Больше аргумент — больше значение. При решении неравенств знак сохраняется.</p>
+            </div>
+
+            <div class="card-title">3. Сравнение графиков</div>
+            <div class="compare-axis">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="compareToggle">
+                    Показать второй график y = (1/a)ˣ
+                </label>
+            </div>
+            <div class="compare-exercise">
+                <p><strong>Сравним степени без калькулятора.</strong> Основание a = <span id="cmpBaseLabel">2</span>. Какая степень больше: a<sup>m</sup> или a<sup>n</sup>?</p>
+                <div class="row" style="margin-top:12px;">
+                    <input type="number" id="cmpA" value="2" style="width:90px;">
+                    <span style="color:#9CA3AF;">и</span>
+                    <input type="number" id="cmpB" value="5" style="width:90px;">
+                    <button class="btn" id="cmpBtn">Сравнить</button>
+                </div>
+                <div class="compare-result" id="compareResult"></div>
+            </div>
+
+            <div class="legend">
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #FBBF24;"></div>
-                    <span class="legend-text">График y = aˣ при выбранном a</span>
+                    <span class="legend-color" style="background:#FBBF24;"></span>
+                    <span>y = aˣ</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #22D3EE;"></div>
-                    <span class="legend-text">Вторая кривая (для сравнения)</span>
+                    <span class="legend-color" style="background:#22D3EE;"></span>
+                    <span>y = (1/a)ˣ</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #10B981;"></div>
-                    <span class="legend-text">Горизонтальная асимптота y = 0</span>
+                    <span class="legend-color" style="background:#10B981;"></span>
+                    <span>Асимптота y = 0</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: #EF4444;"></div>
-                    <span class="legend-text">Точка (x; aˣ)</span>
+                    <span class="legend-color" style="background:#EF4444;"></span>
+                    <span>Точка (x; aˣ)</span>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script>
-        const canvas = document.getElementById('graphCanvas');
-        const ctx = canvas.getContext('2d');
-        let base = 2;
-        let pointX = 1;
-        let compareBase = null;
-        
-        const left = 40, right = 40, top = 30, bottom = 40;
-        const plotW = canvas.width - left - right;
-        const plotH = canvas.height - top - bottom;
-        
-        function getPlotCoords() {
-            return { left, right, top, bottom, plotW, plotH };
-        }
-        
-        function drawGraph() {
-            const { left, right, top, plotW, plotH } = getPlotCoords();
-            const centerX = left + plotW / 2;
-            const centerY = top + plotH / 2;
-            
-            // Scale: x from -4 to 4, y from 0 to 16
-            const xMin = -4, xMax = 4;
-            const yMin = 0, yMax = 16;
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Grid
-            ctx.strokeStyle = '#2A2E3A';
-            ctx.lineWidth = 1;
-            for (let i = -4; i <= 4; i++) {
-                const px = left + ((i - xMin) / (xMax - xMin)) * plotW;
-                ctx.beginPath();
-                ctx.moveTo(px, top);
-                ctx.lineTo(px, top + plotH);
-                ctx.stroke();
+        (function () {
+            var canvas = document.getElementById('graphCanvas');
+            var ctx = canvas.getContext('2d');
+
+            var base = 2;
+            var pointX = 1;
+            var showCompare = false;
+            var dragging = false;
+
+            var X_MIN = -4, X_MAX = 4;
+            var Y_MIN = -1, Y_MAX = 17;
+
+            var els = {
+                baseSlider: document.getElementById('baseSlider'),
+                baseInput: document.getElementById('baseInput'),
+                xSlider: document.getElementById('xSlider'),
+                xInput: document.getElementById('xInput'),
+                xValue: document.getElementById('xValue'),
+                yValue: document.getElementById('yValue'),
+                invYValue: document.getElementById('invYValue'),
+                monotonicInfo: document.getElementById('monotonicInfo'),
+                compareToggle: document.getElementById('compareToggle'),
+                cmpBaseLabel: document.getElementById('cmpBaseLabel'),
+                cmpA: document.getElementById('cmpA'),
+                cmpB: document.getElementById('cmpB'),
+                compareResult: document.getElementById('compareResult'),
+                cmpBtn: document.getElementById('cmpBtn')
+            };
+
+            function cssW() {
+                return Math.round(canvas.parentElement.clientWidth);
             }
-            for (let i = 0; i <= 16; i += 2) {
-                const py = top + plotH - ((i - yMin) / (yMax - yMin)) * plotH;
-                ctx.beginPath();
-                ctx.moveTo(left, py);
-                ctx.lineTo(left + plotW, py);
-                ctx.stroke();
+
+            function cssH() {
+                return Math.max(260, Math.round(cssW() * 0.62));
             }
-            
-            // Axes
-            ctx.strokeStyle = '#9CA3AF';
-            ctx.lineWidth = 2;
-            const zeroY = top + plotH - ((0 - yMin) / (yMax - yMin)) * plotH;
-            ctx.beginPath();
-            ctx.moveTo(left, zeroY);
-            ctx.lineTo(left + plotW, zeroY);
-            ctx.stroke();
-            
-            // Horizontal asymptote y=0 (green dashed)
-            ctx.strokeStyle = '#10B981';
-            ctx.setLineDash([6, 4]);
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(left, zeroY);
-            ctx.lineTo(left + plotW, zeroY);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            
-            // Labels
-            ctx.fillStyle = '#9CA3AF';
-            ctx.font = '13px sans-serif';
-            ctx.fillText('y = aˣ', left + plotW - 60, top + 20);
-            ctx.fillText('x', left + plotW + 5, zeroY - 8);
-            ctx.fillText('y', left - 20, top + 15);
-            
-            // Grid labels on x axis
-            for (let i = -3; i <= 3; i++) {
-                const px = left + ((i - xMin) / (xMax - xMin)) * plotW;
-                ctx.fillText(String(i), px - 5, zeroY + 20);
+
+            function dpr() {
+                return window.devicePixelRatio || 1;
             }
-            
-            // Plot main function
-            drawCurve(base, '#FBBF24');
-            
-            // Plot comparison function
-            if (compareBase) {
-                drawCurve(compareBase, '#22D3EE');
+
+            function resizeCanvas() {
+                var w = cssW();
+                var h = cssH();
+                canvas.width = Math.round(w * dpr());
+                canvas.height = Math.round(h * dpr());
+                canvas.style.height = h + 'px';
+                ctx.setTransform(dpr(), 0, 0, dpr(), 0, 0);
+                draw();
             }
-            
-            // Plot point
-            const py = Math.pow(base, pointX);
-            if (py <= yMax) {
-                const px = left + ((pointX - xMin) / (xMax - xMin)) * plotW;
-                const pyy = top + plotH - ((py - yMin) / (yMax - yMin)) * plotH;
-                ctx.fillStyle = '#EF4444';
-                ctx.beginPath();
-                ctx.arc(px, pyy, 7, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.strokeStyle = '#EF4444';
+
+            function toPixelX(x) {
+                return ((x - X_MIN) / (X_MAX - X_MIN)) * cssW();
+            }
+
+            function toPixelY(y) {
+                return cssH() - ((y - Y_MIN) / (Y_MAX - Y_MIN)) * cssH();
+            }
+
+            function toWorldX(px) {
+                return X_MIN + (px / cssW()) * (X_MAX - X_MIN);
+            }
+
+            function draw() {
+                var w = cssW();
+                var h = cssH();
+                if (!w || !h) return;
+
+                ctx.clearRect(0, 0, w, h);
+
+                ctx.strokeStyle = '#222633';
+                ctx.lineWidth = 1;
+                for (var i = Math.ceil(X_MIN); i <= X_MAX; i++) {
+                    var px = toPixelX(i);
+                    ctx.beginPath();
+                    ctx.moveTo(px, 0);
+                    ctx.lineTo(px, h);
+                    ctx.stroke();
+                }
+                for (var y = 0; y <= Y_MAX; y++) {
+                    var py = toPixelY(y);
+                    ctx.beginPath();
+                    ctx.moveTo(0, py);
+                    ctx.lineTo(w, py);
+                    ctx.stroke();
+                }
+
+                var axY = toPixelY(0);
+                ctx.strokeStyle = '#6B7280';
                 ctx.lineWidth = 2;
-                ctx.setLineDash([4, 3]);
                 ctx.beginPath();
-                ctx.moveTo(px, zeroY);
-                ctx.lineTo(px, pyy);
+                ctx.moveTo(0, axY);
+                ctx.lineTo(w, axY);
+                ctx.stroke();
+                var axX = toPixelX(0);
+                ctx.beginPath();
+                ctx.moveTo(axX, 0);
+                ctx.lineTo(axX, h);
+                ctx.stroke();
+
+                ctx.strokeStyle = '#10B981';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 5]);
+                ctx.beginPath();
+                ctx.moveTo(0, toPixelY(0.02));
+                ctx.lineTo(w, toPixelY(0.02));
                 ctx.stroke();
                 ctx.setLineDash([]);
+
+                ctx.fillStyle = '#9CA3AF';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                for (var x = Math.ceil(X_MIN); x <= X_MAX; x++) {
+                    if (x === 0) continue;
+                    ctx.fillText(String(x), toPixelX(x), axY + 18);
+                }
+                ctx.textAlign = 'right';
+                for (var ty = 1; ty <= 16; ty += 4) {
+                    ctx.fillText(String(ty), axX - 6, toPixelY(ty) + 4);
+                }
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#E5E7EB';
+                ctx.fillText('Ось x', w - 40, axY - 8);
+
+                if (showCompare) {
+                    drawCurve(1 / base, '#22D3EE');
+                }
+                drawCurve(base, '#FBBF24');
+
+                var yp = Math.pow(base, pointX);
+                var cpx = toPixelX(pointX);
+                var cpy = toPixelY(yp);
+                ctx.fillStyle = '#EF4444';
+                ctx.beginPath();
+                ctx.arc(cpx, cpy, 7, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#EF4444';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 3]);
+                ctx.beginPath();
+                ctx.moveTo(cpx, cpy);
+                ctx.lineTo(cpx, toPixelY(0));
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(cpx, cpy);
+                ctx.lineTo(toPixelX(0), cpy);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
                 ctx.fillStyle = '#F87171';
-                ctx.font = 'bold 14px monospace';
-                ctx.fillText(`(${pointX}; ${py.toFixed(2)})`, px + 10, pyy - 10);
+                ctx.font = 'bold 13px monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText(
+                    '(' + fmt(pointX) + '; ' + fmt(yp) + ')',
+                    Math.min(cpx + 10, w - 150),
+                    Math.max(cpy - 12, 16)
+                );
             }
-        }
-        
-        function drawCurve(a, color) {
-            const { left, top, plotW, plotH } = getPlotCoords();
-            const xMin = -4, xMax = 4;
-            const yMin = 0, yMax = 16;
-            
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            let started = false;
-            for (let i = 0; i <= 400; i++) {
-                const cx = xMin + (i / 400) * (xMax - xMin);
-                const cy = Math.pow(a, cx);
-                if (cy > yMax) continue;
-                const px = left + ((cx - xMin) / (xMax - xMin)) * plotW;
-                const py = top + plotH - ((cy - yMin) / (yMax - yMin)) * plotH;
-                if (!started) {
-                    ctx.moveTo(px, py);
-                    started = true;
-                } else {
-                    ctx.lineTo(px, py);
+
+            function drawCurve(a, color) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                var started = false;
+                var steps = 300;
+                for (var i = 0; i <= steps; i++) {
+                    var cx = X_MIN + (i / steps) * (X_MAX - X_MIN);
+                    var cy = Math.pow(a, cx);
+                    if (!isFinite(cy)) continue;
+                    if (cy > Y_MAX) {
+                        if (started) break;
+                        continue;
+                    }
+                    if (cy < Y_MIN) continue;
+                    var px = toPixelX(cx);
+                    var py = toPixelY(cy);
+                    if (!started) {
+                        ctx.moveTo(px, py);
+                        started = true;
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                }
+                ctx.stroke();
+            }
+
+            function fmt(v) {
+                return String(Math.round(v * 1000) / 1000);
+            }
+
+            function clampVal(v, lo, hi) {
+                return Math.min(hi, Math.max(lo, v));
+            }
+
+            function highlightBase(a) {
+                var btns = document.querySelectorAll('[data-base]');
+                for (var i = 0; i < btns.length; i++) {
+                    btns[i].classList.toggle('active', Math.abs(parseFloat(btns[i].dataset.base) - a) < 0.01);
                 }
             }
-            ctx.stroke();
-        }
-        
-        function updateValues() {
-            const y = Math.pow(base, pointX);
-            document.getElementById('yValue').textContent = y.toFixed(4);
-            document.getElementById('invYValue').textContent = (1 / y).toFixed(4);
-            document.getElementById('xDisplay').textContent = 'x = ' + pointX;
-            
-            const info = document.getElementById('monotonicInfo');
-            if (base > 1) {
-                info.innerHTML = '<h3>a > 1 — функция возрастает 📈</h3><p>Больше аргумент — больше значение.<br>При решении неравенств знак сохраняется.</p>';
-            } else {
-                info.innerHTML = '<h3>0 < a < 1 — функция убывает 📉</h3><p>Больше аргумент — меньше значение.<br>При решении неравенств знак МЕНЯЕТСЯ на противоположный.</p>';
+
+            function setBase(a) {
+                base = clampVal(a, 0.2, 5);
+                els.baseSlider.value = Math.round(base * 100);
+                els.baseInput.value = fmt(base);
+                highlightBase(base);
+                sync();
+                updateCompareExercise();
             }
-        }
-        
-        function setBase(val) {
-            base = val;
-            document.getElementById('baseSlider').value = Math.round(val * 100);
-            document.getElementById('baseInput').value = val;
-            const btns = document.querySelectorAll('.controls .btn');
-            btns.forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            compareBase = null;
-            updateValues();
-            drawGraph();
-            updateCompareQuestion();
-        }
-        
-        function updateBaseFromSlider(val) {
-            const b = parseFloat(val) / 100;
-            base = b < 1 ? b : b; // allow 0.01 ... 4
-            base = Math.max(0.1, base);
-            document.getElementById('baseInput').value = Math.round(base * 100) / 100;
-            compareBase = null;
-            updateValues();
-            drawGraph();
-            updateCompareQuestion();
-        }
-        
-        function updateBaseFromInput(val) {
-            let b = parseFloat(val);
-            if (b <= 0) b = 0.1;
-            base = b;
-            document.getElementById('baseSlider').value = Math.round(b * 100);
-            compareBase = null;
-            updateValues();
-            drawGraph();
-            updateCompareQuestion();
-        }
-        
-        function updateX(val) {
-            pointX = parseFloat(val) / 10;
-            document.getElementById('xInput').value = pointX;
-            updateValues();
-            drawGraph();
-        }
-        
-        function updateXInput(val) {
-            pointX = parseFloat(val);
-            document.getElementById('xSlider').value = Math.round(pointX * 10);
-            updateValues();
-            drawGraph();
-        }
-        
-        function compareBoth() {
-            if (base === 0.5) compareBase = 2;
-            else if (base === 2) compareBase = 0.5;
-            else if (base === 3) compareBase = 1.5;
-            else if (base === 1.5) compareBase = 3;
-            else if (base === 4) compareBase = 0.25;
-            else compareBase = base > 1 ? 1 / base : base / (1/base);
-            compareBase = base > 1 ? Math.round((1/base) * 100) / 100 : 1/base;
-            if (compareBase === base) compareBase = base > 1 ? 0.5 : 2;
-            drawGraph();
-        }
-        
-        function updateCompareQuestion() {
-            document.getElementById('compareQuestion').textContent = `Сравните a^m и a^n при a = ${base}:`;
-            document.getElementById('compareResult').textContent = '';
-        }
-        
-        function compareExponents() {
-            const m = parseFloat(document.getElementById('cmpA').value);
-            const n = parseFloat(document.getElementById('cmpB').value);
-            const result = document.getElementById('compareResult');
-            
-            let sign;
-            if (m === n) sign = '=';
-            else if (base > 1) sign = m > n ? '>' : '<';
-            else sign = m > n ? '<' : '>';
-            
-            result.innerHTML = `<strong style="color:#22D3EE;">${base}^${m} ${sign} ${base}^${n}</strong> — так как ${base > 1 ? 'a > 1 (возрастает)' : 'a < 1 (убывает)'}`;
-        }
-        
-        function init() {
-            updateCompareQuestion();
-            updateValues();
-            drawGraph();
-        }
-        
-        init();
+
+            function setPointX(x) {
+                pointX = clampVal(x, X_MIN, X_MAX);
+                els.xSlider.value = Math.round(pointX * 10);
+                els.xInput.value = fmt(pointX);
+                sync();
+            }
+
+            function sync() {
+                var y = Math.pow(base, pointX);
+
+                els.xValue.textContent = fmt(pointX);
+                els.yValue.textContent = fmt(y);
+                els.invYValue.textContent = fmt(1 / y);
+
+                if (base > 1) {
+                    els.monotonicInfo.innerHTML =
+                        '<h3>a &gt; 1 — функция возрастает 📈</h3>' +
+                        '<p>Больше аргумент — больше значение.<br>При решении неравенств знак сохраняется.</p>';
+                } else if (base === 1) {
+                    els.monotonicInfo.innerHTML =
+                        '<h3>a = 1 — функция постоянна</h3><p>y = 1 при любом x.</p>';
+                } else {
+                    els.monotonicInfo.innerHTML =
+                        '<h3>0 &lt; a &lt; 1 — функция убывает 📉</h3>' +
+                        '<p>Больше аргумент — меньше значение.<br>При решении неравенств знак МЕНЯЕТСЯ на противоположный.</p>';
+                }
+
+                draw();
+            }
+
+            function updateCompareExercise() {
+                els.cmpBaseLabel.textContent = fmt(base);
+                els.compareResult.textContent = '';
+            }
+
+            function compareExponents() {
+                var m = parseFloat(els.cmpA.value);
+                var n = parseFloat(els.cmpB.value);
+                if (isNaN(m) || isNaN(n)) {
+                    els.compareResult.textContent = 'Введите оба показателя.';
+                    return;
+                }
+                var sign;
+                if (m === n) sign = '=';
+                else if (base > 1) sign = m > n ? '>' : '<';
+                else sign = m > n ? '<' : '>';
+                var reason = base > 1
+                    ? 'a &gt; 1, функция возрастает'
+                    : (base < 1 ? '0 &lt; a &lt; 1, функция убывает' : 'a = 1, значения равны');
+                els.compareResult.innerHTML =
+                    '<span style="color:#FBBF24;">' + fmt(base) + '^' + fmt(m) + ' ' + sign + ' ' +
+                    fmt(base) + '^' + fmt(n) + '</span> — ' + reason;
+            }
+
+            var baseBtns = document.querySelectorAll('[data-base]');
+            for (var b = 0; b < baseBtns.length; b++) {
+                baseBtns[b].addEventListener('click', (function (btn) {
+                    return function () { setBase(parseFloat(btn.dataset.base)); };
+                })(baseBtns[b]));
+            }
+
+            els.baseSlider.addEventListener('input', function () {
+                var a = parseFloat(els.baseSlider.value) / 100;
+                base = clampVal(a, 0.2, 5);
+                els.baseInput.value = fmt(base);
+                highlightBase(base);
+                sync();
+                updateCompareExercise();
+            });
+
+            els.baseInput.addEventListener('change', function () {
+                var a = parseFloat(els.baseInput.value);
+                if (!isNaN(a)) setBase(a);
+            });
+
+            els.xSlider.addEventListener('input', function () {
+                var x = parseFloat(els.xSlider.value) / 10;
+                pointX = clampVal(x, X_MIN, X_MAX);
+                els.xInput.value = fmt(pointX);
+                sync();
+            });
+
+            els.xInput.addEventListener('change', function () {
+                var x = parseFloat(els.xInput.value);
+                if (!isNaN(x)) setPointX(x);
+            });
+
+            els.compareToggle.addEventListener('change', function () {
+                showCompare = els.compareToggle.checked;
+                draw();
+            });
+
+            els.cmpBtn.addEventListener('click', compareExponents);
+            els.cmpA.addEventListener('keydown', function (e) { if (e.key === 'Enter') compareExponents(); });
+            els.cmpB.addEventListener('keydown', function (e) { if (e.key === 'Enter') compareExponents(); });
+
+            canvas.addEventListener('pointerdown', function (e) {
+                dragging = true;
+                canvas.setPointerCapture(e.pointerId);
+                movePointToEvent(e);
+            });
+
+            canvas.addEventListener('pointermove', function (e) {
+                if (dragging) movePointToEvent(e);
+            });
+
+            canvas.addEventListener('pointerup', function () { dragging = false; });
+            canvas.addEventListener('pointercancel', function () { dragging = false; });
+
+            function movePointToEvent(e) {
+                var rect = canvas.getBoundingClientRect();
+                setPointX(toWorldX(e.clientX - rect.left));
+            }
+
+            function init() {
+                setBase(2);
+                setPointX(1);
+                resizeCanvas();
+                updateCompareExercise();
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            if (window.ResizeObserver) {
+                new ResizeObserver(resizeCanvas).observe(canvas.parentElement);
+            }
+
+            init();
+        })();
     </script>
 </body>
 </html>
