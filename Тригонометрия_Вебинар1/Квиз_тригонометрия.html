@@ -325,20 +325,65 @@
         }
         
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 0 6px;
+            }
+            
             h1 {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+            }
+            
+            .score-panel {
+                padding: 12px 8px;
+                margin-bottom: 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .score-value {
+                font-size: 1.4rem;
             }
             
             .quiz-card {
-                padding: 25px;
+                padding: 18px 14px;
             }
             
             .question-text {
-                font-size: 1.2rem;
+                font-size: 1.05rem;
+                margin-bottom: 20px;
+            }
+            
+            .option {
+                padding: 14px 12px;
+            }
+            
+            .option-text {
+                font-size: 0.95rem;
+            }
+            
+            .option-letter {
+                width: 32px;
+                height: 32px;
+                font-size: 0.95rem;
             }
             
             .results-stats {
                 grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .results-card {
+                padding: 25px 15px;
+            }
+            
+            .btn {
+                padding: 14px 20px;
+                font-size: 1rem;
             }
         }
     </style>

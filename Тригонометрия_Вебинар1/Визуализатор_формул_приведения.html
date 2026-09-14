@@ -281,8 +281,64 @@
         }
         
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 20px;
+            }
+            
+            .panel {
+                padding: 18px 14px;
+            }
+            
+            .panel h2 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+            
             .angle-buttons {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            
+            .angle-btn {
+                padding: 10px 6px;
+                font-size: 0.85rem;
+            }
+            
+            .result-expression {
+                font-size: 1.2rem;
+            }
+            
+            .result-answer {
+                font-size: 1.6rem;
+            }
+            
+            .step-content {
+                margin-left: 0;
+                font-size: 0.9rem;
+            }
+            
+            .step-formula {
+                font-size: 0.9rem;
+                overflow-x: auto;
+            }
+            
+            .canvas-container canvas {
+                max-width: 100%;
+                height: auto;
+            }
+            
+            .input-row {
+                flex-direction: column;
+            }
+            
+            select,
+            input[type="number"] {
+                width: 100%;
             }
         }
     </style>

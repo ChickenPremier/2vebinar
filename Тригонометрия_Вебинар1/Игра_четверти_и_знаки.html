@@ -374,12 +374,119 @@
         }
         
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+            }
+            
+            .subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 15px;
+            }
+            
+            .game-panel {
+                padding: 14px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .score-display {
+                justify-content: space-between;
+                gap: 10px;
+            }
+            
+            .score-value {
+                font-size: 1.3rem;
+            }
+            
+            .timer {
+                font-size: 1.5rem;
+                text-align: center;
+            }
+            
+            .main-area {
+                gap: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .angles-panel,
+            .quadrants-panel {
+                padding: 18px 14px;
+            }
+            
+            .angles-panel h2,
+            .quadrants-panel h2 {
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+            }
+            
             .angles-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .angle-card {
+                padding: 12px 6px;
+            }
+            
+            .angle-value {
+                font-size: 1.3rem;
             }
             
             .quadrants-grid {
                 grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .quadrant-drop {
+                min-height: 120px;
+                padding: 14px;
+            }
+            
+            .hint-panel {
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+            
+            .results-content {
+                padding: 30px 15px;
+                margin: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .angles-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+            
+            .angle-card {
+                padding: 10px 4px;
+            }
+            
+            .angle-value {
+                font-size: 1.05rem;
+            }
+            
+            .score-display {
+                gap: 5px;
             }
         }
     </style>
