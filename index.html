@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вебинары по математике — тренировка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .header h1 {
+            color: #FBBF24;
+            font-size: 2.6rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .header p {
+            color: #9CA3AF;
+            font-size: 1.15rem;
+        }
+        
+        .webinars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .webinar-card {
+            background: #171A23;
+            border-radius: 12px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .webinar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .webinar-card:hover {
+            transform: translateY(-5px);
+            border-color: #FBBF24;
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.2);
+        }
+        
+        .webinar-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .card-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+        
+        .card-title {
+            color: #FBBF24;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .card-description {
+            color: #9CA3AF;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        
+        .card-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #22D3EE;
+            font-size: 0.9rem;
+        }
+        
+        .card-btn {
+            display: block;
+            text-align: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+        }
+        
+        .card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .card-btn.upcoming {
+            background: #2A2E3A;
+            color: #9CA3AF;
+            cursor: default;
+        }
+        
+        .card-btn.upcoming:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .badge-soon {
+            display: inline-block;
+            background: #2A2E3A;
+            color: #9CA3AF;
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 25px;
+            border-top: 2px solid #2A2E3A;
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 35px 14px 25px;
+            }
+            
+            .header {
+                margin-bottom: 35px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .header p {
+                font-size: 0.95rem;
+            }
+            
+            .webinars-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .webinar-card {
+                padding: 22px 18px;
+            }
+            
+            .card-title {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Вебинары по математике</h1>
+            <p>Интерактивные тренажеры для подготовки к ЕГЭ</p>
+        </div>
+        
+        <div class="webinars-grid">
+            <div class="webinar-card">
+                <div class="card-icon">📐</div>
+                <div class="card-number">Вебинар 1</div>
+                <div class="card-title">Тригонометрия: Единичная окружность</div>
+                <div class="card-description">
+                    Полный интерактивный комплекс: глоссарий, тренажер окружности, визуализатор формул приведения, игра на знаки функций и квиз с проверкой знаний.
+                </div>
+                <div class="card-meta">
+                    <div class="meta-item"><span>⏱</span><span>~90 мин</span></div>
+                    <div class="meta-item"><span>📊</span><span>10 класс</span></div>
+                    <div class="meta-item"><span>🎯</span><span>6 модулей</span></div>
+                </div>
+                <a href="Тригонометрия_Вебинар1/index.html" class="card-btn">Перейти к тренажеру →</a>
+            </div>
+            
+            <div class="webinar-card">
+                <div class="card-icon">➗</div>
+                <div class="card-number">Вебинар 2 <span class="badge-soon">скоро</span></div>
+                <div class="card-title">Показательные уравнения и неравенства</div>
+                <div class="card-description">
+                    Интерактивные материалы для повторения показательных уравнений и неравенств, степенной функции и подготовки к заданиям ЕГЭ.
+                </div>
+                <div class="card-meta">
+                    <div class="meta-item"><span>⏱</span><span>~90 мин</span></div>
+                    <div class="meta-item"><span>📊</span><span>11 класс</span></div>
+                    <div class="meta-item"><span>🎯</span><span>6 модулей</span></div>
+                </div>
+                <div class="card-btn upcoming">В разработке</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Подготовка к ЕГЭ по математике (профильный уровень)</p>
+        </div>
+    </div>
+</body>
+</html>

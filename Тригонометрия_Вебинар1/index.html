@@ -101,6 +101,24 @@
             text-decoration: none;
         }
         
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #9CA3AF;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 14px;
+            border: 1px solid #2A2E3A;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .home-link:hover {
+            color: #FBBF24;
+            border-color: #FBBF24;
+        }
+        
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -304,6 +322,10 @@
                 display: flex;
             }
             
+            .home-link {
+                display: none;
+            }
+            
             .nav-tabs {
                 display: none;
                 width: 100%;
@@ -408,7 +430,10 @@
     <div class="header">
         <div class="header-content">
             <div class="logo">📚 Тригонометрия</div>
-            <button class="burger-btn" id="burgerBtn" onclick="toggleMenu(event)">☰</button>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <a href="../index.html" class="home-link">← Все вебинары</a>
+                <button class="burger-btn" id="burgerBtn" onclick="toggleMenu(event)">☰</button>
+            </div>
             <div class="nav-tabs" id="navTabs">
                 <button class="tab-btn active" onclick="showTab('home')">Главная</button>
                 <button class="tab-btn" onclick="showTab('glossary')">Глоссарий</button>
