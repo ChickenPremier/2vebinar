@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Показательная функция y = aˣ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .canvas-container {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        canvas {
+            border: 2px solid #FBBF24;
+            border-radius: 8px;
+            background: #0F1117;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .info-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+        }
+        
+        .param-block {
+            margin-bottom: 25px;
+        }
+        
+        .param-label {
+            display: block;
+            color: #FBBF24;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .input-row.column {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #2A2E3A;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FBBF24;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FBBF24;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+        
+        input[type="number"] {
+            width: 110px;
+            padding: 10px;
+            background: #2A2E3A;
+            border: 2px solid #FBBF24;
+            border-radius: 6px;
+            color: #E5E7EB;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .values-display {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #FBBF24;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .value-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #2A2E3A;
+        }
+        
+        .value-item:last-child {
+            border-bottom: none;
+        }
+        
+        .value-label {
+            color: #9CA3AF;
+            font-size: 1.1rem;
+        }
+        
+        .value-number {
+            color: #FBBF24;
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .monotonic-info {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .monotonic-info h3 {
+            color: #22D3EE;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .monotonic-info p {
+            color: #D1D5DB;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .btn.active {
+            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+        }
+        
+        .compare-panel {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .compare-panel h3 {
+            color: #22D3EE;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .compare-panel p {
+            color: #D1D5DB;
+            line-height: 1.8;
+        }
+        
+        .legend {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #2A2E3A;
+            margin-top: 30px;
+        }
+        
+        .legend h3 {
+            color: #FBBF24;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .legend-text {
+            color: #D1D5DB;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 1000px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 20px;
+            }
+            
+            .canvas-container,
+            .info-panel {
+                padding: 16px;
+            }
+            
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .legend-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            input[type="number"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📈 Тренажер: Показательная функция y = aˣ</h1>
+        
+        <div class="main-grid">
+            <div class="canvas-container">
+                <canvas id="graphCanvas" width="600" height="400"></canvas>
+                <div class="controls">
+                    <button class="btn active" onclick="setBase(0.5)">a = 0.5</button>
+                    <button class="btn" onclick="setBase(0.8)">a = 0.8</button>
+                    <button class="btn" onclick="setBase(1.5)">a = 1.5</button>
+                    <button class="btn" onclick="setBase(2)">a = 2</button>
+                    <button class="btn" onclick="setBase(3)">a = 3</button>
+                    <button class="btn" onclick="setBase(0.3)">a = 0.3</button>
+                    <button class="btn" onclick="setBase(4)">a = 4</button>
+                    <button class="btn" onclick="compareBoth()">Сравнить</button>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <div class="param-block">
+                    <label class="param-label">Основание a:</label>
+                    <div class="input-row">
+                        <input type="range" id="baseSlider" min="1" max="400" value="200" oninput="updateBaseFromSlider(this.value)">
+                        <input type="number" id="baseInput" min="0.1" max="10" step="0.1" value="2" oninput="updateBaseFromInput(this.value)">
+                    </div>
+                </div>
+                
+                <div class="param-block">
+                    <label class="param-label">Точка x (для вычисления):</label>
+                    <div class="input-row">
+                        <input type="range" id="xSlider" min="-30" max="30" value="10" oninput="updateX(this.value)">
+                        <input type="number" id="xInput" min="-10" max="10" step="0.5" value="1" oninput="updateXInput(this.value)">
+                    </div>
+                </div>
+                
+                <div class="values-display">
+                    <div class="value-item">
+                        <span class="value-label">y = aˣ</span>
+                        <span class="value-number" id="yValue">2.000</span>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-label">a⁻ˣ</span>
+                        <span class="value-number" id="invYValue">0.500</span>
+                    </div>
+                    <div class="value-item">
+                        <span class="value-label">Показатель взят</span>
+                        <span class="value-number" id="xDisplay">x = 1.0</span>
+                    </div>
+                </div>
+                
+                <div class="monotonic-info" id="monotonicInfo">
+                    <h3>a &gt; 1 — функция возрастает 📈</h3>
+                    <p>Больше аргумент — больше значение.<br>При решении неравенств знак сохраняется.</p>
+                </div>
+                
+                <div class="compare-panel">
+                    <h3>📌 Сравнение степеней без калькулятора</h3>
+                    <p>Введите два показателя: <span id="compareQuestion"></span></p>
+                    <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+                        <input type="number" id="cmpA" style="width:80px;" value="2">
+                        <input type="number" id="cmpB" style="width:80px;" value="5">
+                        <button class="btn" style="padding:10px 20px;" onclick="compareExponents()">Сравнить</button>
+                    </div>
+                    <p style="margin-top:10px;" id="compareResult"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h3>Обозначения:</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FBBF24;"></div>
+                    <span class="legend-text">График y = aˣ при выбранном a</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #22D3EE;"></div>
+                    <span class="legend-text">Вторая кривая (для сравнения)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #10B981;"></div>
+                    <span class="legend-text">Горизонтальная асимптота y = 0</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #EF4444;"></div>
+                    <span class="legend-text">Точка (x; aˣ)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+        let base = 2;
+        let pointX = 1;
+        let compareBase = null;
+        
+        const left = 40, right = 40, top = 30, bottom = 40;
+        const plotW = canvas.width - left - right;
+        const plotH = canvas.height - top - bottom;
+        
+        function getPlotCoords() {
+            return { left, right, top, bottom, plotW, plotH };
+        }
+        
+        function drawGraph() {
+            const { left, right, top, plotW, plotH } = getPlotCoords();
+            const centerX = left + plotW / 2;
+            const centerY = top + plotH / 2;
+            
+            // Scale: x from -4 to 4, y from 0 to 16
+            const xMin = -4, xMax = 4;
+            const yMin = 0, yMax = 16;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Grid
+            ctx.strokeStyle = '#2A2E3A';
+            ctx.lineWidth = 1;
+            for (let i = -4; i <= 4; i++) {
+                const px = left + ((i - xMin) / (xMax - xMin)) * plotW;
+                ctx.beginPath();
+                ctx.moveTo(px, top);
+                ctx.lineTo(px, top + plotH);
+                ctx.stroke();
+            }
+            for (let i = 0; i <= 16; i += 2) {
+                const py = top + plotH - ((i - yMin) / (yMax - yMin)) * plotH;
+                ctx.beginPath();
+                ctx.moveTo(left, py);
+                ctx.lineTo(left + plotW, py);
+                ctx.stroke();
+            }
+            
+            // Axes
+            ctx.strokeStyle = '#9CA3AF';
+            ctx.lineWidth = 2;
+            const zeroY = top + plotH - ((0 - yMin) / (yMax - yMin)) * plotH;
+            ctx.beginPath();
+            ctx.moveTo(left, zeroY);
+            ctx.lineTo(left + plotW, zeroY);
+            ctx.stroke();
+            
+            // Horizontal asymptote y=0 (green dashed)
+            ctx.strokeStyle = '#10B981';
+            ctx.setLineDash([6, 4]);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(left, zeroY);
+            ctx.lineTo(left + plotW, zeroY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Labels
+            ctx.fillStyle = '#9CA3AF';
+            ctx.font = '13px sans-serif';
+            ctx.fillText('y = aˣ', left + plotW - 60, top + 20);
+            ctx.fillText('x', left + plotW + 5, zeroY - 8);
+            ctx.fillText('y', left - 20, top + 15);
+            
+            // Grid labels on x axis
+            for (let i = -3; i <= 3; i++) {
+                const px = left + ((i - xMin) / (xMax - xMin)) * plotW;
+                ctx.fillText(String(i), px - 5, zeroY + 20);
+            }
+            
+            // Plot main function
+            drawCurve(base, '#FBBF24');
+            
+            // Plot comparison function
+            if (compareBase) {
+                drawCurve(compareBase, '#22D3EE');
+            }
+            
+            // Plot point
+            const py = Math.pow(base, pointX);
+            if (py <= yMax) {
+                const px = left + ((pointX - xMin) / (xMax - xMin)) * plotW;
+                const pyy = top + plotH - ((py - yMin) / (yMax - yMin)) * plotH;
+                ctx.fillStyle = '#EF4444';
+                ctx.beginPath();
+                ctx.arc(px, pyy, 7, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#EF4444';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 3]);
+                ctx.beginPath();
+                ctx.moveTo(px, zeroY);
+                ctx.lineTo(px, pyy);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = '#F87171';
+                ctx.font = 'bold 14px monospace';
+                ctx.fillText(`(${pointX}; ${py.toFixed(2)})`, px + 10, pyy - 10);
+            }
+        }
+        
+        function drawCurve(a, color) {
+            const { left, top, plotW, plotH } = getPlotCoords();
+            const xMin = -4, xMax = 4;
+            const yMin = 0, yMax = 16;
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            let started = false;
+            for (let i = 0; i <= 400; i++) {
+                const cx = xMin + (i / 400) * (xMax - xMin);
+                const cy = Math.pow(a, cx);
+                if (cy > yMax) continue;
+                const px = left + ((cx - xMin) / (xMax - xMin)) * plotW;
+                const py = top + plotH - ((cy - yMin) / (yMax - yMin)) * plotH;
+                if (!started) {
+                    ctx.moveTo(px, py);
+                    started = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.stroke();
+        }
+        
+        function updateValues() {
+            const y = Math.pow(base, pointX);
+            document.getElementById('yValue').textContent = y.toFixed(4);
+            document.getElementById('invYValue').textContent = (1 / y).toFixed(4);
+            document.getElementById('xDisplay').textContent = 'x = ' + pointX;
+            
+            const info = document.getElementById('monotonicInfo');
+            if (base > 1) {
+                info.innerHTML = '<h3>a > 1 — функция возрастает 📈</h3><p>Больше аргумент — больше значение.<br>При решении неравенств знак сохраняется.</p>';
+            } else {
+                info.innerHTML = '<h3>0 < a < 1 — функция убывает 📉</h3><p>Больше аргумент — меньше значение.<br>При решении неравенств знак МЕНЯЕТСЯ на противоположный.</p>';
+            }
+        }
+        
+        function setBase(val) {
+            base = val;
+            document.getElementById('baseSlider').value = Math.round(val * 100);
+            document.getElementById('baseInput').value = val;
+            const btns = document.querySelectorAll('.controls .btn');
+            btns.forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            compareBase = null;
+            updateValues();
+            drawGraph();
+            updateCompareQuestion();
+        }
+        
+        function updateBaseFromSlider(val) {
+            const b = parseFloat(val) / 100;
+            base = b < 1 ? b : b; // allow 0.01 ... 4
+            base = Math.max(0.1, base);
+            document.getElementById('baseInput').value = Math.round(base * 100) / 100;
+            compareBase = null;
+            updateValues();
+            drawGraph();
+            updateCompareQuestion();
+        }
+        
+        function updateBaseFromInput(val) {
+            let b = parseFloat(val);
+            if (b <= 0) b = 0.1;
+            base = b;
+            document.getElementById('baseSlider').value = Math.round(b * 100);
+            compareBase = null;
+            updateValues();
+            drawGraph();
+            updateCompareQuestion();
+        }
+        
+        function updateX(val) {
+            pointX = parseFloat(val) / 10;
+            document.getElementById('xInput').value = pointX;
+            updateValues();
+            drawGraph();
+        }
+        
+        function updateXInput(val) {
+            pointX = parseFloat(val);
+            document.getElementById('xSlider').value = Math.round(pointX * 10);
+            updateValues();
+            drawGraph();
+        }
+        
+        function compareBoth() {
+            if (base === 0.5) compareBase = 2;
+            else if (base === 2) compareBase = 0.5;
+            else if (base === 3) compareBase = 1.5;
+            else if (base === 1.5) compareBase = 3;
+            else if (base === 4) compareBase = 0.25;
+            else compareBase = base > 1 ? 1 / base : base / (1/base);
+            compareBase = base > 1 ? Math.round((1/base) * 100) / 100 : 1/base;
+            if (compareBase === base) compareBase = base > 1 ? 0.5 : 2;
+            drawGraph();
+        }
+        
+        function updateCompareQuestion() {
+            document.getElementById('compareQuestion').textContent = `Сравните a^m и a^n при a = ${base}:`;
+            document.getElementById('compareResult').textContent = '';
+        }
+        
+        function compareExponents() {
+            const m = parseFloat(document.getElementById('cmpA').value);
+            const n = parseFloat(document.getElementById('cmpB').value);
+            const result = document.getElementById('compareResult');
+            
+            let sign;
+            if (m === n) sign = '=';
+            else if (base > 1) sign = m > n ? '>' : '<';
+            else sign = m > n ? '<' : '>';
+            
+            result.innerHTML = `<strong style="color:#22D3EE;">${base}^${m} ${sign} ${base}^${n}</strong> — так как ${base > 1 ? 'a > 1 (возрастает)' : 'a < 1 (убывает)'}`;
+        }
+        
+        function init() {
+            updateCompareQuestion();
+            updateValues();
+            drawGraph();
+        }
+        
+        init();
+    </script>
+</body>
+</html>

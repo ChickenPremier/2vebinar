@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра: Выбери метод решения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+        }
+        
+        .game-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 25px;
+            border: 2px solid #2A2E3A;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .score-display {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            color: #9CA3AF;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        
+        .score-value {
+            color: #FBBF24;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        
+        .timer {
+            font-size: 1.6rem;
+            color: #22D3EE;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .main-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .equations-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #2A2E3A;
+        }
+        
+        .equations-panel h2,
+        .methods-panel h2 {
+            color: #FBBF24;
+            margin-bottom: 18px;
+            font-size: 1.4rem;
+        }
+        
+        .equations-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .equation-card {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            padding: 16px 18px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s;
+            user-select: none;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #FBBF24;
+        }
+        
+        .equation-card:hover {
+            transform: scale(1.03);
+            border-color: #FBBF24;
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .equation-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+            transform: scale(1.05) rotate(2deg);
+        }
+        
+        .methods-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #2A2E3A;
+        }
+        
+        .methods-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .method-drop {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 3px dashed #2A2E3A;
+            border-radius: 10px;
+            padding: 18px;
+            min-height: 100px;
+            transition: all 0.3s;
+        }
+        
+        .method-drop.drag-over {
+            border-color: #FBBF24;
+            background: linear-gradient(135deg, #2A2418 0%, #352D20 100%);
+            transform: scale(1.01);
+        }
+        
+        .method-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .method-title {
+            color: #22D3EE;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        
+        .method-desc {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        .dropped-equations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .dropped-equation {
+            background: #2A2E3A;
+            border: 2px solid #FBBF24;
+            border-radius: 6px;
+            padding: 8px 14px;
+            color: #FBBF24;
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .dropped-equation:hover {
+            transform: scale(1.05);
+            background: #FBBF24;
+            color: #0F1117;
+        }
+        
+        .dropped-equation.correct {
+            background: #10B981;
+            border-color: #10B981;
+            color: #fff;
+            animation: correctPulse 0.5s;
+        }
+        
+        .dropped-equation.incorrect {
+            background: #EF4444;
+            border-color: #EF4444;
+            color: #fff;
+            animation: incorrectShake 0.5s;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+        
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+        }
+        
+        .results-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 17, 23, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .results-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+        
+        .results-content {
+            background: #171A23;
+            border-radius: 15px;
+            padding: 40px;
+            border: 3px solid #FBBF24;
+            max-width: 550px;
+            text-align: center;
+        }
+        
+        .results-icon {
+            font-size: 4.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .results-title {
+            color: #FBBF24;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            padding: 18px;
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value.correct { color: #10B981; }
+        .stat-value.incorrect { color: #EF4444; }
+        .stat-value.time { color: #22D3EE; }
+        .stat-value.score { color: #FBBF24; }
+        
+        .stat-label {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hint-panel {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 18px;
+        }
+        
+        .hint-title {
+            color: #22D3EE;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .hint-text {
+            color: #D1D5DB;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 1000px) {
+            .main-area {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 15px;
+            }
+            
+            .game-panel {
+                padding: 14px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            
+            .score-display {
+                justify-content: space-between;
+                gap: 10px;
+            }
+            
+            .equations-panel,
+            .methods-panel {
+                padding: 18px 14px;
+            }
+            
+            .equation-card {
+                font-size: 1rem;
+                padding: 14px;
+            }
+            
+            .method-drop {
+                min-height: 80px;
+                padding: 14px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                padding: 14px;
+            }
+            
+            .results-content {
+                padding: 25px 15px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Игра: Выбери метод решения</h1>
+        <div class="subtitle">Перетащите уравнение к подходящему методу решения</div>
+        
+        <div class="game-panel">
+            <div class="score-display">
+                <div class="score-item">
+                    <div class="score-label">Правильно</div>
+                    <div class="score-value" id="correctScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Неправильно</div>
+                    <div class="score-value" id="incorrectScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Осталось</div>
+                    <div class="score-value" id="remainingScore">9</div>
+                </div>
+            </div>
+            <div class="timer" id="timer">00:00</div>
+        </div>
+        
+        <div class="main-area">
+            <div class="equations-panel">
+                <h2>Уравнения:</h2>
+                <div class="equations-grid" id="equationsGrid"></div>
+                
+                <div class="hint-panel">
+                    <div class="hint-title">💡 Подсказка</div>
+                    <div class="hint-text">
+                        <strong>Одно основание:</strong> обе части — степень одного числа (2ˣ = 16)<br>
+                        <strong>Метод замены:</strong> есть aˣ и a²ˣ → вводим t = aˣ<br>
+                        <strong>Вынесение множителя:</strong> есть aˣ и aˣ⁺¹ → выносим aˣ
+                    </div>
+                </div>
+            </div>
+            
+            <div class="methods-panel">
+                <h2>Методы решения:</h2>
+                <div class="methods-list">
+                    <div class="method-drop" data-method="1" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="method-header">
+                            <span class="method-title">Приведение к одному основанию</span>
+                            <span class="method-desc">a^(f(x)) = a^(g(x)) → f(x) = g(x)</span>
+                        </div>
+                        <div class="dropped-equations" id="method1"></div>
+                    </div>
+                    
+                    <div class="method-drop" data-method="2" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="method-header">
+                            <span class="method-title">Метод замены переменной</span>
+                            <span class="method-desc">t = aˣ, t &gt; 0 → уравнение относительно t</span>
+                        </div>
+                        <div class="dropped-equations" id="method2"></div>
+                    </div>
+                    
+                    <div class="method-drop" data-method="3" ondrop="drop(event)" ondragover="allowDrop(event)" ondragleave="dragLeave(event)">
+                        <div class="method-header">
+                            <span class="method-title">Вынесение общего множителя</span>
+                            <span class="method-desc">aˣ и aˣ⁺¹ → выносим aˣ за скобку</span>
+                        </div>
+                        <div class="dropped-equations" id="method3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="checkAnswers()">Проверить ответы</button>
+            <button class="btn btn-secondary" onclick="resetGame()">Начать заново</button>
+        </div>
+    </div>
+    
+    <div class="results-modal" id="resultsModal">
+        <div class="results-content">
+            <div class="results-icon" id="resultsIcon">🎉</div>
+            <div class="results-title" id="resultsTitle">Отлично!</div>
+            <div class="results-stats">
+                <div class="stat-box">
+                    <div class="stat-value correct" id="finalCorrect">0</div>
+                    <div class="stat-label">Правильных</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value incorrect" id="finalIncorrect">0</div>
+                    <div class="stat-label">Неправильных</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value time" id="finalTime">00:00</div>
+                    <div class="stat-label">Время</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value score" id="finalScore">0%</div>
+                    <div class="stat-label">Точность</div>
+                </div>
+            </div>
+            <button class="btn" onclick="closeResults()">Закрыть</button>
+        </div>
+    </div>
+    
+    <script>
+        const equations = [
+            { id: '1', text: '2ˣ = 16', method: 1 },
+            { id: '2', text: '3ˣ = 1/27', method: 1 },
+            { id: '3', text: '4ˣ = 64', method: 1 },
+            { id: '4', text: '4ˣ − 5·2ˣ + 4 = 0', method: 2 },
+            { id: '5', text: '9ˣ − 6·3ˣ + 9 = 0', method: 2 },
+            { id: '6', text: '2²ˣ⁺¹ − 2ˣ − 1 = 0', method: 2 },
+            { id: '7', text: '2ˣ⁺¹ + 2ˣ = 24', method: 3 },
+            { id: '8', text: '3ˣ⁺² − 3ˣ = 72', method: 3 },
+            { id: '9', text: '5ˣ⁺¹ + 5ˣ = 30', method: 3 }
+        ];
+        
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let startTime = null;
+        let timerInterval = null;
+        let gameState = {};
+        
+        function initGame() {
+            const grid = document.getElementById('equationsGrid');
+            grid.innerHTML = '';
+            
+            const shuffled = [...equations].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(eq => {
+                const card = document.createElement('div');
+                card.className = 'equation-card';
+                card.draggable = true;
+                card.dataset.eqId = eq.id;
+                card.dataset.correctMethod = eq.method;
+                card.textContent = eq.text;
+                
+                card.addEventListener('dragstart', dragStart);
+                card.addEventListener('dragend', dragEnd);
+                
+                grid.appendChild(card);
+            });
+            
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`method${i}`).innerHTML = '';
+            }
+            
+            correctCount = 0;
+            incorrectCount = 0;
+            gameState = {};
+            updateScores();
+            updateRemaining();
+            
+            if (!startTime) {
+                startTime = Date.now();
+                startTimer();
+            }
+        }
+        
+        function dragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('eqId', e.target.dataset.eqId);
+            e.dataTransfer.setData('correctMethod', e.target.dataset.correctMethod);
+            e.dataTransfer.setData('text', e.target.textContent);
+        }
+        
+        function dragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        
+        function allowDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+        
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+        
+        function drop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const eqId = e.dataTransfer.getData('eqId');
+            const correctMethod = e.dataTransfer.getData('correctMethod');
+            const eqText = e.dataTransfer.getData('text');
+            const method = e.currentTarget.dataset.method;
+            
+            // Remove from grid
+            const cards = document.querySelectorAll('.equation-card');
+            cards.forEach(card => {
+                if (card.dataset.eqId === eqId) {
+                    card.remove();
+                }
+            });
+            
+            // Remove from other method if exists
+            for (let i = 1; i <= 3; i++) {
+                const container = document.getElementById(`method${i}`);
+                const existing = container.querySelector(`[data-eq-id="${eqId}"]`);
+                if (existing) existing.remove();
+            }
+            
+            // Add to this method
+            const container = document.getElementById(`method${method}`);
+            const dropped = document.createElement('div');
+            dropped.className = 'dropped-equation';
+            dropped.dataset.eqId = eqId;
+            dropped.dataset.correctMethod = correctMethod;
+            dropped.textContent = eqText;
+            dropped.onclick = function() {
+                returnToGrid(this, eqText);
+            };
+            container.appendChild(dropped);
+            
+            gameState[eqId] = method;
+            updateRemaining();
+        }
+        
+        function returnToGrid(element, eqText) {
+            const eqId = element.dataset.eqId;
+            const correctMethod = element.dataset.correctMethod;
+            
+            element.remove();
+            delete gameState[eqId];
+            
+            const grid = document.getElementById('equationsGrid');
+            const card = document.createElement('div');
+            card.className = 'equation-card';
+            card.draggable = true;
+            card.dataset.eqId = eqId;
+            card.dataset.correctMethod = correctMethod;
+            card.textContent = eqText;
+            
+            card.addEventListener('dragstart', dragStart);
+            card.addEventListener('dragend', dragEnd);
+            
+            grid.appendChild(card);
+            updateRemaining();
+        }
+        
+        function checkAnswers() {
+            let correct = 0;
+            let incorrect = 0;
+            
+            for (let i = 1; i <= 3; i++) {
+                const container = document.getElementById(`method${i}`);
+                const dropped = container.querySelectorAll('.dropped-equation');
+                
+                dropped.forEach(eq => {
+                    const correctMethod = eq.dataset.correctMethod;
+                    if (correctMethod === i.toString()) {
+                        eq.classList.add('correct');
+                        correct++;
+                    } else {
+                        eq.classList.add('incorrect');
+                        incorrect++;
+                    }
+                });
+            }
+            
+            correctCount = correct;
+            incorrectCount = incorrect;
+            updateScores();
+            
+            setTimeout(() => {
+                showResults();
+            }, 1500);
+        }
+        
+        function updateScores() {
+            document.getElementById('correctScore').textContent = correctCount;
+            document.getElementById('incorrectScore').textContent = incorrectCount;
+        }
+        
+        function updateRemaining() {
+            const remaining = equations.length - Object.keys(gameState).length;
+            document.getElementById('remainingScore').textContent = remaining;
+        }
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('timer').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        function showResults() {
+            clearInterval(timerInterval);
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            const timeStr = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            const accuracy = Math.round((correctCount / equations.length) * 100);
+            
+            document.getElementById('finalCorrect').textContent = correctCount;
+            document.getElementById('finalIncorrect').textContent = incorrectCount;
+            document.getElementById('finalTime').textContent = timeStr;
+            document.getElementById('finalScore').textContent = accuracy + '%';
+            
+            let icon = '🎉';
+            let title = 'Отлично!';
+            
+            if (accuracy === 100) {
+                icon = '🏆';
+                title = 'Идеально!';
+            } else if (accuracy >= 80) {
+                icon = '🌟';
+                title = 'Превосходно!';
+            } else if (accuracy >= 60) {
+                icon = '👍';
+                title = 'Хорошо!';
+            } else {
+                icon = '💪';
+                title = 'Попробуйте еще раз!';
+            }
+            
+            document.getElementById('resultsIcon').textContent = icon;
+            document.getElementById('resultsTitle').textContent = title;
+            document.getElementById('resultsModal').classList.add('show');
+        }
+        
+        function closeResults() {
+            document.getElementById('resultsModal').classList.remove('show');
+        }
+        
+        function resetGame() {
+            if (timerInterval) clearInterval(timerInterval);
+            startTime = null;
+            correctCount = 0;
+            incorrectCount = 0;
+            gameState = {};
+            initGame();
+        }
+        
+        initGame();
+    </script>
+</body>
+</html>

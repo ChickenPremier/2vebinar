@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комплексный тренажер: Показательные уравнения и неравенства</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: #171A23;
+            border-bottom: 2px solid #2A2E3A;
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .logo {
+            color: #FBBF24;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+            white-space: nowrap;
+        }
+        
+        .burger-btn {
+            display: none;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            border: none;
+            border-radius: 6px;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            color: #0F1117;
+            font-weight: 700;
+            transition: all 0.3s;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .burger-btn.burger-open {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #fff;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 22px;
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            color: #D1D5DB;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .tab-btn:hover {
+            border-color: #FBBF24;
+            transform: translateY(-2px);
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border-color: #FBBF24;
+        }
+        
+        .back-link {
+            display: none;
+            text-decoration: none;
+        }
+        
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #9CA3AF;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 14px;
+            border: 1px solid #2A2E3A;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .home-link:hover {
+            color: #FBBF24;
+            border-color: #FBBF24;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .welcome-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .welcome-title {
+            color: #FBBF24;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .welcome-subtitle {
+            color: #9CA3AF;
+            font-size: 1.3rem;
+            margin-bottom: 50px;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .module-card {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #FBBF24 0%, #F59E0B 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: #FBBF24;
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.2);
+        }
+        
+        .module-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .module-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .module-title {
+            color: #FBBF24;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .module-description {
+            color: #9CA3AF;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .module-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #2A2E3A;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #22D3EE;
+            font-size: 0.9rem;
+        }
+        
+        iframe {
+            width: 100%;
+            height: calc(100vh - 130px);
+            border: none;
+            border-radius: 10px;
+            background: #0F1117;
+        }
+        
+        .progress-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 30px;
+            border: 2px solid #2A2E3A;
+            margin-bottom: 30px;
+        }
+        
+        .progress-panel h2 {
+            color: #FBBF24;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .progress-item {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .progress-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FBBF24;
+            margin-bottom: 10px;
+        }
+        
+        .progress-label {
+            color: #9CA3AF;
+            font-size: 0.95rem;
+        }
+        
+        .achievement-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+            color: #0F1117;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 5px;
+        }
+        
+        .tips-section {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .tips-title {
+            color: #22D3EE;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .tips-list {
+            color: #D1D5DB;
+            line-height: 2;
+        }
+        
+        .tips-list li {
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 900px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+            
+            .burger-btn {
+                display: flex;
+            }
+            
+            .home-link {
+                display: none;
+            }
+            
+            .nav-tabs {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .nav-tabs.show {
+                display: flex;
+                animation: fadeIn 0.3s;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                text-align: left;
+                padding: 14px 18px;
+                font-size: 1rem;
+            }
+            
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .welcome-section {
+                padding: 30px 0;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.05rem;
+            }
+            
+            .container {
+                padding: 20px 14px;
+            }
+            
+            .progress-panel {
+                padding: 20px;
+            }
+            
+            .progress-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .progress-item {
+                padding: 14px 8px;
+            }
+            
+            .progress-value {
+                font-size: 1.6rem;
+            }
+            
+            .module-card {
+                padding: 20px;
+            }
+            
+            .module-icon {
+                font-size: 2.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .module-title {
+                font-size: 1.25rem;
+            }
+            
+            .module-stats {
+                gap: 15px;
+            }
+            
+            .tips-section {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.05rem;
+            }
+            
+            .progress-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+            
+            iframe {
+                height: calc(100vh - 140px);
+                border-radius: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">📈 Показательные уравнения</div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <a href="../index.html" class="home-link">← Все вебинары</a>
+                <button class="burger-btn" id="burgerBtn" onclick="toggleMenu(event)">☰</button>
+            </div>
+            <div class="nav-tabs" id="navTabs">
+                <button class="tab-btn active" data-tab="home" onclick="showTab('home')">Главная</button>
+                <button class="tab-btn" data-tab="glossary" onclick="showTab('glossary')">Глоссарий</button>
+                <button class="tab-btn" data-tab="trainer" onclick="showTab('trainer')">Тренажер</button>
+                <button class="tab-btn" data-tab="quiz" onclick="showTab('quiz')">Квиз</button>
+                <button class="tab-btn" data-tab="game" onclick="showTab('game')">Игра</button>
+                <button class="tab-btn" data-tab="solver" onclick="showTab('solver')">Решатель</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Home Section -->
+        <div id="home" class="section active">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Добро пожаловать!</h1>
+                <p class="welcome-subtitle">Интерактивный комплекс по показательным уравнениям и неравенствам</p>
+            </div>
+            
+            <div class="progress-panel">
+                <h2>Ваш прогресс</h2>
+                <div class="progress-grid">
+                    <div class="progress-item">
+                        <div class="progress-value" id="totalTime">0:00</div>
+                        <div class="progress-label">Время обучения</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value" id="modulesCompleted">0/5</div>
+                        <div class="progress-label">Модулей пройдено</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-value" id="achievementsCount">0</div>
+                        <div class="progress-label">Достижений</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <div style="color: #9CA3AF; margin-bottom: 15px; font-weight: 600;">Ваши достижения:</div>
+                    <div id="achievementsList">
+                        <span style="color: #6B7280;">Начните изучение, чтобы получить достижения!</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modules-grid">
+                <div class="module-card" onclick="showTab('glossary')">
+                    <div class="module-icon">📖</div>
+                    <div class="module-title">Глоссарий</div>
+                    <div class="module-description">
+                        Полный справочник: свойства степеней, показательная функция, основные методы решения уравнений и неравенств.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~10 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Теория</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('trainer')">
+                    <div class="module-icon">🎯</div>
+                    <div class="module-title">Интерактивный тренажер</div>
+                    <div class="module-description">
+                        График показательной функции y = aˣ с динамическим изменением основания и точек.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~15 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Практика</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('quiz')">
+                    <div class="module-icon">🎓</div>
+                    <div class="module-title">Квиз</div>
+                    <div class="module-description">
+                        12 вопросов с мгновенной проверкой и подробными объяснениями для закрепления знаний.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~20 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Тестирование</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('game')">
+                    <div class="module-icon">🎮</div>
+                    <div class="module-title">Игра: Методы решения</div>
+                    <div class="module-description">
+                        Drag-and-drop игра: распределите уравнения по подходящим методам решения.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~10 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Игра</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('solver')">
+                    <div class="module-icon">🧮</div>
+                    <div class="module-title">Пошаговый решатель</div>
+                    <div class="module-description">
+                        Введите показательное уравнение или неравенство и получите подробное пошаговое решение.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~15 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Практика</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <div class="tips-title">💡 Рекомендации для эффективного обучения</div>
+                <ul class="tips-list">
+                    <li><strong>Начните с глоссария</strong> — повторите свойства степеней и показательной функции</li>
+                    <li><strong>Изучите график</strong> — тренажер покажет, как основание влияет на поведение функции</li>
+                    <li><strong>Практикуйтесь с решателем</strong> — разберите пошаговые решения типовых уравнений</li>
+                    <li><strong>Играйте в игру</strong> — игровой формат поможет запомнить методы решения</li>
+                    <li><strong>Проверьте знания</strong> — пройдите квиз для закрепления материала</li>
+                    <li><strong>Повторяйте регулярно</strong> — возвращайтесь к материалу для лучшего запоминания</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Glossary Section -->
+        <div id="glossary" class="section">
+            <iframe src="Глоссарий_показательные_уравнения.html"></iframe>
+        </div>
+        
+        <!-- Trainer Section -->
+        <div id="trainer" class="section">
+            <iframe src="Тренажер_показательная_функция.html"></iframe>
+        </div>
+        
+        <!-- Quiz Section -->
+        <div id="quiz" class="section">
+            <iframe src="Квиз_показательные.html"></iframe>
+        </div>
+        
+        <!-- Game Section -->
+        <div id="game" class="section">
+            <iframe src="Игра_методы_решения.html"></iframe>
+        </div>
+        
+        <!-- Solver Section -->
+        <div id="solver" class="section">
+            <iframe src="Решатель_уравнений.html"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        let startTime = Date.now();
+        let visitedModules = new Set();
+        const TOTAL_MODULES = 5;
+        
+        function showTab(tabName) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            if (tabName !== 'home') {
+                visitedModules.add(tabName);
+                updateProgress();
+            }
+            
+            const navTabs = document.getElementById('navTabs');
+            const burgerBtn = document.getElementById('burgerBtn');
+            if (navTabs.classList.contains('show')) {
+                navTabs.classList.remove('show');
+                burgerBtn.classList.remove('burger-open');
+                burgerBtn.textContent = '☰';
+            }
+            
+            window.scrollTo(0, 0);
+        }
+        
+        function toggleMenu(event) {
+            event.stopPropagation();
+            const navTabs = document.getElementById('navTabs');
+            const burgerBtn = document.getElementById('burgerBtn');
+            const isOpen = navTabs.classList.toggle('show');
+            burgerBtn.classList.toggle('burger-open', isOpen);
+            burgerBtn.textContent = isOpen ? '✕' : '☰';
+        }
+        
+        function updateProgress() {
+            document.getElementById('modulesCompleted').textContent = `${visitedModules.size}/${TOTAL_MODULES}`;
+            
+            const achievements = [];
+            
+            if (visitedModules.has('glossary')) {
+                achievements.push('📖 Теоретик');
+            }
+            if (visitedModules.has('trainer')) {
+                achievements.push('🎯 Практик');
+            }
+            if (visitedModules.has('quiz')) {
+                achievements.push('🎓 Знаток');
+            }
+            if (visitedModules.has('game')) {
+                achievements.push('🎮 Игрок');
+            }
+            if (visitedModules.has('solver')) {
+                achievements.push('🧮 Аналитик');
+            }
+            if (visitedModules.size === TOTAL_MODULES) {
+                achievements.push('🏆 Мастер показательных функций');
+            }
+            
+            document.getElementById('achievementsCount').textContent = achievements.length;
+            
+            const achievementsList = document.getElementById('achievementsList');
+            if (achievements.length > 0) {
+                achievementsList.innerHTML = achievements.map(a => 
+                    `<span class="achievement-badge">${a}</span>`
+                ).join('');
+            }
+        }
+        
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('totalTime').textContent = 
+                `${minutes}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+        
+        const savedProgress = localStorage.getItem('expoProgress');
+        if (savedProgress) {
+            try {
+                const data = JSON.parse(savedProgress);
+                visitedModules = new Set(data.modules);
+                updateProgress();
+            } catch (e) {}
+        }
+        
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('expoProgress', JSON.stringify({
+                modules: Array.from(visitedModules),
+                timestamp: Date.now()
+            }));
+        });
+    </script>
+</body>
+</html>

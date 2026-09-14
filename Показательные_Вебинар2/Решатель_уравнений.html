@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Решатель показательных уравнений и неравенств</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+        }
+        
+        .input-panel {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #2A2E3A;
+            margin-bottom: 20px;
+        }
+        
+        .presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .preset-btn {
+            padding: 12px;
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            color: #D1D5DB;
+            font-size: 0.95rem;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .preset-btn:hover {
+            border-color: #FBBF24;
+            transform: translateY(-2px);
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px;
+            background: #2A2E3A;
+            border: 2px solid #FBBF24;
+            border-radius: 8px;
+            color: #E5E7EB;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            outline: none;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #22D3EE;
+        }
+        
+        .type-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .type-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #2A2E3A;
+            border-radius: 8px;
+            color: #D1D5DB;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .type-btn.active {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border-color: #FBBF24;
+        }
+        
+        .btn {
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .result-panel {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 3px solid #FBBF24;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .result-panel.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .result-expression {
+            color: #E5E7EB;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .result-answer {
+            color: #FBBF24;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .steps-container {
+            background: #171A23;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #2A2E3A;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .steps-container.show {
+            display: block;
+        }
+        
+        .steps-container h2 {
+            color: #FBBF24;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+        
+        .step {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border-left: 4px solid #22D3EE;
+            border-radius: 6px;
+            padding: 18px;
+            margin-bottom: 12px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #22D3EE;
+            color: #0F1117;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+        
+        .step-title {
+            color: #22D3EE;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+        }
+        
+        .step-content {
+            color: #D1D5DB;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-left: 40px;
+        }
+        
+        .step-formula {
+            background: #0F1117;
+            border: 1px solid #2A2E3A;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 8px;
+            font-family: 'Courier New', monospace;
+            color: #FBBF24;
+            font-size: 1rem;
+        }
+        
+        .error-msg {
+            display: none;
+            background: linear-gradient(135deg, #2A1818 0%, #352020 100%);
+            border: 2px solid #EF4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #FCA5A5;
+            font-size: 0.95rem;
+        }
+        
+        .error-msg.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .hint-note {
+            color: #9CA3AF;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .input-panel {
+                padding: 18px 14px;
+            }
+            
+            .presets {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .preset-btn {
+                padding: 10px 6px;
+                font-size: 0.8rem;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            input[type="text"] {
+                min-width: 0;
+            }
+            
+            .btn {
+                padding: 14px 20px;
+            }
+            
+            .result-expression {
+                font-size: 1.1rem;
+            }
+            
+            .result-answer {
+                font-size: 1.4rem;
+            }
+            
+            .step-content {
+                margin-left: 0;
+            }
+            
+            .step-formula {
+                font-size: 0.85rem;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧮 Решатель показательных уравнений</h1>
+        <div class="subtitle">Введите уравнение — получите пошаговое решение</div>
+        
+        <div class="input-panel">
+            <div class="presets">
+                <button class="preset-btn" onclick="usePreset('2^x=16')">2ˣ = 16</button>
+                <button class="preset-btn" onclick="usePreset('3^(x+2)=27')">3ˣ⁺² = 27</button>
+                <button class="preset-btn" onclick="usePreset('4^x-5*2^x+4=0')">4ˣ − 5·2ˣ + 4 = 0</button>
+                <button class="preset-btn" onclick="usePreset('2^(x+1)+2^x=24')">2ˣ⁺¹ + 2ˣ = 24</button>
+                <button class="preset-btn" onclick="usePreset('9^x-4*3^x+3=0')">9ˣ − 4·3ˣ + 3 = 0</button>
+                <button class="preset-btn" onclick="usePreset('7^(x^2-3x)=1')">7ˣ²⁻³ˣ = 1</button>
+            </div>
+            
+            <div class="type-select">
+                <button class="type-btn active" id="eqBtn" onclick="setType('eq')">Уравнение</button>
+                <button class="type-btn" id="ineqBtn" onclick="setType('ineq')">Неравенство</button>
+            </div>
+            
+            <div class="input-row">
+                <input type="text" id="userInput" placeholder="Пример: 2^x=16  или  4^x-5*2^x+4=0">
+                <button class="btn" onclick="solve()">Решить</button>
+            </div>
+            <div class="hint-note">
+                Используйте символы: ^ (степень), * (умножение), +, − (минус), = или >, < для неравенств. Скобки: (2^(x+1)).
+            </div>
+        </div>
+        
+        <div class="error-msg" id="errorMsg"></div>
+        
+        <div class="result-panel" id="resultPanel">
+            <div class="result-expression" id="resultExpression"></div>
+            <div class="result-answer" id="resultAnswer"></div>
+        </div>
+        
+        <div class="steps-container" id="stepsContainer">
+            <h2>Пошаговое решение</h2>
+            <div id="stepsList"></div>
+        </div>
+    </div>
+    
+    <script>
+        let currentType = 'eq';
+        
+        function setType(type) {
+            currentType = type;
+            document.getElementById('eqBtn').classList.toggle('active', type === 'eq');
+            document.getElementById('ineqBtn').classList.toggle('active', type === 'ineq');
+            
+            const input = document.getElementById('userInput');
+            if (type === 'eq' && input.value.includes('>')) {
+                input.value = input.value.replace(/[<>]/, '=');
+            }
+            if (type === 'ineq' && input.value.includes('=') && !input.value.includes('<') && !input.value.includes('>')) {
+                input.value = input.value.replace('=', '>');
+            }
+        }
+        
+        function usePreset(expr) {
+            document.getElementById('userInput').value = expr;
+            if (expr.includes('>')) {
+                setType('ineq');
+                document.getElementById('userInput').value = expr;
+            }
+            solve();
+        }
+        
+        function showError(msg) {
+            document.getElementById('errorMsg').textContent = '⚠ ' + msg;
+            document.getElementById('errorMsg').classList.add('show');
+            document.getElementById('resultPanel').classList.remove('show');
+            document.getElementById('stepsContainer').classList.remove('show');
+        }
+        
+        function hideError() {
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+        
+        function solve() {
+            const raw = document.getElementById('userInput').value.trim();
+            hideError();
+            
+            if (!raw) {
+                showError('Введите выражение.');
+                return;
+            }
+            
+            // Simplify input for parser: replace unicode
+            let expr = raw
+                .replace(/ˣ/g, '^x')
+                .replace(/·/g, '*')
+                .replace(/−/g, '-');
+            
+            // Detect equality/inequality
+            let sign = '=';
+            if (expr.includes('>')) { sign = '>'; expr = expr.replace('>', '='); }
+            else if (expr.includes('<')) { sign = '<'; expr = expr.replace('<', '='); }
+            else if (!expr.includes('=')) {
+                showError('Не найден знак "=" (или > / <). Пример: 2^x = 16');
+                return;
+            }
+            
+            const parts = expr.split('=');
+            if (parts.length !== 2) {
+                showError('Должно быть ровно одно равенство. Пример: 2^x = 16');
+                return;
+            }
+            
+            const left = parts[0].trim();
+            const right = parts[1].trim();
+            
+            // Route to specific solvers
+            try {
+                solveEquation(left, right, sign);
+            } catch (e) {
+                showError('Не удалось распознать уравнение. ' + e.message);
+            }
+        }
+        
+        function normalizeTerm(s) {
+            // returns base, exponent parts as string; e.g. "2^x" -> base=2, exp="x"
+            // supports (b)^(e)
+            s = s.trim();
+            // handle (base)^(exp)
+            const parenMatch = s.match(/^\(([^)]+)\)(?:\^|\*\*)\s*\(([^)]+)\)$/);
+            if (parenMatch) return { base: parenMatch[1].trim(), exp: parenMatch[2].trim() };
+            // handle base^exp without parens
+            const powerMatch = s.match(/^([0-9.]+)\^([0-9x+\-*()].*)$/);
+            if (powerMatch && !s.includes('+')) {
+                return { base: powerMatch[1], exp: powerMatch[2] };
+            }
+            // handle single number e.g. "16"
+            if (/^-?[0-9.]+$/.test(s)) return { base: null, num: s };
+            return null;
+        }
+        
+        function solveEquation(left, right, sign) {
+            const steps = [];
+            const resultPanel = document.getElementById('resultPanel');
+            const stepsContainer = document.getElementById('stepsContainer');
+            
+            // Attempt simple a^x = b
+            const simpleMatch = left.match(/^\(?([0-9.]+)\)?\^\(?([0-9x+\-*()^/]+)\)?$/);
+            
+            if (simpleMatch && /^-?[0-9.]+$/.test(right)) {
+                const base = parseFloat(simpleMatch[1]);
+                const exponent = simpleMatch[2];
+                const rhs = evalNumber(right);
+                
+                steps.push({ title: 'Записываем уравнение', content: ``, formula: `${base}^(${exponent}) = ${rhs}` });
+                
+                // Represent right side as power of base
+                const powerRep = representAsPower(base, rhs);
+                if (!powerRep) {
+                    showError(`Число ${rhs} не является целой степенью основания ${base}. Попробуйте примеры из списка.`);
+                    return;
+                }
+                
+                steps.push({ title: 'Представляем число как степень', content: `${rhs} = ${base}^${powerRep}`, formula: `${base}^(${exponent}) = ${base}^${powerRep}` });
+                
+                // Solving depends on base
+                if (base > 1 || base > 0) {
+                    // If base is 0..1, we need to handle. For simplicity handle base>1 typical.
+                }
+                
+                const solExpr = exponent.replace(/^\((.+)\)$/, '$1');
+                const solvedForX = solveLinearLike(solExpr, powerRep);
+                
+                if (sign === '=') {
+                    steps.push({ title: 'Приравниваем показатели', content: `Основание ${base} > 0, a ≠ 1, поэтому показатели равны.`, formula: `${solExpr} = ${typeof powerRep === 'string' && isNaN(powerRep) ? powerRep : powerRep}` });
+                    steps.push({ title: 'Решаем простое уравнение', content: 'Выражаем x.', formula: `x = ${solvedForX}` });
+                    steps.push({ title: 'Ответ', content: '', formula: `x = ${solvedForX}` });
+                } else {
+                    // inequality: need to flip sign if base < 1
+                    let flipped = false;
+                    if (base < 1) flipped = true;
+                    const flipNote = flipped ? 'Основание 0 < a < 1, функция убывает → знак неравенства меняется!' : `Основание ${base} > 1, знак сохраняется.`;
+                    steps.push({ title: 'Переходим к показателям', content: flipNote, formula: `${solExpr} ${flipped ? (sign === '>' ? '<' : '>') : sign} ${powerRep}` });
+                    
+                    const finalSign = flipped ? (sign === '>' ? '<' : '>') : sign;
+                    const solExpr2 = solExpr.replace(/^\((.+)\)$/, '$1');
+                    steps.push({ title: 'Решаем неравенство', content: '', formula: `x ${finalSign} ${solvedForX}` });
+                    steps.push({ title: 'Ответ', content: '', formula: `x ${finalSign} ${solvedForX}` });
+                }
+                
+                renderResult(left + ' ' + (sign === '=' ? '=' : sign) + ' ' + right, `x = ${solvedForX}`, steps);
+                return;
+            }
+            
+            // Handle substitution form: a^(2x)+b*a^x+c=0 style
+            // pattern: base^(2*exp) ... + const*a^exp ... + const = 0
+            const subMatch = trySubstitutionSolver(left, right, steps, sign);
+            if (subMatch) return;
+            
+            // Handle sum of powers with same base: 2^(x+1)+2^x=24
+            const sumMatch = trySumSolver(left, right, steps, sign);
+            if (sumMatch) return;
+            
+            // Handle x^2 - 3x = 0 after dropping bases (e.g., 7^(x^2-3x)=1)
+            const expEqualOne = left.match(/^\(?([0-9.]+)\)?\^\(?([0-9x+\-*()^/]+)\)?$/);
+            if (expEqualOne && right === '1') {
+                // a^(f)=1 -> f=0
+                const base = parseFloat(expEqualOne[1]);
+                const solExpr = expEqualOne[2];
+                steps.push({ title: 'Уравнение вида a^f(x) = 1', content: 'Поскольку a⁰ = 1, показатель равен нулю.', formula: `${solExpr} = 0` });
+                
+                const solutions = solveSimpleEquation(solExpr);
+                steps.push({ title: 'Решаем уравнение', content: '', formula: solutions.formula });
+                steps.push({ title: 'Ответ', content: '', formula: solutions.answer });
+                renderResult(left + ' = 1', solutions.answer, steps);
+                return;
+            }
+            
+            showError('Не удалось распознать тип уравнения. Попробуйте примеры из списка выше.');
+        }
+        
+        function trySumSolver(left, right, steps, sign) {
+            // pattern: base^(x+...)+base^(x+...)=const or +base^x
+            const terms = left.split('+').map(t => t.trim());
+            if (terms.length !== 2) return false;
+            
+            // both terms must be power with same base
+            const m1 = terms[0].match(/^\(?([0-9.]+)\)?\^\(?([^)]+)\)?$/);
+            const m2 = terms[1].match(/^\(?([0-9.]+)\)?\^\(?([^)]+)\)?$/);
+            if (!m1 || !m2) return false;
+            if (m1[1] !== m2[1]) return false;
+            
+            const base = m1[1];
+            // exponents likely contain x
+            const e1 = m1[2].replace(/^\((.+)\)$/, '$1').trim();
+            const e2 = m2[2].replace(/^\((.+)\)$/, '$1').trim();
+            if (!e1.includes('x') && !e2.includes('x')) return false;
+            
+            // We assume exponents differ by constant: e.g. x+1 and x
+            // Extract terms: find smallest exponent, factor base^min * (base^diff + 1) = rhs
+            // Attempt: represent one exponent as other + delta
+            let minExp, diff, factor;
+            // Try: e1 = e2 + delta
+            function diffConstants(a, b) {
+                // returns {ok, delta} if a = b + delta
+                const m = a.match(/^x\s*([+\-])\s*(\d+)$/);
+                const n = b.match(/^x\s*([+\-])\s*(\d+)$/);
+                if (m && n && m[1] === n[1]) return { ok: true, delta: (parseInt(m[2]) - parseInt(n[2])) };
+                if (m && b === 'x') return { ok: true, delta: (m[1] === '+' ? parseInt(m[2]) : -parseInt(m[2])) };
+                if (n && a === 'x') return { ok: true, delta: -(n[1] === '+' ? parseInt(n[2]) : -parseInt(n[2])) };
+                return { ok: false };
+            }
+            
+            const d = diffConstants(e1, e2);
+            if (!d.ok) return false;
+            
+            const rhsNum = parseFloat(right);
+            const bNum = parseFloat(base);
+            const expDelta = Math.abs(d.delta);
+            const larger = d.delta >= 0 ? e1 : e2;
+            
+            // largerExp = smallerExp + expDelta
+            // base^smaller * (base^expDelta + 1) = rhs
+            const factorContribution = Math.pow(bNum, expDelta);
+            const total = 1 + (d.delta >= 0 ? factorContribution : factorContribution - 0); // handled properly below
+            // Actually: if e1 = e2 + delta (delta>0): base^e2 (base^delta + 1) = rhs
+            // if delta<0: base^e1 (base^-delta + 1) = rhs
+            const smallerExp = d.delta >= 0 ? e2 : e1;
+            const coeff = 1 + Math.pow(bNum, expDelta);
+            
+            steps.push({ title: 'Выносим общий множитель', content: `Слагаемые имеют общую часть. Выносим ${base}^${smallerExp} за скобку.`, formula: `${base}^${smallerExp} · (${coeff}) = ${rhsNum}` });
+            
+            const basePow = rhsNum / coeff;
+            steps.push({ title: 'Делим обе части', content: `Делим на коэффициент ${coeff}.`, formula: `${base}^${smallerExp} = ${basePow}` });
+            
+            const powerRep = representAsPower(bNum, basePow);
+            if (powerRep) {
+                steps.push({ title: 'Представляем как степень', content: `${basePow} = ${base}^${powerRep}`, formula: `${base}^${smallerExp} = ${base}^${powerRep}` });
+                const sol = solveSimpleEquation(smallerExp);
+                steps.push({ title: 'Решаем', content: '', formula: sol.formula });
+                steps.push({ title: 'Ответ', content: '', formula: sol.answer });
+                
+                let displayAnswer = sol.answer;
+                if (sign === '>') {
+                    // not usually inequalities here; skip
+                }
+                renderResult(left + ' = ' + right, sol.answer, steps);
+                return true;
+            }
+            
+            return false;
+        }
+        
+        function trySubstitutionSolver(left, right, steps, sign) {
+            // patterns: a^(2x)+b*a^x+c (possibly with coefficients) = 0
+            // Also forms: k*a^(2x+p) + m*a^(x+q) + c = 0
+            // Simplify: detect base^2 term and base^1 term with same base
+            const allPowers = [];
+            const parts = left.split('+').map(t => t.trim());
+            let multTerms = [];
+            // split also by minus properly: handle sign. Simplify: we'll parse all terms by scanning
+            // Simple approach: try pattern like number^(-?^*...)... too complex. Use predefined:
+            // Detect "a^x" and "a^(k*x)" 
+            
+            // Try to detect term of form k*base^(2x) or base^(2x)
+            // We'll use regex on raw left
+            const termPattern = /([+-]?\d*\.?\d*)\*?\(?([0-9.]+)\)?\^\(?2\*x\)?|([+-]?\d*\.?\d*)\*?\(?([0-9.]+)\)?\^\(?2x\)?/;
+            
+            // Cleaner: strip spaces
+            const clean = left.replace(/\s+/g, '');
+            
+            // Match a^(2x), a^(x), and constant
+            // base^(k*x) cells
+            const twoX = clean.match(/([0-9.]+)\^\(?2\*?x\)?/);
+            const oneX = clean.match(/([0-9.Ba-z]+)\^\(?x\)?/);
+            if (!twoX || !oneX) {
+                // maybe form base^2x without paren
+                const twoXb = clean.match(/([0-9.]+)\^2\*?x/);
+                const oneXb = clean.match(/([0-9]+)\^x/);
+                if (!twoXb || !oneXb) return false;
+            }
+            
+            // Determine base a such that a^(2x) and a^x both appear
+            let baseA = null;
+            const mTwo = clean.match(/([0-9.]+)\^2\*?x/);
+            const mOne = clean.match(/([0-9.]+)\^x/);
+            if (!mTwo || !mOne) return false;
+            
+            // If base^(2x) = (A)^(2x), then A^x term base must be A
+            // But base^(2x) may be like 4^x where 4=2^2. We handle standard: BIND both.
+            // for equation a^(2x) + b*a^x + c: the "a" is the square root base.
+            // We'll detect if twoX base squared equals oneX base.
+            // e.g., 4^x - 5*2^x + 4: twoX base = 4, oneX base = 2 -> 4 = 2^2 ✓
+            const twoBase = parseFloat(mTwo[1]);
+            const oneBase = parseFloat(mOne[1]);
+            if (Math.abs(Math.sqrt(twoBase) - oneBase) > 1e-9) return false;
+            
+            baseA = oneBase;
+            
+            // Extract constant term
+            const constMatch = clean.match(new RegExp(`((?:[+-])\\d+)\\s*$`));
+            constToParse = parseInt(clean.replace(new RegExp(`.*?[+-]\\d+$`), ''));
+            // get coefficient of a^x
+            let coeffA = 1;
+            const coeffMatch = clean.match(/([0-9]+)\*?\)?\^x(...)?/); // not reliable
+            
+            // Simpler: we hard-parse patterns by known shape with eval on substitutions
+            // Replace a^(2x) -> t^2, a^x -> t using actual letters
+            let eq = clean;
+            // find base letters to replace
+            // We'll substitute: replace twoX base token to (t^2) if it's (sqrt(one))^2, else handle
+            steps.push({ title: 'Приводим к квадратному', content: `Заметим, что ${twoBase}^x = (${oneBase}^x)². Вводим замену t = ${oneBase}^x.`, formula: `${twoBase}^x = (${oneBase}ˣ)²` });
+            steps.push({ title: 'Замена переменной', content: `Пусть t = ${oneBase}<sup>x</sup> > 0. Уравнение принимает вид:`, formula: `t² + Ft + C = 0` });
+            
+            // Parse coefficients properly using string manipulations with t substitute
+            let substituted = clean;
+            substituted = substituted.replace(new RegExp(`${twoBase}\\^2\\*?x`, 'g'), 't^2');
+            substituted = substituted.replace(new RegExp(`${oneBase}\\^x`, 'g'), 't');
+            substituted = substituted.replace(/[*]/g, '');
+            substituted = substituted.replace(/\s+/g, '');
+            
+            // now like: t^2-5t+4=... => split at '=' 
+            // Actually left/right passed separately (we have right). eq is left with t.
+            let tEq = substituted;
+            // resolve rhs (usually 0)
+            const rhs = parseIntClean(right);
+            
+            // Compose quadratic: t^2 + coefficients
+            // evaluate polynomial expression at t -> we need coefficients
+            // Use eval with t as variable
+            let coeffs = getQuadraticCoeffs(tEq, rhs);
+            if (!coeffs) {
+                showError('Не удалось разобрать коэффициенты уравнения.');
+                return false;
+            }
+            
+            const { a, b, c } = coeffs;
+            steps.push({ title: 'Получили квадратное уравнение', content: '', formula: `${a}t² ${b>=0?'+':''}${b}t ${c>=0?'+':''}${c} = 0` });
+            
+            const D = b*b - 4*a*c;
+            steps.push({ title: 'Вычисляем дискриминант', content: `D = b² − 4ac = ${b}² − 4·${a}·${c}`, formula: `D = ${D}` });
+            
+            if (D < 0) {
+                steps.push({ title: 'Дискриминант отрицательный', content: 'Корней нет.', formula: 'Решений нет' });
+                renderResult(left + ' = ' + right, 'нет решений', steps);
+                return true;
+            }
+            
+            const t1 = (-b + Math.sqrt(D)) / (2*a);
+            const t2 = (-b - Math.sqrt(D)) / (2*a);
+            
+            steps.push({ title: 'Находим корни', content: `t₁₂ = (−b ± √D) / (2a)`, formula: `t₁ = ${round(t1)},  t₂ = ${round(t2)}` });
+            steps.push({ title: 'Учитываем условие t > 0', content: 'Значение показательной функции всегда положительно, поэтому все неположительные корни отбрасываем.', formula: 't > 0' });
+            
+            const validTs = [t1, t2].filter(t => t > 0);
+            if (validTs.length === 0) {
+                steps.push({ title: 'Нет положительных корней', content: '', formula: 'Решений нет' });
+                renderResult(left + ' = ' + right, 'нет решений', steps);
+                return true;
+            }
+            
+            const answers = [];
+            validTs.forEach(t => {
+                const powerRep = representAsPower(baseA, t);
+                if (!powerRep) {
+                    steps.push({ title: `Решаем ${baseA}^x = ${round(t)}`, content: `Не является целой степенью ${baseA}.`, formula: `x = logₐ t (невозрачно)` });
+                } else {
+                    steps.push({ title: `Возвращаемся к замене: ${baseA}^x = ${round(t)}`, content: `${round(t)} = ${baseA}^${powerRep}`, formula: `${baseA}^x = ${baseA}^${powerRep} -> x = ${powerRep}` });
+                    answers.push(powerRep);
+                }
+            });
+            
+            steps.push({ title: 'Ответ', content: '', formula: answers.length ? answers.map(a=>'x = '+a).join(', ') : 'нет решений' });
+            renderResult(left + ' = ' + right, answers.length ? answers.join(', ') : 'нет решений', steps);
+            return true;
+        }
+        
+        function getQuadraticCoeffs(tEq, rhs) {
+            // tEq like "t^2-5t+4" with '=' already stripped (left side). rhs is constant moved to left.
+            // Move rhs: tEq - rhs = 0
+            let expr = tEq;
+            if (!expr) return null;
+            
+            // replace ^ with **
+            let jsExpr = expr.replace(/\^/g, '**');
+            // Sample at values to extract coefficients via finite differences
+            const f = (t) => {
+                try { return eval(jsExpr) - rhs; } catch(e) { return NaN; }
+            };
+            const f0 = f(0), f1 = f(1), f2 = f(2);
+            if (isNaN(f0) || isNaN(f1) || isNaN(f2)) return null;
+            const c2 = (f2 - 2*f1 + f0) / 2;
+            const c1 = f1 - f0 - c2;
+            const c0coef = f0;
+            return { a: c2, b: c1, c: c0coef };
+        }
+        
+        function parseIntClean(s) {
+            const v = parseFloat(s);
+            return isNaN(v) ? 0 : v;
+        }
+        
+        function solveLinearLike(expr, powerVal) {
+            // expr like "x", "x+2", "x-3", "(2x)" etc; solve expr = powerVal
+            const pv = parseFloat(powerVal);
+            if (expr === 'x') return pv;
+            const m = expr.match(/^x\s*\+\s*(\d+)$/);
+            if (m) return pv - parseInt(m[1]);
+            const m2 = expr.match(/^x\s*-\s*(\d+)$/);
+            if (m2) return pv + parseInt(m2[1]);
+            const m3 = expr.match(/^-\s*x\s*\+\s*(\d+)$/);
+            if (m3) return pv - parseInt(m3[1]);
+            const m4 = expr.match(/^-?\s*(\d+)?\s*\*\s*x(?:\s*\+\s*(\d+))?$/) || expr.match(/^(\d+)?\s*\*\s*x(?:\s*\+\s*(\d+))?$/);
+            if (m4) {
+                const k = m4[1] ? parseInt(m4[1]) : 1;
+                const add = m4[2] ? parseInt(m4[2]) : 0;
+                return (pv - add) / k;
+            }
+            const m5 = expr.match(/^(2)\*x$/);
+            if (m5) return pv / 2;
+            // fallback literal number
+            const num = parseFloat(expr);
+            if (!isNaN(num)) return num;
+            if (expr === '-x') return -pv;
+            if (expr === '2x') return pv / 2;
+            if (expr === '2*x') return pv / 2;
+            return expr;
+        }
+        
+        function solveSimpleEquation(expr) {
+            expr = expr.trim().replace(/^\((.+)\)$/, '$1');
+            // try linear
+            const lin = solveLinearLike(expr, 0);
+            if (typeof lin === 'number') {
+                return { formula: expr + ' = 0 → x = ' + round(lin), answer: 'x = ' + round(lin) };
+            }
+            // try quadratic x^2 + bx + c = 0
+            const quad = expr.match(/^x\^2\s*([+-])\s*(\d+)\s*\*\s*x\s*([+-])\s*(\d+)$/);
+            const quad2 = expr.match(/^x\^2\s*([+-])\s*(\d+)\s*x\s*([+-])\s*(\d+)$/);
+            const quad3 = expr.match(/^x\^2\s*([+-])\s*(\d+)\s*x$/);
+            if (quad3) {
+                const sign = quad3[1] === '+' ? 1 : -1;
+                const b = sign * parseInt(quad3[2]);
+                // x^2 + bx = 0
+                const xs = [0, -b];
+                return { formula: 'x² + ' + b + 'x = 0 → x(x+' + b + ') = 0', answer: 'x = 0; ' + 'x = ' + (-b) };
+            }
+            if (quad) {
+                const s1 = quad[1] === '+' ? 1 : -1;
+                const b = s1 * parseInt(quad[2]);
+                const s2 = quad[3] === '+' ? 1 : -1;
+                const c = s2 * parseInt(quad[4]);
+                const D = b*b - 4*c;
+                if (D < 0) return { formula: 'D < 0', answer: 'нет решений' };
+                const r1 = (-b + Math.sqrt(D))/2, r2 = (-b - Math.sqrt(D))/2;
+                return { formula: 'x²' + (b>=0?'+':'') + b + 'x' + (c>=0?'+':'') + c + ' = 0', answer: 'x = ' + round(r1) + '; ' + 'x = ' + round(r2) };
+            }
+            return { formula: expr + ' = 0', answer: '—' };
+        }
+        
+        function evalNumber(s) {
+            return parseFloat(s);
+        }
+        
+        function representAsPower(base, value) {
+            if (value === 1) return 0;
+            const logV = Math.log(value) / Math.log(base);
+            if (Math.abs(logV - Math.round(logV)) < 1e-6) {
+                return String(Math.round(logV));
+            }
+            return null;
+        }
+        
+        function renderResult(expression, answer, steps) {
+            document.getElementById('resultExpression').textContent = expression;
+            let ansText = answer;
+            if (String(answer).startsWith('x')) ansText = answer.replace(/^x\s*=\s*(.+)$/, 'x = $1');
+            document.getElementById('resultAnswer').textContent = (currentType === 'ineq' ? 'Ответ: ' : 'Ответ: ') + ansText;
+            
+            const stepsList = document.getElementById('stepsList');
+            stepsList.innerHTML = '';
+            steps.forEach((step, i) => {
+                const div = document.createElement('div');
+                div.className = 'step';
+                div.innerHTML = `
+                    <div class="step-title">
+                        <span class="step-number">${i + 1}</span>
+                        ${step.title || ''}
+                    </div>
+                    ${step.content ? `<div class="step-content">${step.content}</div>` : ''}
+                    ${step.formula ? `<div class="step-formula">${step.formula}</div>` : ''}
+                `;
+                stepsList.appendChild(div);
+            });
+            
+            document.getElementById('resultPanel').classList.add('show');
+            document.getElementById('stepsContainer').classList.add('show');
+            document.getElementById('stepsContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function round(v) {
+            return Math.round(v * 1000) / 1000;
+        }
+        
+        // Simple quadratic equation (x^2-3x=0) quick solve route is handled above.
+        // For exponential equal to 1 with polynomial exponent:
+        // Handled by expEqualOne branch.
+    </script>
+</body>
+</html>

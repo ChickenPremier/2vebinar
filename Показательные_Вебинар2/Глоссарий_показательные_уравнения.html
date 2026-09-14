@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глоссарий: Показательные уравнения и неравенства</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #FBBF24;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+            font-weight: 400;
+        }
+        
+        .section {
+            background: #171A23;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 25px 0;
+            border: 1px solid #2A2E3A;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.1);
+        }
+        
+        h2 {
+            color: #FBBF24;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%);
+            border-radius: 2px;
+        }
+        
+        h3 {
+            color: #E5E7EB;
+            font-size: 1.3rem;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .definition {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 1px solid #FBBF24;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .definition::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #FBBF24 0%, #F59E0B 100%);
+        }
+        
+        .definition-title {
+            font-weight: 700;
+            color: #FBBF24;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            padding-left: 15px;
+        }
+        
+        .definition p, .definition ul {
+            padding-left: 15px;
+            color: #D1D5DB;
+        }
+        
+        .definition ul {
+            margin-top: 10px;
+        }
+        
+        .formula {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #FBBF24;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.2);
+        }
+        
+        .formula-label {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .formula strong {
+            color: #FBBF24;
+            font-size: 1.8rem;
+        }
+        
+        .formula .small {
+            font-size: 1rem;
+            display: block;
+            margin-top: 10px;
+            color: #D1D5DB;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 25px 0;
+            font-size: 1rem;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+            color: #0F1117;
+            padding: 15px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #2A2E3A;
+            background: #171A23;
+            color: #E5E7EB;
+        }
+        
+        tr:hover td {
+            background: #1E222E;
+        }
+        
+        .example {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border-left: 4px solid #22D3EE;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+        
+        .example-title {
+            font-weight: 700;
+            color: #22D3EE;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .example p {
+            color: #D1D5DB;
+            margin: 8px 0;
+        }
+        
+        .example strong {
+            color: #FBBF24;
+        }
+        
+        .method-box {
+            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
+            border: 2px solid #22D3EE;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .method-title {
+            font-weight: 700;
+            color: #22D3EE;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .method-box p {
+            color: #D1D5DB;
+            line-height: 1.8;
+        }
+        
+        .method-box strong {
+            color: #FBBF24;
+        }
+        
+        .flash {
+            display: inline-block;
+            padding: 2px 10px;
+            background: #2A2E3A;
+            border-radius: 4px;
+            color: #22D3EE;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .warntable {
+            text-align: center;
+        }
+        
+        .warntable th {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid #2A2E3A;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #6B7280;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 14px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 30px;
+            }
+            
+            .section {
+                padding: 18px;
+                margin: 15px 0;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+            }
+            
+            h3 {
+                font-size: 1.1rem;
+            }
+            
+            .formula {
+                padding: 18px;
+                font-size: 1.1rem;
+            }
+            
+            .formula strong {
+                font-size: 1.3rem;
+            }
+            
+            table {
+                font-size: 0.85rem;
+            }
+            
+            th {
+                padding: 10px 5px;
+            }
+            
+            td {
+                padding: 8px 4px;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ГЛОССАРИЙ</h1>
+        <div class="subtitle">Показательные уравнения и неравенства<br>Подготовка к ЕГЭ (профильный уровень)</div>
+        
+        <div class="section">
+            <h2>1. Свойства степени</h2>
+            
+            <div class="definition">
+                <div class="definition-title">Основные свойства степеней (для a > 0, b > 0)</div>
+                <ul>
+                    <li style="margin-bottom:8px;"><strong>aⁿ · aᵐ = aⁿ⁺ᵐ</strong> — произведение степеней</li>
+                    <li style="margin-bottom:8px;"><strong>aⁿ : aᵐ = aⁿ⁻ᵐ</strong> — частное степеней</li>
+                    <li style="margin-bottom:8px;"><strong>(aⁿ)ᵐ = aⁿ·ᵐ</strong> — степень степени</li>
+                    <li style="margin-bottom:8px;"><strong>(a·b)ⁿ = aⁿ·bⁿ</strong> — степень произведения</li>
+                    <li style="margin-bottom:8px;"><strong>(a/b)ⁿ = aⁿ/bⁿ</strong> — степень частного</li>
+                    <li style="margin-bottom:8px;"><strong>a⁰ = 1</strong> — нулевая степень (при a ≠ 0)</li>
+                    <li style="margin-bottom:8px;"><strong>a⁻ⁿ = 1/aⁿ</strong> — отрицательная степень</li>
+                </ul>
+            </div>
+            
+            <div class="definition">
+                <div class="definition-title">Степень с рациональным показателем</div>
+                <p><strong>a^(m/n) = ⁿ√(aᵐ)</strong> — при a ≥ 0</p>
+                <p><strong>a^(-m/n) = 1 / (a^(m/n))</strong></p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 1</div>
+                <p>Упростите: <span class="flash">4³ · 4⁻²</span></p>
+                <p><strong>Решение:</strong> 4³ · 4⁻² = 4³⁻² = 4¹ = 4</p>
+                <p><strong>Ответ:</strong> 4</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>2. Показательная функция</h2>
+            
+            <div class="definition">
+                <div class="definition-title">Показательная функция</div>
+                <p>Функция вида <strong>y = aˣ</strong>, где a &gt; 0, a ≠ 1, называется показательной.</p>
+                <p><strong>Область определения:</strong> D(y) = R (все действительные числа)</p>
+                <p><strong>Область значений:</strong> E(y) = (0; +∞) — функция всегда положительна</p>
+            </div>
+            
+            <div class="definition">
+                <div class="definition-title">Свойства показательной функции y = aˣ</div>
+                <ul>
+                    <li style="margin-bottom:8px;">Если <strong>a &gt; 1</strong> — функция <strong>возрастает</strong> на R</li>
+                    <li style="margin-bottom:8px;">Если <strong>0 &lt; a &lt; 1</strong> — функция <strong>убывает</strong> на R</li>
+                    <li style="margin-bottom:8px;">График всегда проходит через точку <strong>(0; 1)</strong></li>
+                    <li style="margin-bottom:8px;">График <strong>не пересекает</strong> ось Ox (стремится к нулю, но не достигает)</li>
+                </ul>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 2</div>
+                <p>Сравните: <span class="flash">2,1⁵</span> и <span class="flash">2,1⁷</span></p>
+                <p><strong>Решение:</strong> Основание 2,1 &gt; 1, значит функция y = 2,1ˣ возрастающая. Чем больше показатель, тем больше значение.</p>
+                <p><strong>Ответ:</strong> 2,1⁵ &lt; 2,1⁷</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>3. Показательные уравнения</h2>
+            
+            <div class="formula">
+                <div class="formula-label">Метод приведения к общему основанию</div>
+                <strong>a^(f(x)) = a^(g(x))  ⇔  f(x) = g(x)</strong>
+                <span class="small">(при a &gt; 0, a ≠ 1 — показатели можно «убрать»)</span>
+            </div>
+            
+            <div class="method-box">
+                <div class="method-title">Метод 1. Приведение к одному основанию</div>
+                <p>Обе части уравнения приводим к степени с одним и тем же основанием, затем приравниваем показатели.</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 3</div>
+                <p>Решите уравнение: <span class="flash">2ˣ = 16</span></p>
+                <p><strong>Шаг 1.</strong> Представим 16 как степень с основанием 2: <strong>16 = 2⁴</strong></p>
+                <p><strong>Шаг 2.</strong> Получили: <strong>2ˣ = 2⁴</strong> → основание одно → <strong>x = 4</strong></p>
+                <p><strong>Ответ:</strong> 4</p>
+            </div>
+            
+            <div class="method-box">
+                <div class="method-title">Метод 2. Метод замены переменной</div>
+                <p>Если уравнение содержит выражения вида aˣ и a²ˣ (или a⁻ˣ), вводим замену <strong>t = aˣ</strong>. Получаем уравнение относительно t (чаще всего квадратное), затем возвращаемся к замене и решаем aˣ = t₁.</p>
+                <p style="margin-top:10px;"><strong>Важно:</strong> для показательной функции всегда выполняется <strong>t &gt; 0</strong>. Отрицательные корни отбрасываем.</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 4</div>
+                <p>Решите уравнение: <span class="flash">9ˣ − 4·3ˣ + 3 = 0</span></p>
+                <p><strong>Шаг 1.</strong> Заметим, что 9ˣ = (3²)ˣ = 3²ˣ = (3ˣ)²</p>
+                <p><strong>Шаг 2.</strong> Замена t = 3ˣ &gt; 0: t² − 4t + 3 = 0 → t₁ = 1, t₂ = 3</p>
+                <p><strong>Шаг 3.</strong> 3ˣ = 1 → x = 0; 3ˣ = 3 → x = 1</p>
+                <p><strong>Ответ:</strong> 0; 1</p>
+            </div>
+            
+            <div class="method-box">
+                <div class="method-title">Метод 3. Вынесение общего множителя</div>
+                <p>Если уравнение содержит одинаковые степени с разными показателями (например aˣ и aˣ⁺¹), выносим наименьшую из них за скобку.</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 5</div>
+                <p>Решите уравнение: <span class="flash">2ˣ⁺¹ + 2ˣ = 24</span></p>
+                <p><strong>Шаг 1.</strong> Выносим 2ˣ за скобку: 2ˣ(2 + 1) = 24</p>
+                <p><strong>Шаг 2.</strong> 3·2ˣ = 24 → 2ˣ = 8 → 2ˣ = 2³</p>
+                <p><strong>Шаг 3.</strong> x = 3</p>
+                <p><strong>Ответ:</strong> 3</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>4. Показательные неравенства</h2>
+            
+            <div class="warntable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Неравенство</th>
+                            <th>a &gt; 1 (возрастающая)</th>
+                            <th>0 &lt; a &lt; 1 (убывающая)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>a^(f(x)) &gt; a^(g(x))</td>
+                            <td>f(x) &gt; g(x)</td>
+                            <td>f(x) &lt; g(x) ⚠</td>
+                        </tr>
+                        <tr>
+                            <td>a^(f(x)) ≥ a^(g(x))</td>
+                            <td>f(x) ≥ g(x)</td>
+                            <td>f(x) ≤ g(x) ⚠</td>
+                        </tr>
+                        <tr>
+                            <td>a^(f(x)) &lt; a^(g(x))</td>
+                            <td>f(x) &lt; g(x)</td>
+                            <td>f(x) &gt; g(x) ⚠</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="formula">
+                <div class="formula-label">Главное правило</div>
+                <p>При <strong>a &gt; 1</strong> знак неравенства <strong>сохраняется</strong></p>
+                <p class="small">При <strong>0 &lt; a &lt; 1</strong> — знак неравенства <strong>меняется на противоположный</strong> 🚨</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 6 (основание a &gt; 1)</div>
+                <p>Решите неравенство: <span class="flash">2ˣ &gt; 16</span></p>
+                <p><strong>Шаг 1.</strong> 16 = 2⁴ → 2ˣ &gt; 2⁴</p>
+                <p><strong>Шаг 2.</strong> Основание 2 &gt; 1, знак сохраняем: x &gt; 4</p>
+                <p><strong>Ответ:</strong> (4; +∞)</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 7 (основание 0 &lt; a &lt; 1) ⚠</div>
+                <p>Решите неравенство: <span class="flash">(1/2)ˣ &lt; 8</span></p>
+                <p><strong>Шаг 1.</strong> Приведём к одинаковому основанию: (1/2)ˣ = 2⁻ˣ и 8 = 2³</p>
+                <p><strong>Шаг 2.</strong> 2⁻ˣ &lt; 2³ → основание 2 &gt; 1 → −x &lt; 3 → x &gt; −3</p>
+                <p><strong>Ответ:</strong> (−3; +∞)</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 8 (основание 0 &lt; a &lt; 1, ловушка) ⚠</div>
+                <p>Решите неравенство: <span class="flash">(0,5)ˣ &gt; 0,25</span></p>
+                <p><strong>Шаг 1.</strong> 0,25 = (0,5)² → (0,5)ˣ &gt; (0,5)²</p>
+                <p><strong>Шаг 2.</strong> Основание 0,5 &lt; 1 → функция убывает → <strong>знак меняем</strong>: x &lt; 2</p>
+                <p><strong>Ответ:</strong> (−∞; 2)</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>5. Сведение неравенств к методу интервалов</h2>
+            
+            <div class="definition">
+                <div class="definition-title">Разделение на случаи</div>
+                <p>Неравенство вида <strong>a^(f(x)) &gt; b</strong>, где b не является степенью числа a, решаем через логарифм:</p>
+                <p style="margin-top:10px;">Для a &gt; 1: <strong>x &gt; log_a b</strong></p>
+                <p>Для 0 &lt; a &lt; 1: <strong>x &lt; log_a b</strong></p>
+            </div>
+            
+            <div class="method-box">
+                <div class="method-title">Метод введения новой переменной в неравенствах</div>
+                <p>Замена t = aˣ &gt; 0. Решаем неравенство относительно t, затем учитываем ОДЗ t &gt; 0.</p>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 9</div>
+                <p>Решите неравенство: <span class="flash">4ˣ − 5·2ˣ + 4 ≤ 0</span></p>
+                <p><strong>Шаг 1.</strong> 4ˣ = (2ˣ)². Замена t = 2ˣ &gt; 0</p>
+                <p><strong>Шаг 2.</strong> t² − 5t + 4 ≤ 0 → корни t₁ = 1, t₂ = 4</p>
+                <p><strong>Шаг 3.</strong> Метод интервалов: 1 ≤ t ≤ 4 → 1 ≤ 2ˣ ≤ 4</p>
+                <p><strong>Шаг 4.</strong> 2⁰ ≤ 2ˣ ≤ 2² → 0 ≤ x ≤ 2</p>
+                <p><strong>Ответ:</strong> [0; 2]</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>6. Задания ЕГЭ — разбор типовых задач</h2>
+            
+            <div class="grid-2">
+                <div class="method-box">
+                    <div class="method-title">Задание №7 (профиль) — простейшее уравнение</div>
+                    <p>Здесь требуется решить несложное показательное уравнение. Обычно — приведение к одному основанию.</p>
+                    <p style="margin-top:8px;"><strong>2ˣ⁺⁵ = 0,25</strong></p>
+                    <p style="margin-top:8px;">0,25 = 1/4 = 2⁻² → 2ˣ⁺⁵ = 2⁻² → x + 5 = −2 → x = −7</p>
+                </div>
+                
+                <div class="method-box">
+                    <div class="method-title">Задание №13 (профиль) — уравнение с отбором корней</div>
+                    <p>Показательное уравнение сводится к квадратному методом замены. Затем — тригонометрия или логарифмы на отбор корней.</p>
+                </div>
+            </div>
+            
+            <div class="example">
+                <div class="example-title">Пример 10 (типовое задание №13)</div>
+                <p>Решите уравнение: <span class="flash">3^(2x+1) + 10·3ˣ + 3 = 0</span></p>
+                <p><strong>Шаг 1.</strong> 3^(2x+1) = 3·3²ˣ = 3·(3ˣ)². Замена t = 3ˣ &gt; 0</p>
+                <p><strong>Шаг 2.</strong> 3t² + 10t + 3 = 0 → D = 100 − 36 = 64 → t₁ = −3, t₂ = −1/3</p>
+                <p><strong>Шаг 3.</strong> Оба корня отрицательны, но t &gt; 0 — значит, корней нет</p>
+                <p><strong>Ответ:</strong> нет решений</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Глоссарий подготовлен для подготовки к ЕГЭ по математике (профильный уровень)</p>
+            <p>Показательные уравнения и неравенства | 11 класс</p>
+        </div>
+    </div>
+</body>
+</html>
