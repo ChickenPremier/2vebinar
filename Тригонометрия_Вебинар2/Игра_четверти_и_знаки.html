@@ -125,6 +125,12 @@
             box-shadow: 0 6px 20px rgba(251, 191, 36, 0.3);
         }
         
+        .angle-card.selected {
+            border-color: #22D3EE;
+            background: linear-gradient(135deg, #0E2A33 0%, #153545 100%);
+            box-shadow: 0 0 18px rgba(34, 211, 238, 0.5);
+        }
+        
         .angle-card.dragging {
             opacity: 0.5;
             cursor: grabbing;
@@ -494,7 +500,11 @@
 <body>
     <div class="container">
         <h1>🎮 Игра: Четверти и знаки</h1>
-        <div class="subtitle">Перетаскивайте углы в соответствующие четверти</div>
+        <div class="subtitle">Перетаскивайте углы в соответствующие четверти. На телефоне можно играть нажатиями: сначала угол, потом четверть</div>
+        <div class="game-panel" style="justify-content:center">
+            <button class="btn" id="modeClassic" onclick="setMode('classic')">Классика</button>
+            <button class="btn btn-secondary" id="modeBlitz" onclick="setMode('blitz')">⚡ Блиц 60 сек</button>
+        </div>
         
         <div class="game-panel">
             <div class="score-display">
@@ -605,20 +615,34 @@
     </div>
     
     <script>
-        const angles = [
-            { value: 15, quadrant: 1 },
-            { value: 45, quadrant: 1 },
-            { value: 75, quadrant: 1 },
-            { value: 105, quadrant: 2 },
-            { value: 135, quadrant: 2 },
-            { value: 165, quadrant: 2 },
-            { value: 195, quadrant: 3 },
-            { value: 225, quadrant: 3 },
-            { value: 255, quadrant: 3 },
-            { value: 285, quadrant: 4 },
-            { value: 315, quadrant: 4 },
-            { value: 345, quadrant: 4 }
-        ];
+        // Пул углов по четвертям — каждый раунд набираем случайные 12 (по 3 из каждой)
+        const anglePool = {
+            1: [5, 15, 30, 45, 60, 75, 80],
+            2: [100, 105, 120, 135, 150, 165, 170],
+            3: [190, 195, 210, 225, 240, 255, 260],
+            4: [280, 285, 300, 315, 330, 345, 355]
+        };
+        let angles = [];
+        function buildAngles() {
+            angles = [];
+            for (let q = 1; q <= 4; q++) {
+                const pool = [...anglePool[q]].sort(() => Math.random() - 0.5).slice(0, 3);
+                pool.forEach(v => angles.push({ value: v, quadrant: q }));
+            }
+            angles.sort(() => Math.random() - 0.5);
+        }
+        
+        let gameMode = 'classic';
+        let blitzLeft = 60;
+        let blitzInterval = null;
+        let selectedCard = null;
+        
+        function setMode(m) {
+            gameMode = m;
+            document.getElementById('modeClassic').className = m === 'classic' ? 'btn' : 'btn btn-secondary';
+            document.getElementById('modeBlitz').className = m === 'blitz' ? 'btn' : 'btn btn-secondary';
+            resetGame();
+        }
         
         let correctCount = 0;
         let incorrectCount = 0;
@@ -626,7 +650,105 @@
         let timerInterval = null;
         let gameState = {};
         
+        function makeCard(angle) {
+            const card = document.createElement('div');
+            card.className = 'angle-card';
+            card.draggable = true;
+            card.dataset.angle = angle.value;
+            card.dataset.correctQuadrant = angle.quadrant;
+            card.innerHTML = `<div class="angle-value">${angle.value}°</div>`;
+            card.addEventListener('dragstart', dragStart);
+            card.addEventListener('dragend', dragEnd);
+            // Игра нажатиями (для тачскринов): тап по углу, затем тап по четверти
+            card.addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.querySelectorAll('.angle-card.selected').forEach(c => c.classList.remove('selected'));
+                if (selectedCard === card) { selectedCard = null; return; }
+                selectedCard = card;
+                card.classList.add('selected');
+            });
+            return card;
+        }
+        
+        function placeAngle(angleValue, correctQuadrant, quadrant) {
+            const cards = document.querySelectorAll('.angle-card');
+            cards.forEach(card => {
+                if (card.dataset.angle === String(angleValue)) card.remove();
+            });
+            for (let i = 1; i <= 4; i++) {
+                const container = document.getElementById(`quadrant${i}`);
+                const existing = container.querySelector(`[data-angle="${angleValue}"]`);
+                if (existing) existing.remove();
+            }
+            const container = document.getElementById(`quadrant${quadrant}`);
+            const dropped = document.createElement('div');
+            dropped.className = 'dropped-angle';
+            dropped.dataset.angle = angleValue;
+            dropped.dataset.correctQuadrant = correctQuadrant;
+            dropped.textContent = `${angleValue}°`;
+            dropped.onclick = function() { returnToGrid(this); };
+            container.appendChild(dropped);
+            gameState[angleValue] = quadrant;
+            selectedCard = null;
+            updateRemaining();
+            if (gameMode === 'blitz') checkBlitzLive(dropped, correctQuadrant, quadrant);
+        }
+        
+        // В блице — мгновенная подсветка каждого хода
+        function checkBlitzLive(el, correctQuadrant, quadrant) {
+            if (String(correctQuadrant) === String(quadrant)) {
+                el.classList.add('correct');
+                correctCount++;
+            } else {
+                el.classList.add('incorrect');
+                incorrectCount++;
+            }
+            updateScores();
+            const remaining = angles.length - Object.keys(gameState).length;
+            if (remaining === 0) finishBlitz();
+        }
+        
+        function startBlitz() {
+            stopBlitz();
+            blitzLeft = 60;
+            updateTimerDisplay();
+            blitzInterval = setInterval(() => {
+                blitzLeft--;
+                updateTimerDisplay();
+                if (blitzLeft <= 0) finishBlitz();
+            }, 1000);
+        }
+        
+        function stopBlitz() {
+            if (blitzInterval) { clearInterval(blitzInterval); blitzInterval = null; }
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        }
+        
+        function updateTimerDisplay() {
+            const m = Math.floor(Math.max(0, blitzLeft) / 60);
+            const s = Math.max(0, blitzLeft) % 60;
+            document.getElementById('timer').textContent =
+                (gameMode === 'blitz' ? '⚡' : '') + `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+        
+        function finishBlitz() {
+            stopBlitz();
+            // Подсветить всё для разбора
+            for (let i = 1; i <= 4; i++) {
+                const container = document.getElementById(`quadrant${i}`);
+                container.querySelectorAll('.dropped-angle').forEach(a => {
+                    if (!a.classList.contains('correct') && !a.classList.contains('incorrect')) {
+                        if (a.dataset.correctQuadrant === String(i)) { a.classList.add('correct'); correctCount++; }
+                        else { a.classList.add('incorrect'); incorrectCount++; }
+                    }
+                });
+            }
+            updateScores();
+            showResults();
+        }
+        
         function initGame() {
+            buildAngles();
             const anglesGrid = document.getElementById('anglesGrid');
             anglesGrid.innerHTML = '';
             
@@ -634,17 +756,7 @@
             const shuffled = [...angles].sort(() => Math.random() - 0.5);
             
             shuffled.forEach(angle => {
-                const card = document.createElement('div');
-                card.className = 'angle-card';
-                card.draggable = true;
-                card.dataset.angle = angle.value;
-                card.dataset.correctQuadrant = angle.quadrant;
-                card.innerHTML = `<div class="angle-value">${angle.value}°</div>`;
-                
-                card.addEventListener('dragstart', dragStart);
-                card.addEventListener('dragend', dragEnd);
-                
-                anglesGrid.appendChild(card);
+                anglesGrid.appendChild(makeCard(angle));
             });
             
             // Clear quadrants
@@ -655,11 +767,21 @@
             correctCount = 0;
             incorrectCount = 0;
             gameState = {};
+            selectedCard = null;
             updateScores();
+            updateRemaining();
             
-            if (!startTime) {
+            if (gameMode === 'blitz') {
                 startTime = Date.now();
-                startTimer();
+                startBlitz();
+            } else {
+                stopBlitz();
+                if (!startTime) {
+                    startTime = Date.now();
+                    startTimer();
+                } else {
+                    document.getElementById('timer').textContent = '00:00';
+                }
             }
         }
         
@@ -692,39 +814,17 @@
             const correctQuadrant = e.dataTransfer.getData('correctQuadrant');
             const quadrant = e.currentTarget.dataset.quadrant;
             
-            // Remove from grid if exists
-            const cards = document.querySelectorAll('.angle-card');
-            cards.forEach(card => {
-                if (card.dataset.angle === angle) {
-                    card.remove();
+            placeAngle(angle, correctQuadrant, quadrant);
+        }
+        
+        // Клик по четверти — для режима нажатий
+        document.querySelectorAll('.quadrant-drop').forEach(q => {
+            q.addEventListener('click', function() {
+                if (selectedCard) {
+                    placeAngle(selectedCard.dataset.angle, selectedCard.dataset.correctQuadrant, q.dataset.quadrant);
                 }
             });
-            
-            // Remove from other quadrants if exists
-            for (let i = 1; i <= 4; i++) {
-                const container = document.getElementById(`quadrant${i}`);
-                const existing = container.querySelector(`[data-angle="${angle}"]`);
-                if (existing) {
-                    existing.remove();
-                }
-            }
-            
-            // Add to this quadrant
-            const container = document.getElementById(`quadrant${quadrant}`);
-            const dropped = document.createElement('div');
-            dropped.className = 'dropped-angle';
-            dropped.dataset.angle = angle;
-            dropped.dataset.correctQuadrant = correctQuadrant;
-            dropped.textContent = `${angle}°`;
-            dropped.onclick = function() {
-                returnToGrid(this);
-            };
-            
-            container.appendChild(dropped);
-            
-            gameState[angle] = quadrant;
-            updateRemaining();
-        }
+        });
         
         function returnToGrid(element) {
             const angle = element.dataset.angle;
@@ -734,17 +834,7 @@
             delete gameState[angle];
             
             const anglesGrid = document.getElementById('anglesGrid');
-            const card = document.createElement('div');
-            card.className = 'angle-card';
-            card.draggable = true;
-            card.dataset.angle = angle;
-            card.dataset.correctQuadrant = correctQuadrant;
-            card.innerHTML = `<div class="angle-value">${angle}°</div>`;
-            
-            card.addEventListener('dragstart', dragStart);
-            card.addEventListener('dragend', dragEnd);
-            
-            anglesGrid.appendChild(card);
+            anglesGrid.appendChild(makeCard({ value: angle, quadrant: correctQuadrant }));
             updateRemaining();
         }
         
@@ -839,13 +929,12 @@
         }
         
         function resetGame() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-            }
+            stopBlitz();
             startTime = null;
             correctCount = 0;
             incorrectCount = 0;
             gameState = {};
+            selectedCard = null;
             initGame();
         }
         

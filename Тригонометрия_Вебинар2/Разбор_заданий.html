@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Разбор заданий: Тригонометрия</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0F1117 0%, #1E222E 100%);
+            color: #E5E7EB; min-height: 100vh; padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { text-align: center; color: #FBBF24; font-size: 2.2rem; margin-bottom: 10px; text-shadow: 0 2px 20px rgba(251,191,36,0.3); }
+        .subtitle { text-align: center; color: #9CA3AF; font-size: 1.05rem; margin-bottom: 25px; }
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+        .filter-btn { padding: 10px 20px; background: #1E222E; border: 2px solid #2A2E3A; border-radius: 20px; color: #D1D5DB; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; font-family: inherit; }
+        .filter-btn:hover { border-color: #FBBF24; }
+        .filter-btn.active { background: linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%); color: #0F1117; border-color: #FBBF24; }
+        .group-title { color: #22D3EE; font-size: 1.35rem; font-weight: 700; margin: 30px 0 15px; padding-left: 12px; border-left: 4px solid #22D3EE; }
+        .task-card { background: #171A23; border-radius: 10px; padding: 24px; border: 2px solid #2A2E3A; margin-bottom: 16px; transition: border-color 0.3s; }
+        .task-card.open { border-color: #FBBF24; }
+        .task-card.hidden { display: none; }
+        .task-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .task-num { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%); color: #0F1117; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+        .task-text { font-size: 1.3rem; color: #fff; flex: 1; min-width: 200px; }
+        .method-badge { font-size: 0.8rem; font-weight: 700; color: #22D3EE; background: rgba(34,211,238,0.12); border: 1px solid #22D3EE; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+        .toggle-btn { margin-top: 16px; padding: 12px 24px; font-size: 1rem; font-weight: 700; background: linear-gradient(135deg,#1E222E 0%,#252936 100%); border: 2px solid #FBBF24; border-radius: 8px; color: #FBBF24; cursor: pointer; transition: all 0.3s; font-family: inherit; }
+        .toggle-btn:hover { background: linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%); color: #0F1117; }
+        .steps { display: none; margin-top: 18px; }
+        .task-card.open .steps { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        .step { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; background: #1E222E; border-radius: 8px; padding: 12px 14px; line-height: 1.65; }
+        .step-n { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: #2A2E3A; color: #FBBF24; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+        .answer { margin-top: 14px; padding: 14px 18px; border-radius: 8px; background: rgba(34,211,238,0.1); border: 1px solid #22D3EE; font-size: 1.15rem; color: #fff; }
+        .answer strong { color: #22D3EE; }
+        .trap { margin-top: 10px; padding: 12px 16px; border-radius: 8px; background: rgba(239,68,68,0.1); border: 1px solid #EF4444; font-size: 0.95rem; color: #FCA5A5; }
+        .trap strong { color: #EF4444; }
+        .footer { text-align: center; color: #6B7280; font-size: 0.9rem; margin: 30px 0 10px; }
+        @media (max-width: 768px) { h1 { font-size: 1.6rem; } .task-text { font-size: 1.1rem; } .task-card { padding: 18px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Разбор заданий вебинара</h1>
+        <div class="subtitle">20 заданий с урока: сначала реши сам, потом открой пошаговое решение</div>
+        <div class="filter-bar">
+            <button class="filter-btn active" data-f="all">Все (20)</button>
+            <button class="filter-btn" data-f="expr">Выражения (10)</button>
+            <button class="filter-btn" data-f="eq">Уравнения (10)</button>
+        </div>
+        <div id="tasksList"></div>
+        <div class="footer">Тригонометрия: единичная окружность и уравнения · Вебинар 2</div>
+    </div>
+    <script>
+        var tasks = [
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Точка на круге', task:'sin 90°',
+             steps:['Угол 90° — верхняя точка круга P(0; 1).','Синус — это ордината y: sin 90° = 1.'], answer:'1'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Таблица', task:'2cos 60°',
+             steps:['По таблице cos 60° = 1/2.','Подставляем: 2 · 1/2 = 1.'], answer:'1'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Таблица', task:'tg 60° − ctg 30°',
+             steps:['tg 60° = √3, ctg 30° = √3.','Вычитаем: √3 − √3 = 0.'], answer:'0'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Таблица + квадрат', task:'6sin²45°',
+             steps:['sin 45° = √2/2.','Квадрат: (√2/2)² = 2/4 = 1/2.','Умножаем: 6 · 1/2 = 3.'], answer:'3'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Таблица', task:'5cos 0° − 3sin 90°',
+             steps:['cos 0° = 1 (правая точка круга), sin 90° = 1.','Считаем: 5 · 1 − 3 · 1 = 2.'], answer:'2'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Основное тождество', task:'sin²60° + cos²60°',
+             steps:['sin 60° = √3/2 → квадрат 3/4; cos 60° = 1/2 → квадрат 1/4.','Сумма: 3/4 + 1/4 = 1. Это основное тождество sin² + cos² = 1.'], answer:'1'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Синус суммы', task:'sin 30°cos 60° + cos 30°sin 60°',
+             steps:['Узнаём формулу: sin α cos β + cos α sin β = sin(α + β).','Сворачиваем: sin(30° + 60°) = sin 90° = 1.'], answer:'1'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Косинус двойного', task:'cos²(π/6) − sin²(π/6)',
+             steps:['Узнаём формулу: cos² − sin² = cos 2α.','Сворачиваем: cos(2 · π/6) = cos(π/3).','π/3 — это 60°, cos 60° = 1/2.'], answer:'1/2 (0,5)'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Синус двойного', task:'4sin(π/4)cos(π/4)',
+             steps:['Выносим 2: 2 · (2sin(π/4)cos(π/4)).','В скобках синус двойного: 2sin α cos α = sin 2α.','Получаем 2 · sin(π/2) = 2 · 1 = 2.'], answer:'2'},
+            {group:'Блок А · Значения выражений — ответ только число', cat:'expr', method:'Таблица + деление', task:'(sin 60° + cos 30°) : cos 30°',
+             steps:['Числитель: √3/2 + √3/2 = √3.','Знаменатель: cos 30° = √3/2.','Делим: √3 : (√3/2) = 2.'], answer:'2'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'sin x = t, I четверть', task:'sin x = 0,5, x ∈ (0°; 90°)',
+             steps:['На круге sin — это y. Ищем точку с y = 0,5 в I четверти.','Табличное значение: sin 30° = 1/2.'], answer:'x = 30'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'cos x = t, I четверть', task:'cos x = 0,5, x ∈ (0°; 90°)',
+             steps:['На круге cos — это x. Ищем точку с x = 0,5 в I четверти.','Табличное значение: cos 60° = 1/2.'], answer:'x = 60'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'tg x = t', task:'tg x = 1, x ∈ (0°; 90°)',
+             steps:['В I четверти tg растёт от 0 до +∞.','Табличное значение: tg 45° = 1.'], answer:'x = 45'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'II четверть: 180° − угол', task:'sin x = 0,5, x ∈ (90°; 180°)',
+             steps:['Острый табличный угол: sin = 0,5 → 30°.','Во II четверти синус положителен, формула: 180° − угол.','Считаем: 180° − 30° = 150°.'], answer:'x = 150'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'II четверть: 180° − угол', task:'cos x = −0,5, x ∈ (90°; 180°)',
+             steps:['Во II четверти косинус отрицателен — знак подходит.','Острый угол с cos = 1/2 — это 60°.','Пересчёт: 180° − 60° = 120°.'], answer:'x = 120'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'III четверть: 180° + угол', task:'sin x = −√2/2, x ∈ (180°; 270°)',
+             steps:['Синус отрицателен в III четверти — знак подходит.','Острый угол: sin 45° = √2/2.','Формула III четверти: 180° + угол = 180° + 45° = 225°.'], answer:'x = 225'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'Квадрат + условие', task:'cos²x = 0,25, cos x > 0, x ∈ (0°; 90°)',
+             steps:['Извлекаем корень: cos x = ±0,5.','По условию cos x > 0, значит cos x = 0,5.','В (0°; 90°) подходит x = 60°.'], answer:'x = 60', trap:'Ловушка: без условия было бы два корня ±0,5. Всегда учитывай знак!'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'Двойной аргумент', task:'sin 2x = 1, x ∈ (0°; 90°)',
+             steps:['Сначала реши относительно 2x: sin 2x = 1 → 2x = 90°.','Делим пополам: x = 45°.','Проверяем: 45° входит в (0°; 90°).'], answer:'x = 45', trap:'Ловушка: не забудь поделить пополам и проверить вхождение в промежуток!'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'Замена t = sin x', task:'2sin²x − 3sin x + 1 = 0, x ∈ (0°; 90°)',
+             steps:['Замена t = sin x: 2t² − 3t + 1 = 0. D = 9 − 8 = 1.','Корни: t = 1 или t = 1/2.','t = 1 → x = 90° — граница не входит в (0°; 90°), отбрасываем.','t = 1/2 → x = 30°.'], answer:'x = 30', trap:'Ловушки: корни с |t| > 1 отбросить; границы промежутка обычно не входят — проверяй строгость!'},
+            {group:'Блок Б · Уравнения — корень из промежутка', cat:'eq', method:'Сумма корней', task:'sin x = √3/2, x ∈ (0°; 360°) — сумма корней',
+             steps:['sin = √3/2 в I и II четвертях.','Корни: x = 60° и x = 120°.','Сумма: 60 + 120 = 180.'], answer:'180'}
+        ];
+        var list = document.getElementById('tasksList');
+        function render(filter) {
+            list.innerHTML = ''; var lastGroup = ''; var n = 0;
+            tasks.forEach(function(t){
+                if (filter !== 'all' && t.cat !== filter) return;
+                n++;
+                if (t.group !== lastGroup) {
+                    var g = document.createElement('div'); g.className = 'group-title'; g.textContent = t.group; list.appendChild(g); lastGroup = t.group;
+                }
+                var card = document.createElement('div'); card.className = 'task-card';
+                var html = '<div class="task-head"><div class="task-num">' + n + '</div><div class="task-text">' + t.task + '</div><div class="method-badge">' + t.method + '</div></div>' +
+                    '<button class="toggle-btn">Показать решение</button><div class="steps">' +
+                    t.steps.map(function(s,k){ return '<div class="step"><div class="step-n">' + (k+1) + '</div><div>' + s + '</div></div>'; }).join('') +
+                    '<div class="answer"><strong>Ответ:</strong> ' + t.answer + '</div>';
+                if (t.trap) html += '<div class="trap"><strong>⚠ Ловушка:</strong> ' + t.trap + '</div>';
+                html += '</div>';
+                card.innerHTML = html;
+                var btn = card.querySelector('.toggle-btn');
+                btn.addEventListener('click', function(){ var open = card.classList.toggle('open'); btn.textContent = open ? 'Скрыть решение' : 'Показать решение'; });
+                list.appendChild(card);
+            });
+        }
+        document.querySelectorAll('.filter-btn').forEach(function(b){
+            b.addEventListener('click', function(){
+                document.querySelectorAll('.filter-btn').forEach(function(x){ x.classList.remove('active'); });
+                b.classList.add('active'); render(b.dataset.f);
+            });
+        });
+        render('all');
+    </script>
+</body>
+</html>

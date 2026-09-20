@@ -239,56 +239,6 @@
             background: #0F1117;
         }
         
-        .progress-panel {
-            background: #171A23;
-            border-radius: 10px;
-            padding: 30px;
-            border: 2px solid #2A2E3A;
-            margin-bottom: 30px;
-        }
-        
-        .progress-panel h2 {
-            color: #FBBF24;
-            margin-bottom: 25px;
-            font-size: 1.8rem;
-        }
-        
-        .progress-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .progress-item {
-            background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .progress-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #FBBF24;
-            margin-bottom: 10px;
-        }
-        
-        .progress-label {
-            color: #9CA3AF;
-            font-size: 0.95rem;
-        }
-        
-        .achievement-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
-            color: #0F1117;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin: 5px;
-        }
-        
         .tips-section {
             background: linear-gradient(135deg, #1E222E 0%, #252936 100%);
             border: 2px solid #22D3EE;
@@ -367,23 +317,6 @@
                 padding: 20px 14px;
             }
             
-            .progress-panel {
-                padding: 20px;
-            }
-            
-            .progress-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-            }
-            
-            .progress-item {
-                padding: 14px 8px;
-            }
-            
-            .progress-value {
-                font-size: 1.6rem;
-            }
-            
             .module-card {
                 padding: 20px;
             }
@@ -411,10 +344,6 @@
                 font-size: 1.05rem;
             }
             
-            .progress-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
             .welcome-title {
                 font-size: 1.5rem;
             }
@@ -435,12 +364,16 @@
                 <button class="burger-btn" id="burgerBtn" onclick="toggleMenu(event)">☰</button>
             </div>
             <div class="nav-tabs" id="navTabs">
-                <button class="tab-btn active" onclick="showTab('home')">Главная</button>
-                <button class="tab-btn" onclick="showTab('glossary')">Глоссарий</button>
-                <button class="tab-btn" onclick="showTab('trainer')">Тренажер</button>
-                <button class="tab-btn" onclick="showTab('quiz')">Квиз</button>
-                <button class="tab-btn" onclick="showTab('game')">Игра</button>
-                <button class="tab-btn" onclick="showTab('formulas')">Формулы</button>
+                <button class="tab-btn active" data-tab="home" onclick="showTab('home')">Главная</button>
+                <button class="tab-btn" data-tab="glossary" onclick="showTab('glossary')">Глоссарий</button>
+                <button class="tab-btn" data-tab="trainer" onclick="showTab('trainer')">Окружность</button>
+                <button class="tab-btn" data-tab="formulas" onclick="showTab('formulas')">Формулы</button>
+                <button class="tab-btn" data-tab="expr" onclick="showTab('expr')">⚡ Генератор</button>
+                <button class="tab-btn" data-tab="table" onclick="showTab('table')">Таблица</button>
+                <button class="tab-btn" data-tab="degrees" onclick="showTab('degrees')">Градусы</button>
+                <button class="tab-btn" data-tab="game" onclick="showTab('game')">Игра</button>
+                <button class="tab-btn" data-tab="quiz" onclick="showTab('quiz')">Квиз</button>
+                <button class="tab-btn" data-tab="tasks" onclick="showTab('tasks')">Разбор</button>
             </div>
         </div>
     </div>
@@ -451,31 +384,6 @@
             <div class="welcome-section">
                 <h1 class="welcome-title">Добро пожаловать!</h1>
                 <p class="welcome-subtitle">Интерактивный комплекс для изучения тригонометрии</p>
-            </div>
-            
-            <div class="progress-panel">
-                <h2>Ваш прогресс</h2>
-                <div class="progress-grid">
-                    <div class="progress-item">
-                        <div class="progress-value" id="totalTime">0:00</div>
-                        <div class="progress-label">Время обучения</div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-value" id="modulesCompleted">0/5</div>
-                        <div class="progress-label">Модулей пройдено</div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-value" id="achievementsCount">0</div>
-                        <div class="progress-label">Достижений</div>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 30px; text-align: center;">
-                    <div style="color: #9CA3AF; margin-bottom: 15px; font-weight: 600;">Ваши достижения:</div>
-                    <div id="achievementsList">
-                        <span style="color: #6B7280;">Начните изучение, чтобы получить достижения!</span>
-                    </div>
-                </div>
             </div>
             
             <div class="tips-section">
@@ -531,7 +439,7 @@
                     <div class="module-icon">🎓</div>
                     <div class="module-title">Квиз</div>
                     <div class="module-description">
-                        15 вопросов с мгновенной проверкой и подробными объяснениями для закрепления знаний.
+                        23 вопроса с перемешиванием, мгновенной проверкой и подробными объяснениями — включая задания вебинара.
                     </div>
                     <div class="module-stats">
                         <div class="stat">
@@ -580,6 +488,78 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="module-card" onclick="showTab('expr')">
+                    <div class="module-icon">⚡</div>
+                    <div class="module-title">Генератор заданий</div>
+                    <div class="module-description">
+                        Бесконечная практика: выражения и уравнения с вебинара с вводом ответа и серией.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~15 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Практика</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('table')">
+                    <div class="module-icon">📊</div>
+                    <div class="module-title">Drill таблицы</div>
+                    <div class="module-description">
+                        Табличные значения sin, cos, tg, ctg до автоматизма + блиц на время.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~10 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Скорость</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('degrees')">
+                    <div class="module-icon">🔄</div>
+                    <div class="module-title">Градусы ↔ Радианы</div>
+                    <div class="module-description">
+                        Перевод π/6, π/4, π/3: калькулятор и мини-тест для заданий с π.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~10 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Практика</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="module-card" onclick="showTab('tasks')">
+                    <div class="module-icon">📝</div>
+                    <div class="module-title">Разбор заданий</div>
+                    <div class="module-description">
+                        Все 20 заданий вебинара: выражения и уравнения — с пошаговыми решениями.
+                    </div>
+                    <div class="module-stats">
+                        <div class="stat">
+                            <span>⏱</span>
+                            <span>~20 мин</span>
+                        </div>
+                        <div class="stat">
+                            <span>📊</span>
+                            <span>Разбор</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             
                     </div>
@@ -608,12 +588,29 @@
         <div id="formulas" class="section">
             <iframe src="Визуализатор_формул_приведения.html"></iframe>
         </div>
+        
+        <!-- Generator Section -->
+        <div id="expr" class="section">
+            <iframe src="Тренажер_выражения_уравнения.html"></iframe>
+        </div>
+        
+        <!-- Table drill Section -->
+        <div id="table" class="section">
+            <iframe src="Тренажер_таблица.html"></iframe>
+        </div>
+        
+        <!-- Degrees Section -->
+        <div id="degrees" class="section">
+            <iframe src="Тренажер_градусы_радианы.html"></iframe>
+        </div>
+        
+        <!-- Tasks Section -->
+        <div id="tasks" class="section">
+            <iframe src="Разбор_заданий.html"></iframe>
+        </div>
     </div>
     
     <script>
-        let startTime = Date.now();
-        let visitedModules = new Set();
-        
         function showTab(tabName) {
             // Hide all sections
             const sections = document.querySelectorAll('.section');
@@ -622,16 +619,11 @@
             // Show selected section
             document.getElementById(tabName).classList.add('active');
             
-            // Update tab buttons
+            // Update tab buttons (по data-tab — работает и из карточек)
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Track visited modules
-            if (tabName !== 'home') {
-                visitedModules.add(tabName);
-                updateProgress();
-            }
+            const activeBtn = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+            if (activeBtn) activeBtn.classList.add('active');
             
             // Hide mobile menu if open
             const navTabs = document.getElementById('navTabs');
@@ -654,67 +646,6 @@
             burgerBtn.classList.toggle('burger-open', isOpen);
             burgerBtn.textContent = isOpen ? '✕' : '☰';
         }
-        
-        function updateProgress() {
-            // Update modules completed
-            document.getElementById('modulesCompleted').textContent = `${visitedModules.size}/5`;
-            
-            // Check achievements
-            const achievements = [];
-            
-            if (visitedModules.has('glossary')) {
-                achievements.push('📖 Теоретик');
-            }
-            if (visitedModules.has('trainer')) {
-                achievements.push('🎯 Практик');
-            }
-            if (visitedModules.has('quiz')) {
-                achievements.push('🎓 Знаток');
-            }
-            if (visitedModules.has('game')) {
-                achievements.push('🎮 Игрок');
-            }
-            if (visitedModules.has('formulas')) {
-                achievements.push('📐 Математик');
-            }
-            if (visitedModules.size === 5) {
-                achievements.push('🏆 Мастер тригонометрии');
-            }
-            
-            document.getElementById('achievementsCount').textContent = achievements.length;
-            
-            const achievementsList = document.getElementById('achievementsList');
-            if (achievements.length > 0) {
-                achievementsList.innerHTML = achievements.map(a => 
-                    `<span class="achievement-badge">${a}</span>`
-                ).join('');
-            }
-        }
-        
-        // Update timer
-        setInterval(() => {
-            const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const minutes = Math.floor(elapsed / 60);
-            const seconds = elapsed % 60;
-            document.getElementById('totalTime').textContent = 
-                `${minutes}:${String(seconds).padStart(2, '0')}`;
-        }, 1000);
-        
-        // Load progress from localStorage
-        const savedProgress = localStorage.getItem('trigProgress');
-        if (savedProgress) {
-            const data = JSON.parse(savedProgress);
-            visitedModules = new Set(data.modules);
-            updateProgress();
-        }
-        
-        // Save progress
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem('trigProgress', JSON.stringify({
-                modules: Array.from(visitedModules),
-                timestamp: Date.now()
-            }));
-        });
     </script>
 </body>
 </html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drill: табличные значения</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg,#0F1117 0%,#1E222E 100%); color: #E5E7EB; min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; color: #FBBF24; font-size: 2.2rem; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #9CA3AF; margin-bottom: 25px; }
+        .panel { background: #171A23; border-radius: 10px; padding: 20px; border: 2px solid #2A2E3A; margin-bottom: 20px; }
+        .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
+        .chip { padding: 10px 18px; background: #1E222E; border: 2px solid #2A2E3A; border-radius: 20px; color: #D1D5DB; cursor: pointer; font-weight: 700; font-family: inherit; font-size: 0.9rem; }
+        .chip.active { background: linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%); color: #0F1117; border-color: #FBBF24; }
+        .stats { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .sbox { background: #171A23; border: 2px solid #2A2E3A; border-radius: 8px; padding: 10px 22px; text-align: center; }
+        .sv { font-size: 1.6rem; font-weight: 800; color: #FBBF24; } .sv.g { color: #10B981; } .sv.r { color: #EF4444; }
+        .sl { color: #9CA3AF; font-size: 0.85rem; }
+        .q-card { background: #171A23; border-radius: 10px; padding: 35px; border: 2px solid #FBBF24; text-align: center; }
+        .q-text { font-size: 2.6rem; color: #fff; margin-bottom: 25px; font-weight: 700; }
+        .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .opt { padding: 18px; background: #1E222E; border: 2px solid #2A2E3A; border-radius: 8px; color: #E5E7EB; font-size: 1.3rem; cursor: pointer; transition: all 0.25s; font-family: inherit; }
+        .opt:hover { border-color: #FBBF24; transform: translateY(-2px); }
+        .opt.ok { border-color: #10B981; background: rgba(16,185,129,0.15); }
+        .opt.bad { border-color: #EF4444; background: rgba(239,68,68,0.15); }
+        .opt:disabled { cursor: default; opacity: 0.85; }
+        .timer { text-align: center; color: #22D3EE; font-weight: 800; font-size: 1.2rem; margin-top: 12px; font-family: monospace; }
+        table.ref { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.95rem; }
+        table.ref th { background: linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%); color: #0F1117; padding: 10px; }
+        table.ref td { border: 1px solid #2A2E3A; padding: 8px; text-align: center; background: #171A23; }
+        details { margin-top: 15px; } summary { cursor: pointer; color: #22D3EE; font-weight: 700; }
+        @media (max-width: 768px) { h1 { font-size: 1.5rem; } .opts { grid-template-columns: 1fr; } .q-text { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Drill: таблица значений</h1>
+        <div class="subtitle">Выучи sin, cos, tg, ctg для 0° · 30° · 45° · 60° · 90° до автоматизма — это база всех заданий вебинара</div>
+        <div class="panel">
+            <div class="row">
+                <button class="chip active" data-f="sin">sin</button>
+                <button class="chip active" data-f="cos">cos</button>
+                <button class="chip" data-f="tg">tg</button>
+                <button class="chip" data-f="ctg">ctg</button>
+                <span style="color:#6B7280">|</span>
+                <button class="chip active" id="speedBtn">⏱ На время: выкл</button>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="sbox"><div class="sv g" id="okV">0</div><div class="sl">Верно</div></div>
+            <div class="sbox"><div class="sv r" id="badV">0</div><div class="sl">Ошибки</div></div>
+            <div class="sbox"><div class="sv" id="bestV">0</div><div class="sl">Лучшая серия</div></div>
+        </div>
+        <div class="q-card">
+            <div class="q-text" id="qText">sin 30° = ?</div>
+            <div class="opts" id="opts"></div>
+            <div class="timer" id="timer"></div>
+        </div>
+        <div class="panel">
+            <details>
+                <summary>Показать таблицу-подсказку</summary>
+                <table class="ref">
+                    <tr><th>Угол</th><th>sin</th><th>cos</th><th>tg</th><th>ctg</th></tr>
+                    <tr><td>0°</td><td>0</td><td>1</td><td>0</td><td>—</td></tr>
+                    <tr><td>30°</td><td>1/2</td><td>√3/2</td><td>√3/3</td><td>√3</td></tr>
+                    <tr><td>45°</td><td>√2/2</td><td>√2/2</td><td>1</td><td>1</td></tr>
+                    <tr><td>60°</td><td>√3/2</td><td>1/2</td><td>√3</td><td>√3/3</td></tr>
+                    <tr><td>90°</td><td>1</td><td>0</td><td>—</td><td>0</td></tr>
+                </table>
+            </details>
+        </div>
+    </div>
+    <script>
+        var funcs = ['sin','cos'], speed = false, cur = null, okN = 0, badN = 0, streak = 0, best = 0, deadline = 0, timerI = null;
+        var VALS = {
+            '0':  {sin:'0', cos:'1', tg:'0', ctg:'—'},
+            '30': {sin:'1/2', cos:'√3/2', tg:'√3/3', ctg:'√3'},
+            '45': {sin:'√2/2', cos:'√2/2', tg:'1', ctg:'1'},
+            '60': {sin:'√3/2', cos:'1/2', tg:'√3', ctg:'√3/3'},
+            '90': {sin:'1', cos:'0', tg:'—', ctg:'0'}
+        };
+        var ANGLES = ['0','30','45','60','90'];
+        var ALLV = ['0','1/2','√2/2','√3/2','1','√3/3','√3','—'];
+        function pick(){ var f = funcs[Math.floor(Math.random()*funcs.length)]; var a = ANGLES[Math.floor(Math.random()*ANGLES.length)]; return {f:f, a:a, ans:VALS[a][f]}; }
+        function next(){
+            cur = pick();
+            document.getElementById('qText').textContent = cur.f + ' ' + cur.a + '° = ?';
+            var opts = [cur.ans];
+            while (opts.length < 4) { var v = ALLV[Math.floor(Math.random()*ALLV.length)]; if (opts.indexOf(v) < 0) opts.push(v); }
+            opts.sort(function(){ return Math.random()-0.5; });
+            var box = document.getElementById('opts'); box.innerHTML = '';
+            opts.forEach(function(o){
+                var b = document.createElement('button'); b.className = 'opt'; b.textContent = o;
+                b.onclick = function(){ answer(o, b); };
+                box.appendChild(b);
+            });
+            if (speed) { deadline = Date.now() + 10000; startTimer(); } else { stopTimer(); document.getElementById('timer').textContent = ''; }
+        }
+        function startTimer(){
+            stopTimer();
+            timerI = setInterval(function(){
+                var left = Math.max(0, deadline - Date.now());
+                document.getElementById('timer').textContent = '⏱ ' + (left/1000).toFixed(1) + ' с';
+                if (left <= 0) { stopTimer(); register(false, null); setTimeout(next, 900); }
+            }, 100);
+        }
+        function stopTimer(){ if (timerI) clearInterval(timerI); timerI = null; }
+        function answer(o, btn){
+            var btns = document.querySelectorAll('.opt'); btns.forEach(function(b){ b.disabled = true; });
+            var good = (o === cur.ans);
+            btns.forEach(function(b){ if (b.textContent === cur.ans) b.classList.add('ok'); });
+            if (!good) btn.classList.add('bad');
+            register(good, btn);
+            setTimeout(next, good ? 500 : 1400);
+        }
+        function register(good){
+            if (good) { okN++; streak++; best = Math.max(best, streak); }
+            else { badN++; streak = 0; }
+            document.getElementById('okV').textContent = okN;
+            document.getElementById('badV').textContent = badN;
+            document.getElementById('bestV').textContent = best;
+        }
+        document.querySelectorAll('.chip[data-f]').forEach(function(c){
+            c.addEventListener('click', function(){
+                c.classList.toggle('active');
+                funcs = Array.prototype.map.call(document.querySelectorAll('.chip[data-f].active'), function(x){ return x.dataset.f; });
+                if (!funcs.length) { c.classList.add('active'); funcs = [c.dataset.f]; }
+                next();
+            });
+        });
+        document.getElementById('speedBtn').addEventListener('click', function(){
+            speed = !speed;
+            this.textContent = speed ? '⏱ На время: 10 с' : '⏱ На время: выкл';
+            this.classList.toggle('active', speed);
+            next();
+        });
+        next();
+    </script>
+</body>
+</html>
