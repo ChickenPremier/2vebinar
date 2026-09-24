@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор объёмов</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:8px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:22px}
+.panel{background:#171A23;border:2px solid #2A2E3A;border-radius:10px;padding:20px;margin-bottom:18px}
+.panel h2{color:#22D3EE;margin-bottom:12px;font-size:1.2rem}
+.solid-row{display:flex;gap:10px;flex-wrap:wrap}
+.solid-btn{padding:11px 18px;background:#1E222E;border:2px solid #2A2E3A;border-radius:8px;color:#D1D5DB;cursor:pointer;font-weight:700;font-family:inherit;transition:all .3s}
+.solid-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+.field label{display:block;color:#9CA3AF;font-size:.85rem;margin-bottom:6px}
+.field input{width:100%;padding:12px;background:#0F1117;border:2px solid #2A2E3A;border-radius:8px;color:#fff;font-size:1.15rem;text-align:center;font-family:inherit}
+.field input:focus{outline:none;border-color:#FBBF24;box-shadow:0 0 12px rgba(251,191,36,.35)}
+.result{background:#0F1117;border:1px solid #FBBF24;border-radius:8px;padding:16px;margin-top:14px;line-height:1.8;font-size:1.05rem}
+.result .big{font-size:1.5rem;color:#FBBF24;font-weight:800}
+.result .cy{color:#22D3EE;font-weight:700}
+.steps-line{color:#9CA3AF;font-size:.95rem}
+.quiz-card{background:#171A23;border:2px solid #FBBF24;border-radius:10px;padding:26px;text-align:center}
+.q-text{font-size:1.5rem;color:#fff;margin:10px 0}
+.q-tag{display:inline-block;background:rgba(34,211,238,.12);border:1px solid #22D3EE;color:#22D3EE;padding:5px 15px;border-radius:20px;font-size:.85rem;font-weight:700}
+.ans-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.ans-row input{width:200px;padding:13px;background:#0F1117;border:2px solid #FBBF24;border-radius:8px;color:#fff;font-size:1.2rem;text-align:center;font-family:inherit}
+.btn{padding:13px 28px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;font-size:1rem;cursor:pointer;font-family:inherit}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,191,36,.4)}
+.btn.ghost{background:#1E222E;color:#FBBF24;border:2px solid #FBBF24}
+.fb{margin-top:14px;padding:14px;border-radius:8px;display:none;line-height:1.7;text-align:left}
+.fb.show{display:block}.fb.ok{background:rgba(16,185,129,.12);border:2px solid #10B981}.fb.bad{background:rgba(239,68,68,.12);border:2px solid #EF4444}
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.stat-box{background:#171A23;border:2px solid #2A2E3A;border-radius:8px;padding:10px 22px;text-align:center;min-width:100px}
+.stat-v{font-size:1.5rem;font-weight:800;color:#FBBF24}.stat-v.g{color:#10B981}.stat-v.r{color:#EF4444}.stat-l{color:#9CA3AF;font-size:.82rem}
+@media(max-width:768px){h1{font-size:1.5rem}.ans-row input{width:100%}.btn{width:100%}.ans-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🧊 Калькулятор объёмов</h1>
+<div class="subtitle">Выбери тело, введи параметры — увидишь формулу, подстановку и ответ. Ниже — режим «Проверь себя».</div>
+
+<div class="panel">
+<h2>1 · Выбери тело</h2>
+<div class="solid-row" id="solidRow">
+<button class="solid-btn active" data-s="parr">Параллелепипед</button>
+<button class="solid-btn" data-s="cube">Куб</button>
+<button class="solid-btn" data-s="prism">Призма</button>
+<button class="solid-btn" data-s="pyr">Пирамида</button>
+<button class="solid-btn" data-s="cyl">Цилиндр</button>
+<button class="solid-btn" data-s="cone">Конус</button>
+<button class="solid-btn" data-s="ball">Шар</button>
+</div>
+<h2 style="margin-top:16px">2 · Введи параметры</h2>
+<div class="inputs" id="inputs"></div>
+<div class="result" id="calcOut"></div>
+</div>
+
+<div class="panel">
+<h2>🎯 Проверь себя: случайные параметры</h2>
+<div class="stats">
+<div class="stat-box"><div class="stat-v g" id="okV">0</div><div class="stat-l">Верно</div></div>
+<div class="stat-box"><div class="stat-v r" id="badV">0</div><div class="stat-l">Ошибки</div></div>
+<div class="stat-box"><div class="stat-v" id="streakV">0</div><div class="stat-l">Серия</div></div>
+</div>
+<div class="quiz-card">
+<div class="q-tag" id="qqTag">Вопрос</div>
+<div class="q-text" id="qqText">…</div>
+<div style="color:#9CA3AF" id="qqFormula"></div>
+<div class="ans-row">
+<input id="qqAns" placeholder="Твой ответ" autocomplete="off">
+<button class="btn" onclick="checkQ()">Проверить</button>
+</div>
+<div class="fb" id="qqFb"></div>
+<div class="ans-row" style="margin-top:12px">
+<button class="btn ghost" onclick="nextQ(true)">Дальше →</button>
+<button class="btn ghost" onclick="resetQ()">Заново</button>
+</div>
+</div>
+<p style="color:#6B7280;font-size:.85rem;text-align:center;margin-top:10px">Дроби — через точку. Если в вопросе «V/π» — вводи число без π (например 45). Enter — проверить / дальше.</p>
+</div>
+</div>
+<script>
+var solid='parr';
+var DEFS={
+parr:{name:'Параллелепипед',params:[['a','a'],['b','b'],['c','c']],formula:'V = a·b·c'},
+cube:{name:'Куб',params:[['a','ребро a']],formula:'V = a³; S = 6a²; d = a√3'},
+prism:{name:'Призма',params:[['s','S осн'],['h','высота h']],formula:'V = Sосн·h'},
+pyr:{name:'Пирамида',params:[['s','S осн'],['h','высота h']],formula:'V = ⅓·Sосн·h'},
+cyl:{name:'Цилиндр',params:[['r','радиус R'],['h','высота h']],formula:'V = πR²h; Sбок = 2πRh'},
+cone:{name:'Конус',params:[['r','радиус R'],['h','высота h']],formula:'V = ⅓πR²h; l² = R²+h²'},
+ball:{name:'Шар',params:[['r','радиус R']],formula:'V = 4/3·πR³; S = 4πR²'}
+};
+var inputsEl=document.getElementById('inputs'),out=document.getElementById('calcOut');
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+document.querySelectorAll('.solid-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.solid-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');solid=b.dataset.s;buildInputs()})});
+function buildInputs(){
+var d=DEFS[solid];inputsEl.innerHTML='';
+d.params.forEach(function(p){var dv=p[0]==='a'?4:(p[0]==='b'?5:(p[0]==='c'?6:(p[0]==='s'?15:(p[0]==='r'?3:5))));
+var w=document.createElement('div');w.className='field';w.innerHTML='<label>'+p[1]+'</label><input type="number" min="0" step="any" value="'+dv+'" data-k="'+p[0]+'">';inputsEl.appendChild(w)});
+inputsEl.querySelectorAll('input').forEach(function(i){i.addEventListener('input',calc)});
+calc();
+}
+function val(k){var el=inputsEl.querySelector('input[data-k="'+k+'"]');return parseFloat(el.value)||0}
+function f2(x){return Math.round(x*100)/100}
+function calc(){
+var d=DEFS[solid],html='<div class="cy">'+d.name+': '+d.formula+'</div>',a,b,c,s,h,r;
+if(solid==='parr'){a=val('a');b=val('b');c=val('c');html+='V = '+a+'·'+b+'·'+c+' = <span class="big">'+f2(a*b*c)+'</span>';html+='<div class="steps-line">Диагональ тела: d = √('+a+'²+'+b+'²+'+c+'²) = '+f2(Math.sqrt(a*a+b*b+c*c))+'</div>'}
+if(solid==='cube'){a=val('a');html+='V = '+a+'³ = <span class="big">'+f2(a*a*a)+'</span><br>S<sub>пов</sub> = 6·'+a+'² = <span class="cy">'+f2(6*a*a)+'</span>; d = '+a+'√3 ≈ '+f2(a*Math.sqrt(3))}
+if(solid==='prism'){s=val('s');h=val('h');html+='V = '+s+'·'+h+' = <span class="big">'+f2(s*h)+'</span>'}
+if(solid==='pyr'){s=val('s');h=val('h');html+='V = ⅓·'+s+'·'+h+' = <span class="big">'+f2(s*h/3)+'</span><div class="steps-line">Шаги: 1) Sосн·h = '+(s*h)+'; 2) подели на 3 → '+f2(s*h/3)+' (не забудь ⅓!)</div>'}
+if(solid==='cyl'){r=val('r');h=val('h');html+='V = π·'+r+'²·'+h+' = <span class="big">'+f2(r*r*h)+'π ≈ '+f2(r*r*h*Math.PI)+'</span><br>S<sub>бок</sub> = 2π·'+r+'·'+h+' = <span class="cy">'+f2(2*r*h)+'π</span>'}
+if(solid==='cone'){r=val('r');h=val('h');html+='V = ⅓·π·'+r+'²·'+h+' = <span class="big">'+f2(r*r*h/3)+'π ≈ '+f2(r*r*h/3*Math.PI)+'</span><br>Образующая l = √('+r+'²+'+h+'²) = <span class="cy">'+f2(Math.sqrt(r*r+h*h))+'</span><div class="steps-line">Конус — треть цилиндра с тем же R и h.</div>'}
+if(solid==='ball'){r=val('r');html+='V = 4/3·π·'+r+'³ = <span class="big">'+f2(4*r*r*r/3)+'π ≈ '+f2(4*Math.PI*r*r*r/3)+'</span><br>S<sub>сферы</sub> = 4π·'+r+'² = <span class="cy">'+f2(4*r*r)+'π</span> (в 4 раза больше круга того же R)'}
+out.innerHTML=html;
+}
+buildInputs();
+// ---- quiz ----
+var cur=null,okN=0,badN=0,streak=0,answered=false;
+function gen(){
+var t=rnd(0,6),q={};
+if(t===0){var a=rnd(2,9),b=rnd(2,9),c=rnd(2,9);q={tag:'Параллелепипед',text:'a='+a+', b='+b+', c='+c+'. Найди V.',f:'V = a·b·c',ans:a*b*c,how:'V = '+a+'·'+b+'·'+c+' = '+(a*b*c)+'.'}}
+else if(t===1){var k=rnd(2,7);q={tag:'Куб',text:'Ребро куба '+k+'. Найди Sпов.',f:'S = 6a²',ans:6*k*k,how:'S = 6·'+k+'² = 6·'+(k*k)+' = '+(6*k*k)+'.'}}
+else if(t===2){var s=rnd(5,25),h=rnd(3,12);q={tag:'Призма',text:'Sосн='+s+', h='+h+'. Найди V.',f:'V = Sосн·h',ans:s*h,how:'V = '+s+'·'+h+' = '+(s*h)+'.'}}
+else if(t===3){var s2=3*rnd(2,10),h2=rnd(3,12);q={tag:'Пирамида',text:'Sосн='+s2+', h='+h2+'. Найди V.',f:'V = ⅓Sосн·h',ans:s2*h2/3,how:'V = ⅓·'+s2+'·'+h2+' = '+(s2*h2/3)+'. Не забудь ⅓!'}}
+else if(t===4){var r4=rnd(2,6),h4=rnd(2,8);q={tag:'Цилиндр',text:'R='+r4+', h='+h4+'. Найди V/π.',f:'V = πR²h',ans:r4*r4*h4,how:'V/π = '+r4+'²·'+h4+' = '+(r4*r4*h4)+'.'}}
+else if(t===5){var r5=rnd(2,6),h5=3*rnd(1,4);q={tag:'Конус',text:'R='+r5+', h='+h5+'. Найди V/π.',f:'V = ⅓πR²h',ans:r5*r5*h5/3,how:'V/π = ⅓·'+r5+'²·'+h5+' = '+(r5*r5*h5/3)+'. Конус — треть цилиндра!'}}
+else{var r6=rnd(2,5);q={tag:'Шар',text:'R='+r6+'. Найди V/π.',f:'V = 4/3πR³',ans:4*r6*r6*r6/3,how:'V/π = 4/3·'+r6+'³ = '+(4*r6*r6*r6/3)+'.'}}
+return q;
+}
+function nextQ(skip){cur=gen();answered=false;document.getElementById('qqTag').textContent=cur.tag;document.getElementById('qqText').textContent=cur.text;document.getElementById('qqFormula').textContent=cur.f;document.getElementById('qqAns').value='';var fb=document.getElementById('qqFb');fb.className='fb';fb.innerHTML='';document.getElementById('qqAns').focus()}
+function numEq(a,b){return Math.abs(a-b)<0.011}
+function parseNum(s){s=(s||'').trim().replace(',','.');if(/^-?\d+\/\d+$/.test(s)){var p=s.split('/');return parseFloat(p[0])/parseFloat(p[1])}return parseFloat(s)}
+function checkQ(){
+if(answered){nextQ();return}
+var v=parseNum(document.getElementById('qqAns').value);var fb=document.getElementById('qqFb');
+if(isNaN(v)){fb.className='fb show bad';fb.innerHTML='<b>Введи число.</b>';return}
+answered=true;
+if(numEq(v,cur.ans)){okN++;streak++;fb.className='fb show ok';fb.innerHTML='<b style="color:#10B981">✅ Верно!</b><br>'+cur.how}
+else{badN++;streak=0;fb.className='fb show bad';fb.innerHTML='<b style="color:#EF4444">❌ Неверно.</b> Правильный ответ: <b>'+cur.ans+'</b><br>'+cur.how}
+document.getElementById('okV').textContent=okN;document.getElementById('badV').textContent=badN;document.getElementById('streakV').textContent=streak;
+}
+function resetQ(){okN=0;badN=0;streak=0;document.getElementById('okV').textContent='0';document.getElementById('badV').textContent='0';document.getElementById('streakV').textContent='0';nextQ()}
+document.getElementById('qqAns').addEventListener('keydown',function(e){if(e.key==='Enter')checkQ()});
+nextQ();
+</script>
+</body>
+</html>

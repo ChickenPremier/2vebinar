@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Глоссарий: стереометрия</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:10px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:25px}
+.card{background:#171A23;border:2px solid #2A2E3A;border-radius:10px;padding:22px;margin-bottom:16px}
+.card h2{color:#FBBF24;font-size:1.25rem;margin-bottom:10px}
+.card h3{color:#22D3EE;font-size:1.05rem;margin:12px 0 6px}
+.card p,.card li{line-height:1.7;color:#D1D5DB}
+.card ul{padding-left:20px}
+.formula{display:block;background:#0F1117;border:1px solid #FBBF24;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:1.15rem;color:#fff;text-align:center}
+.ex{background:rgba(34,211,238,.08);border:1px solid #22D3EE;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.95rem}
+.ex strong{color:#22D3EE}
+.warn{background:rgba(239,68,68,.1);border:1px solid #EF4444;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.95rem;color:#FCA5A5}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.95rem}
+th,td{border:1px solid #2A2E3A;padding:10px;text-align:left}
+th{background:#1E222E;color:#FBBF24}
+td{color:#D1D5DB}
+.num{display:inline-block;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;font-weight:800;border-radius:50%;width:28px;height:28px;text-align:center;line-height:28px;margin-right:8px;font-size:.9rem}
+@media(max-width:768px){h1{font-size:1.6rem}.card{padding:16px}table{font-size:.82rem}th,td{padding:6px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📖 Глоссарий: стереометрия</h1>
+<div class="subtitle">Вебинар 3 · аксиомы, параллельность, все формулы объёмов и подобие</div>
+
+<div class="card"><h2><span class="num">1</span>Аксиомы стереометрии С1–С3</h2>
+<p><strong>С1.</strong> Через любые 3 точки, не лежащие на одной прямой, проходит ровно одна плоскость.</p>
+<p><strong>С2.</strong> Если две точки прямой лежат в плоскости, то и вся прямая лежит в этой плоскости.</p>
+<p><strong>С3.</strong> Если две плоскости имеют общую точку, то они пересекаются по прямой, содержащей эту точку.</p>
+<div class="ex"><strong>Пример:</strong> точки A, B, C задают плоскость ABC; стол на трёх ножках стоит устойчиво — это С1 в жизни.</div>
+</div>
+
+<div class="card"><h2><span class="num">2</span>Взаимное расположение прямых: пересекаются / параллельны / скрещиваются</h2>
+<ul>
+<li><strong>Пересекаются</strong> — лежат в одной плоскости и имеют 1 общую точку.</li>
+<li><strong>Параллельны</strong> — лежат в одной плоскости и не имеют общих точек (a ∥ b).</li>
+<li><strong>Скрещиваются</strong> — не лежат в одной плоскости (например, AB и CC₁ в кубе — задание 27).</li>
+</ul>
+<div class="ex"><strong>Пример из вебинара:</strong> в кубе ABCDA₁B₁C₁D₁ прямые AB и CC₁ — скрещиваются: AB в нижней грани, CC₁ — вертикальное ребро.</div>
+</div>
+
+<div class="card"><h2><span class="num">3</span>Признак параллельности прямой и плоскости</h2>
+<p>Если прямая, не лежащая в плоскости, параллельна какой-либо прямой этой плоскости, то она параллельна всей плоскости.</p>
+<span class="formula">a ∦ α, a ∥ b, b ⊂ α ⇒ a ∥ α</span>
+<div class="ex"><strong>Пример (задание 28):</strong> A₁B₁ ∥ DC, а DC ⊂ пл. DCC₁ ⇒ A₁B₁ ∥ пл. DCC₁.</div>
+</div>
+
+<div class="card"><h2><span class="num">4</span>Средняя линия треугольника</h2>
+<p>Отрезок, соединяющий середины двух сторон: параллелен третьей стороне и равен её половине.</p>
+<span class="formula">MN — средняя линия ⇒ MN ∥ AC, MN = AC / 2</span>
+<div class="ex"><strong>Пример (задания 29–30):</strong> MNPQ — середины рёбер, каждая сторона = половине диагонали. AC = 14 ⇒ P = 4·7 = 28. P = 20 ⇒ AC = 10.</div>
+</div>
+
+<div class="card"><h2><span class="num">5</span>Типичные ошибки</h2>
+<ul>
+<li>Путать <strong>шар</strong> (тело, V = 4/3πR³) и <strong>круг</strong> (плоская фигура, S = πR²): площадь шара в 4 раза больше круга того же радиуса.</li>
+<li>Забывать <strong>⅓</strong> у пирамиды и конуса: конус — треть цилиндра с тем же R и h.</li>
+<li>Путать <strong>диагональ грани</strong> и <strong>диагональ тела</strong>: d²_тела = a²+b²+c²; d_куба = a√3.</li>
+<li>При подобии умножать объём на k или k² вместо <strong>k³</strong>.</li>
+<li>Писать ответ с π, когда просят V/π (задания 9, 10, 15).</li>
+</ul>
+</div>
+
+<div class="card"><h2><span class="num">6</span>Параллелепипед: V и диагональ</h2>
+<span class="formula">V = a·b·c &nbsp;&nbsp;·&nbsp;&nbsp; d² = a² + b² + c²</span>
+<div class="ex"><strong>Примеры:</strong> 4·5·6 = 120 (зад. 1); 3, 4, 12 → d = √(9+16+144) = √169 = 13 (зад. 2).</div>
+</div>
+
+<div class="card"><h2><span class="num">7</span>Куб: V, S, диагональ</h2>
+<span class="formula">V = a³ &nbsp;·&nbsp; S<sub>пов</sub> = 6a² &nbsp;·&nbsp; d = a√3</span>
+<div class="ex"><strong>Примеры:</strong> V = 27 ⇒ a = 3 ⇒ S = 6·9 = 54 (зад. 3); d = √12 ⇒ a = √12/√3 = 2 ⇒ V = 8 (зад. 4).</div>
+</div>
+
+<div class="card"><h2><span class="num">8</span>Призма и пирамида: V и S</h2>
+<span class="formula">V<sub>призмы</sub> = S<sub>осн</sub>·h &nbsp;&nbsp;·&nbsp;&nbsp; V<sub>пирамиды</sub> = ⅓·S<sub>осн</sub>·h</span>
+<p>S<sub>пов</sub> прямой призмы = 2S<sub>осн</sub> + P<sub>осн</sub>·h.</p>
+<div class="ex"><strong>Примеры:</strong> S<sub>осн</sub> = 15, h = 8 ⇒ V = 120 (зад. 5); V = 96, S = 12 ⇒ h = 8 (зад. 6); S = 18, h = 7 ⇒ V<sub>пир</sub> = ⅓·18·7 = 42 (зад. 7). Правильная 4-уг. призма a = 20, S<sub>пов</sub> = 1760: 2·400 + 80H = 1760 ⇒ H = 12 (зад. 23). Пирамида ABCA₁ внутри призмы (зад. 22): V = ⅓·2·3 = 2.</div>
+</div>
+
+<div class="card"><h2><span class="num">9</span>Цилиндр и конус: V, S<sub>бок</sub>, образующая</h2>
+<span class="formula">V<sub>цил</sub> = πR²h &nbsp;·&nbsp; V<sub>кон</sub> = ⅓πR²h &nbsp;·&nbsp; S<sub>бок</sub> = 2πRh (цил.) / πRl (кон.) &nbsp;·&nbsp; l² = R² + h²</span>
+<div class="ex"><strong>Примеры:</strong> R = 3, h = 5 ⇒ V/π = 45 (зад. 9); R = 3, h = 4 ⇒ V<sub>кон</sub>/π = 12 (зад. 10); V<sub>цил</sub> = 18 ⇒ V<sub>кон</sub> = 6 (зад. 11); S<sub>бок</sub> = 40π, d = 8 (R = 4): 2π·4·h = 40π ⇒ h = 5 (зад. 12).</div>
+</div>
+
+<div class="card"><h2><span class="num">10</span>Шар, сфера, куб и параллелепипед около сферы</h2>
+<span class="formula">V<sub>шара</sub> = 4/3·πR³ &nbsp;·&nbsp; S<sub>сферы</sub> = 4πR² &nbsp;·&nbsp; S<sub>круга</sub> = πR²</span>
+<p>Параллелепипед, описанный около сферы, — куб со стороной a = 2R. Куб, описанный около сферы R, имеет a = 2R.</p>
+<div class="ex"><strong>Примеры:</strong> R = 3 ⇒ V/π = 36 (зад. 15); S<sub>круга</sub> = 7 ⇒ S<sub>шара</sub> = 28 (зад. 16); R = 3 ⇒ параллелепипед — куб a = 6 ⇒ V = 216 (зад. 25); сфера R = 2 ⇒ куб a = 4 ⇒ S = 6·16 = 96 (зад. 26).</div>
+</div>
+
+<div class="card"><h2><span class="num">11</span>Подобие: k, k², k³</h2>
+<p>При увеличении всех линейных размеров в k раз:</p>
+<span class="formula">длины ×k &nbsp;·&nbsp; площади ×k² &nbsp;·&nbsp; объёмы ×k³</span>
+<div class="ex"><strong>Примеры:</strong> R ×2 ⇒ V<sub>цил</sub> ×4 (h const), V<sub>шара</sub> ×8 (зад. 14, 21); R ×3 ⇒ V ×27 (зад. 17); h ÷3 ⇒ V ÷3 (зад. 13); сечение на 3/9 высоты: k = 3 ⇒ S в 9 раз меньше: 18/9 = 2 (зад. 24).</div>
+</div>
+
+<div class="card"><h2><span class="num">12</span>Конус = треть цилиндра · Шар против круга ×4 · Цилиндр около шара h = 2R</h2>
+<ul>
+<li><strong>Конус = ⅓ цилиндра</strong> с тем же R и h (зад. 11: 18 → 6).</li>
+<li><strong>Шар против круга ×4:</strong> S<sub>сферы</sub> = 4·S<sub>круга</sub> того же R (зад. 16: 7 → 28).</li>
+<li><strong>Цилиндр около шара:</strong> h = 2R; V<sub>цил</sub> = 2πR³, V<sub>шара</sub> = 4/3πR³ ⇒ V<sub>цил</sub> = 1,5·V<sub>шара</sub> (зад. 19: 8 → 12).</li>
+<li><strong>Конус вписан в шар r = R</strong> (зад. 20): V<sub>кон</sub> = 6 ⇒ πR³ = 18 ⇒ V<sub>шара</sub> = 4/3·18 = 24.</li>
+<li><strong>Шары 3 и 4</strong> (зад. 18): суммарная площадь 9π+16π = 25π ⇒ R = 5.</li>
+</ul>
+</div>
+
+<div class="card"><h2><span class="num">13</span>Сечение конуса, параллельное основанию</h2>
+<p>Сечение делит высоту в отношении k ⇒ линейный коэффициент k, площадь сечения меньше площади основания в k² раз.</p>
+<div class="ex"><strong>Пример (зад. 24):</strong> сечение на высоте 3 от вершины при H = 9 ⇒ k = 9/3 = 3 ⇒ S<sub>сеч</sub> = 18/9 = 2.</div>
+</div>
+
+<div class="card"><h2><span class="num">14</span>Многогранник внутри призмы (принцип ⅓)</h2>
+<p>Пирамида с тем же основанием и высотой, что у призмы, занимает ровно треть её объёма.</p>
+<span class="formula">V<sub>пирамиды в призме</sub> = ⅓ · V<sub>призмы</sub></span>
+<div class="ex"><strong>Пример (зад. 22):</strong> призма S<sub>осн</sub> = 2, ребро 3 ⇒ пирамида ABCA₁: V = ⅓·2·3 = 2.</div>
+</div>
+
+<div class="card"><h2>📌 Шпаргалка: все формулы одним взглядом</h2>
+<table>
+<tr><th>Тело</th><th>Объём V</th><th>Площадь</th></tr>
+<tr><td>Параллелепипед</td><td>a·b·c</td><td>d² = a²+b²+c²</td></tr>
+<tr><td>Куб</td><td>a³</td><td>S = 6a²; d = a√3</td></tr>
+<tr><td>Призма</td><td>S<sub>осн</sub>·h</td><td>S<sub>пов</sub> = 2S<sub>осн</sub> + P·h</td></tr>
+<tr><td>Пирамида</td><td>⅓·S<sub>осн</sub>·h</td><td>—</td></tr>
+<tr><td>Цилиндр</td><td>πR²h</td><td>S<sub>бок</sub> = 2πRh</td></tr>
+<tr><td>Конус</td><td>⅓·πR²h</td><td>S<sub>бок</sub> = πRl; l² = R²+h²</td></tr>
+<tr><td>Шар / сфера</td><td>4/3·πR³</td><td>S = 4πR² (= 4 круга)</td></tr>
+<tr><td>Подобие ×k</td><td>×k³</td><td>площади ×k²</td></tr>
+</table>
+</div>
+
+<div class="card"><h2>🔢 Примеры с числами из вебинара</h2>
+<ul>
+<li>4·5·6 = <strong>120</strong>; √(9+16+144) = <strong>13</strong></li>
+<li>V<sub>куба</sub> = 27 → S = <strong>54</strong>; d = √12 → V = <strong>8</strong></li>
+<li>R = 3, h = 5 → V/π = <strong>45</strong>; конус R = 3, h = 4 → V/π = <strong>12</strong></li>
+<li>R = 3 → V<sub>шара</sub>/π = <strong>36</strong>; круг 7 → шар <strong>28</strong></li>
+<li>R ×3 → V ×<strong>27</strong>; шары 3 и 4 → R = <strong>5</strong></li>
+<li>Цилиндр около шара, V<sub>шара</sub> = 8 → V<sub>цил</sub> = <strong>12</strong></li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

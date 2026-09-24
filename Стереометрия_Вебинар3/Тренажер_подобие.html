@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: подобие k / k² / k³</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:8px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:20px}
+.rule{background:#171A23;border:2px solid #22D3EE;border-radius:10px;padding:18px;margin-bottom:18px;text-align:center;line-height:2;font-size:1.05rem}
+.rule b{color:#22D3EE}.rule .y{color:#FBBF24;font-weight:800}
+.panel{background:#171A23;border-radius:10px;padding:16px;border:2px solid #2A2E3A;margin-bottom:16px}
+.mode-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.mode-btn{padding:11px 20px;background:#1E222E;border:2px solid #2A2E3A;border-radius:8px;color:#D1D5DB;cursor:pointer;font-weight:700;font-family:inherit;transition:all .3s}
+.mode-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.stat-box{background:#171A23;border:2px solid #2A2E3A;border-radius:8px;padding:10px 22px;text-align:center;min-width:100px}
+.stat-v{font-size:1.5rem;font-weight:800;color:#FBBF24}.stat-v.g{color:#10B981}.stat-v.r{color:#EF4444}.stat-v.b{color:#22D3EE}.stat-l{color:#9CA3AF;font-size:.82rem}
+.q-card{background:#171A23;border-radius:10px;padding:32px;border:2px solid #FBBF24;text-align:center}
+.q-tag{display:inline-block;background:rgba(34,211,238,.12);border:1px solid #22D3EE;color:#22D3EE;padding:5px 15px;border-radius:20px;font-size:.85rem;font-weight:700;margin-bottom:12px}
+.q-text{font-size:1.7rem;color:#fff;margin-bottom:8px}
+.q-hint{color:#9CA3AF;font-size:.92rem;margin-bottom:16px}
+.ans-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ans-row input{width:200px;padding:13px;background:#0F1117;border:2px solid #FBBF24;border-radius:8px;color:#fff;font-size:1.25rem;text-align:center;font-family:inherit}
+.ans-row input:focus{outline:none;box-shadow:0 0 14px rgba(251,191,36,.4)}
+.btn{padding:13px 28px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;font-size:1rem;cursor:pointer;font-family:inherit}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,191,36,.4)}
+.btn.ghost{background:#1E222E;color:#FBBF24;border:2px solid #FBBF24}
+.feedback{margin-top:16px;padding:15px;border-radius:8px;display:none;line-height:1.7;text-align:left}
+.feedback.show{display:block}.feedback.ok{background:rgba(16,185,129,.12);border:2px solid #10B981}.feedback.bad{background:rgba(239,68,68,.12);border:2px solid #EF4444}
+.streak{text-align:center;color:#FBBF24;font-weight:700;margin-top:10px;min-height:24px}
+.help{color:#6B7280;font-size:.85rem;text-align:center;margin-top:14px;line-height:1.7}
+@media(max-width:768px){h1{font-size:1.5rem}.q-card{padding:22px 16px}.q-text{font-size:1.3rem}.ans-row input{width:100%}.btn{width:100%}.ans-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📏 Подобие: k / k² / k³</h1>
+<div class="subtitle">Линейные размеры ×k → площади ×k² → объёмы ×k³. Набей руку на генераторе.</div>
+<div class="rule">📐 Длины (R, h, a, l) <b>×k</b> &nbsp;→&nbsp; 📄 Площади (S, S<sub>бок</sub>, сечения) <b class="y">×k²</b> &nbsp;→&nbsp; 🧊 Объёмы <b class="y">×k³</b><br><span style="color:#9CA3AF;font-size:.9rem">R ×2 ⇒ S ×4, V ×8 ··· R ×3 ⇒ S ×9, V ×27 ··· h ÷3 ⇒ V ÷3</span></div>
+<div class="panel"><div class="mode-row">
+<button class="mode-btn active" data-m="mix">🎲 Всё подряд</button>
+<button class="mode-btn" data-m="sq">📄 Площади ×k²</button>
+<button class="mode-btn" data-m="cb">🧊 Объёмы ×k³</button>
+<button class="mode-btn" data-m="sec">✂️ Сечения</button>
+</div></div>
+<div class="stats">
+<div class="stat-box"><div class="stat-v g" id="okV">0</div><div class="stat-l">Верно</div></div>
+<div class="stat-box"><div class="stat-v r" id="badV">0</div><div class="stat-l">Ошибки</div></div>
+<div class="stat-box"><div class="stat-v b" id="nV">1</div><div class="stat-l">Задание</div></div>
+<div class="stat-box"><div class="stat-v" id="accV">—</div><div class="stat-l">Точность</div></div>
+</div>
+<div class="q-card">
+<div class="q-tag" id="qTag">Подобие</div>
+<div class="q-text" id="qText">…</div>
+<div class="q-hint" id="qHint"></div>
+<div class="ans-row"><input id="ansInput" placeholder="Ответ" autocomplete="off"><button class="btn" onclick="check()">Проверить</button></div>
+<div class="feedback" id="fb"></div>
+<div class="streak" id="streak"></div>
+<div class="ans-row" style="margin-top:14px"><button class="btn ghost" onclick="next(true)">Пропустить →</button><button class="btn ghost" onclick="reset()">Заново</button></div>
+</div>
+<div class="help">Вводи число (дроби через точку). Enter — проверить, после проверки Enter — дальше.<br>Задания собраны по мотивам № 13, 14, 17, 21, 24 вебинара + общие случаи.</div>
+</div>
+<script>
+var mode='mix',cur=null,okN=0,badN=0,nN=0,streakN=0,answered=false;
+function r(a){return a[Math.floor(Math.random()*a.length)]}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function numEq(a,b){return Math.abs(a-b)<0.011}
+function parseAns(s){s=(s||'').trim().replace(',','.');if(/^-?\d+\/\d+$/.test(s)){var p=s.split('/');return parseFloat(p[0])/parseFloat(p[1])}return parseFloat(s)}
+document.querySelectorAll('.mode-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.mode-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');mode=b.dataset.m;next()})});
+function pickCat(){if(mode!=='mix')return mode;return r(['sq','cb','cb','sq','sec'])}
+function gen(){
+var c=pickCat(),k,k2,k3,t;
+if(c==='sq'){
+t=ri(0,7);k=r([2,3,4,5]);k2=k*k;
+if(t===0)return{tag:'Площадь ×k²',text:'R ×'+k+' → S ×?',ans:k2,hint:'Площадь: умножай на k²',how:'Площади меняются как k²: '+k+'² = '+k2+'.'};
+if(t===1){var s=ri(2,20);return{tag:'Площадь ×k²',text:'S = '+s+', линейные размеры ×'+k+'. Новая S?',ans:s*k2,hint:'Новая S = старая × k²',how:s+' × '+k+'² = '+s+' × '+k2+' = '+(s*k2)+'.'}}
+if(t===2)return{tag:'Площадь ×k²',text:'R шара ×2 → S сферы ×?',ans:4,hint:'k = 2, площадь × k²',how:'2² = 4 (как в задании 21: S ×4).'};
+if(t===3){var d=ri(2,5);return{tag:'Площадь ×k²',text:'Sбок цилиндра = '+(8*d)+', R и h ×2. Новая Sбок?',ans:32*d,hint:'Sбок — площадь: ×k² = ×4',how:(8*d)+' × 4 = '+(32*d)+'.'}}
+if(t===4)return{tag:'Площадь ×k²',text:'Sкруга = 7 → Sшара того же R?',ans:28,hint:'Сфера = 4 круга (задание 16)',how:'Sшара = 4 × 7 = 28.'};
+if(t===5){var s2=r([9,18,27,36]);return{tag:'Сечение ×k²',text:'Sосн = '+s2+', сечение делит высоту в отношении k=3. Sсеч?',ans:s2/9,hint:'S в k² = 9 раз меньше (задание 24)',how:s2+' : 9 = '+(s2/9)+'.'}}
+if(t===6){var a=r([4,8,16]);return{tag:'Куб: грани',text:'Грань куба S = '+a+', ребро ×3. Новая S грани?',ans:a*9,hint:'Площадь грани ×9',how:a+' × 9 = '+(a*9)+'.'}}
+return{tag:'Площадь ×k²',text:'Сторона ×'+k+' → площадь ×?',ans:k2,hint:'×k²',how:k+'² = '+k2+'.'};
+}
+if(c==='cb'){
+t=ri(0,9);k=r([2,3,4]);
+if(t===0)return{tag:'Объём ×k³',text:'R ×2 → V шара ×?',ans:8,hint:'Объём: ×k³ (задание 21)',how:'2³ = 8.'};
+if(t===1)return{tag:'Объём ×k³',text:'R ×3 → V ×?',ans:27,hint:'k³ (задание 17)',how:'3³ = 27.'};
+if(t===2)return{tag:'Объём ×k³',text:'h конуса ÷3 → V ÷?',ans:3,hint:'Высота — линейный размер (задание 13)',how:'V тоже делится на 3.'};
+if(t===3)return{tag:'Объём ×k³',text:'R цилиндра ×2 (h const) → V ×?',ans:4,hint:'V = πR²h: только R² (задание 14)',how:'2² = 4 (h не меняется — это не полное подобие!).'};
+if(t===4){var v=r([6,12,24]);return{tag:'Конус = ⅓',text:'Vцил = '+v+' → Vкон с тем же R,h?',ans:v/3,hint:'Конус — треть цилиндра (задание 11)',how:v+' : 3 = '+(v/3)+'.'}}
+if(t===5){var v2=r([4,8,12]);return{tag:'Цилиндр около шара',text:'Vшара = '+v2+' → V описанного цилиндра?',ans:v2*1.5,hint:'Vцил = 1,5 · Vшара (задание 19)',how:v2+' × 1,5 = '+(v2*1.5)+'.'}}
+if(t===6){var vk=r([2,4,8]);return{tag:'Конус в шаре',text:'Vкон = '+vk+' (r = R) → Vшара?',ans:vk*4,hint:'Vшара = 4 · Vкон (задание 20)',how:vk+' × 4 = '+(vk*4)+'.'}}
+if(t===7){var a2=ri(2,5);return{tag:'Куб ×k³',text:'Ребро ×2 → V куба ×?',ans:8,hint:'k³ = 8',how:'2³ = 8.'}}
+if(t===8){var vv=ri(3,15);return{tag:'Призма ×k³',text:'Все размеры призмы ×'+k+', V был '+vv+'. Новый V?',ans:vv*k*k*k,hint:'×k³ = ×'+(k*k*k),how:vv+' × '+(k*k*k)+' = '+(vv*k*k*k)+'.'}}
+return{tag:'Объём ×k³',text:'Все размеры ×'+k+' → V ×?',ans:k*k*k,hint:'×k³',how:k+'³ = '+(k*k*k)+'.'};
+}
+// sec
+t=ri(0,5);
+if(t===0){var H=r([6,9,12]),hh=H/3;return{tag:'Сечение конуса',text:'H = '+H+', сечение на высоте '+hh+' от вершины. Во сколько раз Sсеч меньше Sосн?',ans:9,hint:'k = 3 ⇒ k² = 9',how:'k = '+H+' : '+hh+' = 3 ⇒ площади в 9 раз.'}}
+if(t===1){var S0=r([18,27,36]);return{tag:'Сечение конуса',text:'Sосн = '+S0+', k = 2. Sсеч?',ans:S0/4,hint:'÷ k² = ÷4',how:S0+' : 4 = '+(S0/4)+'.'}}
+if(t===2)return{tag:'Средняя линия',text:'AC = 14 → периметр MNPQ (середины рёбер)?',ans:28,hint:'Каждая сторона = AC/2 (задание 30)',how:'4 × 7 = 28.'};
+if(t===3)return{tag:'Средняя линия',text:'P(MNPQ) = 20 → AC?',ans:10,hint:'AC = P/2 (задание 29)',how:'AC = 20 : 2 = 10.'};
+if(t===4){var k4=r([2,4,5]);return{tag:'Сечение',text:'Высота делится в отношении k='+k4+'. Sсеч меньше Sосн в … раз?',ans:k4*k4,hint:'в k² раз',how:k4+'² = '+(k4*k4)+'.'}}
+return{tag:'Сечение',text:'k = 3 → S меньше в … раз?',ans:9,hint:'k²',how:'3² = 9.'};
+}
+function next(skip){if(!answered&&nN>0&&!skip){}cur=gen();answered=false;nN++;document.getElementById('qTag').textContent=cur.tag;document.getElementById('qText').textContent=cur.text;document.getElementById('qHint').textContent=cur.hint||'';document.getElementById('ansInput').value='';var fb=document.getElementById('fb');fb.className='feedback';fb.innerHTML='';upd();document.getElementById('ansInput').focus()}
+function upd(){document.getElementById('okV').textContent=okN;document.getElementById('badV').textContent=badN;document.getElementById('nV').textContent=nN;document.getElementById('accV').textContent=(okN+badN)>0?Math.round(okN/(okN+badN)*100)+'%':'—';var st=document.getElementById('streak');st.textContent=streakN>=2?('🔥 Серия: '+streakN):''}
+function check(){if(answered){next(true);return}var v=parseAns(document.getElementById('ansInput').value);var fb=document.getElementById('fb');if(isNaN(v)){fb.className='feedback show bad';fb.innerHTML='<b>Введи число.</b>';return}answered=true;if(numEq(v,cur.ans)){okN++;streakN++;fb.className='feedback show ok';fb.innerHTML='<b style="color:#10B981">✅ Верно!</b><br>'+cur.how}else{badN++;streakN=0;fb.className='feedback show bad';fb.innerHTML='<b style="color:#EF4444">❌ Неверно.</b> Правильно: <b>'+cur.ans+'</b><br>'+cur.how}upd()}
+function reset(){okN=0;badN=0;nN=0;streakN=0;next(true)}
+document.getElementById('ansInput').addEventListener('keydown',function(e){if(e.key==='Enter')check()});
+next(true);
+</script>
+</body>
+</html>

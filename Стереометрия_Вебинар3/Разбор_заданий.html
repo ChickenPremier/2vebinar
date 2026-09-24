@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Разбор заданий: стереометрия</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:10px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;font-size:1.05rem;margin-bottom:25px}
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.filter-btn{padding:10px 20px;background:#1E222E;border:2px solid #2A2E3A;border-radius:20px;color:#D1D5DB;cursor:pointer;font-weight:600;font-size:.9rem;transition:all .3s;font-family:inherit}
+.filter-btn:hover{border-color:#FBBF24}
+.filter-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.group-title{color:#22D3EE;font-size:1.35rem;font-weight:700;margin:30px 0 15px;padding-left:12px;border-left:4px solid #22D3EE}
+.task-card{background:#171A23;border-radius:10px;padding:24px;border:2px solid #2A2E3A;margin-bottom:16px;transition:border-color .3s}
+.task-card.open{border-color:#FBBF24}.task-card.hidden{display:none}
+.task-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.task-num{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.task-text{font-size:1.2rem;color:#fff;flex:1;min-width:200px}
+.method-badge{font-size:.8rem;font-weight:700;color:#22D3EE;background:rgba(34,211,238,.12);border:1px solid #22D3EE;padding:4px 12px;border-radius:20px;white-space:nowrap}
+.toggle-btn{margin-top:16px;padding:12px 24px;font-size:1rem;font-weight:700;background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #FBBF24;border-radius:8px;color:#FBBF24;cursor:pointer;transition:all .3s;font-family:inherit}
+.toggle-btn:hover{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117}
+.steps{display:none;margin-top:18px}.task-card.open .steps{display:block;animation:fadeIn .4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.step{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start;background:#1E222E;border-radius:8px;padding:12px 14px;line-height:1.65}
+.step-n{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:#2A2E3A;color:#FBBF24;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.answer{margin-top:14px;padding:14px 18px;border-radius:8px;background:rgba(34,211,238,.1);border:1px solid #22D3EE;font-size:1.15rem;color:#fff}
+.answer strong{color:#22D3EE}
+.trap{margin-top:10px;padding:12px 16px;border-radius:8px;background:rgba(239,68,68,.1);border:1px solid #EF4444;font-size:.95rem;color:#FCA5A5}
+.trap strong{color:#EF4444}
+.footer{text-align:center;color:#6B7280;font-size:.9rem;margin:30px 0 10px}
+@media(max-width:768px){h1{font-size:1.6rem}.task-text{font-size:1.05rem}.task-card{padding:18px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📝 Разбор заданий вебинара</h1>
+<div class="subtitle">30 заданий с урока: сначала реши сам, потом открой пошаговое решение</div>
+<div class="filter-bar">
+<button class="filter-btn active" data-f="all">Все (30)</button>
+<button class="filter-btn" data-f="A">А · Куб и параллелепипед</button>
+<button class="filter-btn" data-f="B">Б · Призма и цилиндр</button>
+<button class="filter-btn" data-f="C">В · Цилиндр, конус, подобие</button>
+<button class="filter-btn" data-f="D">Г · Шар и сфера</button>
+<button class="filter-btn" data-f="E">Д · Смешанные и параллельность</button>
+</div>
+<div id="tasksList"></div>
+<div class="footer">Стереометрия: объёмы тел и параллельность · Вебинар 3</div>
+</div>
+<script>
+var tasks=[
+{group:'Блок А · Куб и параллелепипед (1–4)',cat:'A',method:'V = abc',task:'Измерения параллелепипеда 4, 5, 6. Найди V.',steps:['Формула: V = a·b·c.','Подставляем: 4·5·6 = 20·6 = 120.'],answer:'120'},
+{group:'Блок А · Куб и параллелепипед (1–4)',cat:'A',method:'d² = a²+b²+c²',task:'Измерения 3, 4, 12. Найди диагональ d.',steps:['Формула диагонали тела: d² = a²+b²+c².','Считаем: 9 + 16 + 144 = 169.','Извлекаем корень: d = 13.'],answer:'13'},
+{group:'Блок А · Куб и параллелепипед (1–4)',cat:'A',method:'S = 6a²',task:'V куба 27. Найди площадь поверхности.',steps:['Ребро: a = ∛27 = 3.','Грань: 3² = 9.','Поверхность: 6·9 = 54.'],answer:'54'},
+{group:'Блок А · Куб и параллелепипед (1–4)',cat:'A',method:'d = a√3',task:'Диагональ куба √12. Найди V.',steps:['d = a√3 ⇒ a = √12/√3 = √4 = 2.','V = 2³ = 8.'],answer:'8',trap:'Не путай диагональ грани (a√2) и диагональ тела (a√3)!'},
+{group:'Блок Б · Призма, пирамида (5–8)',cat:'B',method:'V = Sосн·h',task:'Sосн призмы 15, h = 8. Найди V.',steps:['V = Sосн·h.','15·8 = 120.'],answer:'120'},
+{group:'Блок Б · Призма, пирамида (5–8)',cat:'B',method:'h = V/S',task:'V призмы 96, Sосн = 12. Найди h.',steps:['h = V : Sосн.','96 : 12 = 8.'],answer:'8'},
+{group:'Блок Б · Призма, пирамида (5–8)',cat:'B',method:'V = ⅓Sосн·h',task:'Sосн = 18, h = 7. Найди V пирамиды.',steps:['Формула пирамиды: V = ⅓·Sосн·h.','⅓·18·7 = 6·7 = 42.'],answer:'42',trap:'Главная ловушка — забыть ⅓!'},
+{group:'Блок Б · Призма, пирамида (5–8)',cat:'B',method:'S = 3V/h',task:'V пирамиды 40, h = 10. Найди Sосн.',steps:['Sосн = 3V : h.','3·40 : 10 = 120 : 10 = 12.'],answer:'12'},
+{group:'Блок В · Цилиндр, конус, подобие (9–14)',cat:'C',method:'V = πR²h',task:'Цилиндр: R = 3, h = 5. Найди V/π.',steps:['V = π·9·5 = 45π.','V/π = 45.'],answer:'45',trap:'Просят V/π — ответ без π!'},
+{group:'Блок В · Цилиндр, конус, подобие (9–14)',cat:'C',method:'V = ⅓πR²h',task:'Конус: R = 3, h = 4. Найди V/π.',steps:['V = ⅓·π·9·4 = 12π.','V/π = 12.'],answer:'12'},
+{group:'Блок В · Цилиндр, конус, подобие (9–14)',cat:'C',method:'Конус = ⅓ цилиндра',task:'V цилиндра 18. Найди V конуса с тем же R и h.',steps:['Конус — треть цилиндра.','18 : 3 = 6.'],answer:'6'},
+{group:'Блок В · Цилиндр, конус, подобие (9–14)',cat:'C',method:'Sбок = 2πRh',task:'Sбок цилиндра 40π, диаметр 8. Найди h.',steps:['Радиус: R = 8 : 2 = 4.','2π·4·h = 40π ⇒ 8h = 40 ⇒ h = 5.'],answer:'5',trap:'Диаметр подели пополам — нужен радиус!'},
+{group:'Блок В · Цилиндр, конус, подобие (9–14)',cat:'C',method:'h ÷3 ⇒ V ÷3',task:'Высоту конуса уменьшили в 3 раза. Во сколько раз уменьшился V?',steps:['Высота — линейный размер, V ~ h в первой степени.','V уменьшился в 3 раза. Ответ: 3.'],answer:'3'},
+{group:'Блок В · Цилиндр, конус, подобие (9–14)',cat:'C',method:'R ×2 ⇒ V ×4 (h const)',task:'Радиус цилиндра увеличили в 2 раза (h та же). Во сколько раз вырос V?',steps:['V = πR²h — растёт как R².','2² = 4.'],answer:'4',trap:'Здесь ×4, а не ×8: высота не меняется — это не полное подобие!'},
+{group:'Блок Г · Шар и сфера (15–20)',cat:'D',method:'V = 4/3πR³',task:'Шар: R = 3. Найди V/π.',steps:['V = 4/3·π·27 = 36π.','V/π = 36.'],answer:'36'},
+{group:'Блок Г · Шар и сфера (15–20)',cat:'D',method:'Sшара = 4 × Sкруга',task:'S круга 7. Найди S шара того же радиуса.',steps:['Sсферы = 4πR², Sкруга = πR².','4·7 = 28.'],answer:'28',trap:'Не путай круг (плоский) и шар (тело): разница в 4 раза!'},
+{group:'Блок Г · Шар и сфера (15–20)',cat:'D',method:'×k³',task:'Радиус шара увеличили в 3 раза. Во сколько раз вырос V?',steps:['Полное подобие: V ×k³.','3³ = 27.'],answer:'27'},
+{group:'Блок Г · Шар и сфера (15–20)',cat:'D',method:'R = √(R₁²+R₂²)',task:'Даны шары с R = 3 и R = 4 (площади). Найди R шара с суммарной площадью.',steps:['Площади: 9π и 16π, сумма 25π.','25π = 4πR²? Нет: по условию вебинара складываем как круги: 9+16 = 25 ⇒ R = 5.'],answer:'5'},
+{group:'Блок Г · Шар и сфера (15–20)',cat:'D',method:'Vцил = 1,5·Vшара',task:'Цилиндр описан около шара, Vшара = 8. Найди Vцил.',steps:['Около шара: h = 2R. Vшара = 4/3πR³ = 8 ⇒ πR³ = 6.','Vцил = πR²·2R = 2πR³ = 12.'],answer:'12'},
+{group:'Блок Г · Шар и сфера (15–20)',cat:'D',method:'Vшара = 4·Vкон',task:'Конус вписан в шар, r = R, Vкон = 6. Найди Vшара.',steps:['Vкон = ⅓πR³ = 6 ⇒ πR³ = 18.','Vшара = 4/3·18 = 24.'],answer:'24'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'×k² и ×k³',task:'Линейные размеры тела ×2. Как изменятся S и V?',steps:['S ×k² = ×4.','V ×k³ = ×8.'],answer:'S ×4, V ×8'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'V = ⅓Sосн·h',task:'Пирамида ABCA₁ внутри призмы: Sосн = 2, ребро 3. Найди V.',steps:['Высота пирамиды = боковому ребру призмы = 3.','V = ⅓·2·3 = 2.'],answer:'2'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'Sпов = 2Sосн + P·h',task:'Правильная 4-уг. призма: a = 20, Sпов = 1760. Найди H.',steps:['Sосн = 400, Pосн = 80.','2·400 + 80H = 1760 ⇒ 80H = 960 ⇒ H = 12.'],answer:'12'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'S ÷k²',task:'Sосн конуса 18, сечение на высоте 3 при H = 9. Найди Sсеч.',steps:['k = 9 : 3 = 3.','Sсеч = 18 : 9 = 2.'],answer:'2'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'a = 2R',task:'Параллелепипед описан около сферы R = 3. Найди V.',steps:['Описанный параллелепипед — куб со стороной 2R = 6.','V = 6³ = 216.'],answer:'216'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'S = 6a²',task:'Куб описан около сферы R = 2. Найди Sпов.',steps:['Ребро куба a = 2R = 4.','S = 6·16 = 96.'],answer:'96'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'Скрещиваются',task:'В кубе ABCDA₁B₁C₁D₁ как расположены AB и CC₁?',steps:['AB лежит в нижней грани, CC₁ — вертикальное ребро.','Общей плоскости нет ⇒ скрещиваются.'],answer:'Скрещиваются'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'Признак a ∥ α',task:'В кубе как расположены A₁B₁ и плоскость DCC₁?',steps:['A₁B₁ ∥ DC (противоположные стороны грани).','DC ⊂ пл. DCC₁ ⇒ по признаку A₁B₁ ∥ плоскости.'],answer:'Параллельна'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'Средняя линия',task:'MNPQ — середины рёбер, P = 20. Найди AC.',steps:['Каждая сторона MNPQ — средняя линия ⇒ AC/2.','P = 4·(AC/2) = 2·AC ⇒ AC = 10.'],answer:'10'},
+{group:'Блок Д · Смешанные и параллельность (21–30)',cat:'E',method:'Средняя линия',task:'MNPQ — середины рёбер, AC = 14. Найди P.',steps:['Сторона = 14 : 2 = 7.','P = 4·7 = 28.'],answer:'28'}
+];
+var list=document.getElementById('tasksList');
+function render(filter){
+list.innerHTML='';var lastGroup='';var n=0;
+tasks.forEach(function(t){
+if(filter!=='all'&&t.cat!==filter)return;
+n++;
+if(t.group!==lastGroup){var g=document.createElement('div');g.className='group-title';g.textContent=t.group;list.appendChild(g);lastGroup=t.group}
+var card=document.createElement('div');card.className='task-card';
+var html='<div class="task-head"><div class="task-num">'+n+'</div><div class="task-text">'+t.task+'</div><div class="method-badge">'+t.method+'</div></div>'+
+'<button class="toggle-btn">Показать решение</button><div class="steps">'+
+t.steps.map(function(s,k){return '<div class="step"><div class="step-n">'+(k+1)+'</div><div>'+s+'</div></div>'}).join('')+
+'<div class="answer"><strong>Ответ:</strong> '+t.answer+'</div>';
+if(t.trap)html+='<div class="trap"><strong>⚠ Ловушка:</strong> '+t.trap+'</div>';
+html+='</div>';card.innerHTML=html;
+var btn=card.querySelector('.toggle-btn');
+btn.addEventListener('click',function(){var open=card.classList.toggle('open');btn.textContent=open?'Скрыть решение':'Показать решение'});
+list.appendChild(card);
+});
+}
+document.querySelectorAll('.filter-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.filter-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');render(b.dataset.f)})});
+render('all');
+</script>
+</body>
+</html>

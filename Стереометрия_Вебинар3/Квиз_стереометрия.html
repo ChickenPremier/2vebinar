@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Квиз: стереометрия</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.4rem;margin-bottom:16px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.score-panel{background:#171A23;border-radius:10px;padding:20px;margin-bottom:20px;border:2px solid #2A2E3A;display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:10px}
+.score-item{text-align:center}.score-label{color:#9CA3AF;font-size:.9rem;margin-bottom:5px}.score-value{color:#FBBF24;font-size:2rem;font-weight:700}
+.progress-bar{width:100%;height:10px;background:#2A2E3A;border-radius:5px;overflow:hidden;margin-bottom:24px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#FBBF24 0%,#F59E0B 100%);width:0%;transition:width .3s}
+.quiz-card{background:#171A23;border-radius:10px;padding:36px;border:2px solid #2A2E3A;margin-bottom:20px}
+.question-number{color:#9CA3AF;font-size:.9rem;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.question-text{color:#E5E7EB;font-size:1.4rem;margin-bottom:26px;line-height:1.6}
+.options{display:grid;gap:14px}
+.option{background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #2A2E3A;border-radius:8px;padding:18px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:14px;font-size:1.05rem}
+.option:hover{border-color:#FBBF24;transform:translateX(5px)}
+.option.correct{border-color:#10B981;background:rgba(16,185,129,.15)}
+.option.wrong{border-color:#EF4444;background:rgba(239,68,68,.15)}
+.option.disabled{pointer-events:none;opacity:.85}
+.explain{margin-top:18px;padding:16px;border-radius:8px;background:rgba(34,211,238,.08);border:1px solid #22D3EE;line-height:1.7;display:none}
+.explain.show{display:block}
+.next-row{text-align:center;margin-top:18px}
+.btn{padding:13px 30px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1rem}
+.btn.ghost{background:#1E222E;color:#FBBF24;border:2px solid #FBBF24;margin-left:10px}
+.result-card{background:#171A23;border:2px solid #FBBF24;border-radius:10px;padding:40px;text-align:center;display:none}
+.result-card.show{display:block}
+.result-card h2{color:#FBBF24;font-size:2rem;margin-bottom:14px}
+@media(max-width:768px){h1{font-size:1.6rem}.quiz-card{padding:22px 16px}.question-text{font-size:1.15rem}.btn{width:100%;margin-top:8px}.btn.ghost{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎓 Квиз: стереометрия</h1>
+<div class="score-panel">
+<div class="score-item"><div class="score-label">Вопрос</div><div class="score-value" id="qNum">1/20</div></div>
+<div class="score-item"><div class="score-label">Верно</div><div class="score-value" id="okN" style="color:#10B981">0</div></div>
+<div class="score-item"><div class="score-label">Ошибки</div><div class="score-value" id="badN" style="color:#EF4444">0</div></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+<div class="quiz-card" id="quizCard">
+<div class="question-number" id="qTag">Вопрос 1</div>
+<div class="question-text" id="qText"></div>
+<div class="options" id="opts"></div>
+<div class="explain" id="expl"></div>
+<div class="next-row"><button class="btn" id="nextBtn" onclick="next()" style="display:none">Дальше →</button></div>
+</div>
+<div class="result-card" id="resCard"><h2 id="resTitle"></h2><p id="resText" style="line-height:2"></p><br><button class="btn" onclick="restart()">Пройти заново (перемешать)</button></div>
+</div>
+<script>
+var Q=[
+{q:'Объём прямоугольного параллелепипеда равен…',o:['a·b·c','a³','Sосн·h','⅓Sосн·h'],a:0,e:'V = a·b·c — произведение трёх измерений (зад. 1: 4·5·6 = 120).'},
+{q:'Объём куба с ребром a:',o:['a³','6a²','a√3','4/3πa³'],a:0,e:'V = a³; Sпов = 6a²; d = a√3.'},
+{q:'Объём призмы:',o:['Sосн·h','⅓Sосн·h','πR²h','4/3πR³'],a:0,e:'Призма — «цилиндр с многогранным основанием»: V = Sосн·h (зад. 5).'},
+{q:'Объём пирамиды:',o:['⅓·Sосн·h','Sосн·h','⅓πR²h','πR²h'],a:0,e:'Пирамида — треть призмы с тем же основанием и высотой (зад. 7).'},
+{q:'Объём цилиндра:',o:['πR²h','⅓πR²h','2πRh','4/3πR³'],a:0,e:'V = πR²h: площадь круга основания × высоту.'},
+{q:'Объём конуса:',o:['⅓πR²h','πR²h','πRl','2πRh'],a:0,e:'Конус — треть цилиндра: V = ⅓πR²h (зад. 11).'},
+{q:'Объём шара:',o:['4/3·πR³','4πR²','πR²','⅓πR²h'],a:0,e:'V = 4/3πR³; площадь сферы S = 4πR².'},
+{q:'Площадь сферы радиуса R:',o:['4πR²','πR²','2πR','4/3πR³'],a:0,e:'S = 4πR² — в 4 раза больше площади круга того же R (зад. 16).'},
+{q:'Образующая конуса l, радиус R, высота h связаны как…',o:['l² = R² + h²','l = R + h','l = 2R','l² = R² − h²'],a:0,e:'Осевое сечение — прямоугольный треугольник: l — гипотенуза.'},
+{q:'При увеличении всех размеров тела в k раз объём увеличится в…',o:['k³ раз','k² раз','k раз','2k раз'],a:0,e:'Длины ×k, площади ×k², объёмы ×k³ (зад. 17: k=3 → ×27).'},
+{q:'Измерения параллелепипеда 2, 5, 6. Найди V.',o:['60','26','13','120'],a:0,e:'V = 2·5·6 = 60.'},
+{q:'Куб: V = 64. Найди Sпов.',o:['96','64','48','16'],a:0,e:'a = 4 (4³ = 64); S = 6·16 = 96.'},
+{q:'Призма: Sосн = 12, h = 9. V?',o:['108','36','54','120'],a:0,e:'V = 12·9 = 108.'},
+{q:'Пирамида: Sосн = 21, h = 5. V?',o:['35','105','42','70'],a:0,e:'V = ⅓·21·5 = 35.'},
+{q:'Цилиндр: R = 2, h = 7. V/π?',o:['28','14','56','21'],a:0,e:'V/π = 4·7 = 28.'},
+{q:'Конус: R = 5, h = 6. V/π?',o:['50','150','30','75'],a:0,e:'V/π = ⅓·25·6 = 50.'},
+{q:'Шар: R = 2. V/π?',o:['32/3 ≈ 10,67','16','12','8'],a:0,e:'V/π = 4/3·8 = 32/3.'},
+{q:'Sбок цилиндра 60π, диаметр 10 (R = 5). Найди h.',o:['6','5','12','3'],a:0,e:'2π·5·h = 60π ⇒ h = 6 (как зад. 12).'},
+{q:'R шара ×2. Во сколько раз вырастут S и V?',o:['S ×4, V ×8','S ×2, V ×4','S ×8, V ×4','Оба ×8'],a:0,e:'S ×k² = ×4, V ×k³ = ×8 (зад. 21).'},
+{q:'Прямые AB и CC₁ в кубе…',o:['скрещиваются','параллельны','пересекаются','совпадают'],a:0,e:'Не лежат в одной плоскости — скрещиваются (зад. 27).'}
+];
+var order=[],idx=0,ok=0,bad=0,lock=false;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;ok=0;bad=0;document.getElementById('resCard').classList.remove('show');document.getElementById('quizCard').style.display='';render()}
+function render(){
+lock=false;var qi=order[idx],d=Q[qi];
+document.getElementById('qNum').textContent=(idx+1)+'/'+Q.length;
+document.getElementById('okN').textContent=ok;document.getElementById('badN').textContent=bad;
+document.getElementById('prog').style.width=((idx)/Q.length*100)+'%';
+document.getElementById('qTag').textContent='Вопрос '+(idx+1)+' из '+Q.length+(idx<10?' · Формулы и теория':' · Мини-задачи');
+document.getElementById('qText').textContent=d.q;
+document.getElementById('expl').classList.remove('show');document.getElementById('nextBtn').style.display='none';
+var box=document.getElementById('opts');box.innerHTML='';
+var oo=d.o.map(function(t,i){return{t:t,ok:i===d.a}});shuffle(oo);
+oo.forEach(function(o){var el=document.createElement('div');el.className='option';el.textContent=o.t;el.addEventListener('click',function(){answer(el,o.ok,d)});box.appendChild(el)});
+}
+function answer(el,isOk,d){
+if(lock)return;lock=true;
+var opts=document.querySelectorAll('.option');opts.forEach(function(x){x.classList.add('disabled')});
+if(isOk){el.classList.add('correct');ok++}else{el.classList.add('wrong');bad++;opts.forEach(function(x){if(x.textContent===d.o[d.a])x.classList.add('correct')})}
+var ex=document.getElementById('expl');ex.innerHTML='<b>'+(isOk?'✅ Верно!':'❌ Правильный ответ: '+d.o[d.a])+'</b><br>'+d.e;ex.classList.add('show');
+document.getElementById('okN').textContent=ok;document.getElementById('badN').textContent=bad;
+document.getElementById('prog').style.width=(((idx+1))/Q.length*100)+'%';
+document.getElementById('nextBtn').style.display='';document.getElementById('nextBtn').textContent=(idx+1===Q.length)?'Показать результаты':'Дальше →';
+}
+function next(){if(idx+1>=Q.length){finish()}else{idx++;render()}}
+function finish(){
+document.getElementById('quizCard').style.display='none';var rc=document.getElementById('resCard');rc.classList.add('show');
+var p=Math.round(ok/Q.length*100),t=p>=90?'🏆 Отлично!':(p>=70?'👍 Хорошо!':(p>=50?'🙂 Неплохо':'📚 Повтори глоссарий'));
+document.getElementById('resTitle').textContent=t;
+document.getElementById('resText').innerHTML='Верно: <b>'+ok+' / '+Q.length+'</b> ('+p+'%)<br>Разбери ошибки в «Разборе заданий» и попробуй снова — вопросы перемешаются.';
+}
+function restart(){start()}
+start();
+</script>
+</body>
+</html>

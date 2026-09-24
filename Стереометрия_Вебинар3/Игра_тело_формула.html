@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Игра: тело ↔ формула</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:1100px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.1rem;margin-bottom:8px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:18px}
+.topbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.pill{background:#171A23;border:2px solid #2A2E3A;border-radius:20px;padding:8px 18px;font-weight:700}
+.pill b{color:#FBBF24}.pill.cy b{color:#22D3EE}
+.mode-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.mode-btn{padding:10px 20px;background:#1E222E;border:2px solid #2A2E3A;border-radius:8px;color:#D1D5DB;cursor:pointer;font-weight:700;font-family:inherit}
+.mode-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.btn{padding:12px 26px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1rem}
+.btn.ghost{background:#1E222E;color:#FBBF24;border:2px solid #FBBF24}
+.btn:hover{transform:translateY(-2px)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.panel{background:#171A23;border:2px solid #2A2E3A;border-radius:10px;padding:16px;min-height:200px}
+.panel h3{color:#22D3EE;margin-bottom:12px;text-align:center}
+.cards{display:flex;flex-direction:column;gap:10px}
+.cardx{background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #2A2E3A;border-radius:8px;padding:12px 14px;cursor:grab;font-weight:600;transition:all .2s;user-select:none}
+.cardx:hover{border-color:#FBBF24}
+.cardx.sel{border-color:#22D3EE;box-shadow:0 0 14px rgba(34,211,238,.5)}
+.cardx.ok{border-color:#10B981;background:rgba(16,185,129,.15)}
+.cardx.bad{border-color:#EF4444;background:rgba(239,68,68,.15)}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bin{border:2px dashed #2A2E3A;border-radius:8px;padding:10px;min-height:110px;transition:all .2s}
+.bin h4{font-size:.85rem;color:#FBBF24;margin-bottom:8px;text-align:center}
+.bin .f{font-size:.8rem;color:#9CA3AF;text-align:center;margin-bottom:8px}
+.bin.sel{border-color:#22D3EE;border-style:solid}
+.bin .slot{display:flex;flex-direction:column;gap:6px}
+.bin .placed{background:#0F1117;border:1px solid #2A2E3A;border-radius:6px;padding:8px 10px;font-size:.9rem;cursor:pointer}
+.bin .placed:hover{border-color:#EF4444}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.show{display:flex}
+.modal-box{background:#171A23;border:2px solid #FBBF24;border-radius:12px;padding:30px;max-width:420px;text-align:center}
+.modal-box h2{color:#FBBF24;margin-bottom:12px}
+.modal-box p{line-height:1.8;margin-bottom:18px}
+@media(max-width:768px){h1{font-size:1.5rem}.cols{grid-template-columns:1fr}.bins{grid-template-columns:1fr}.btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎮 Игра: тело ↔ формула</h1>
+<div class="subtitle">Перетаскивай карточки в корзины формул — или играй нажатиями: тап по карточке → тап по корзине. Повторный тап по карточке в корзине возвращает её.</div>
+<div class="topbar">
+<div class="pill">⏱ <b id="timer">0:00</b></div>
+<div class="pill cy">✅ <b id="okC">0</b> / 12</div>
+<div class="pill">🎯 Точность: <b id="acc">—</b></div>
+</div>
+<div class="mode-row">
+<button class="mode-btn active" data-m="classic" onclick="setMode('classic')">📚 Классика (без времени)</button>
+<button class="mode-btn" data-m="blitz" onclick="setMode('blitz')">⚡ Блиц (2:00)</button>
+</div>
+<div class="mode-row">
+<button class="btn" onclick="checkAll()">Проверить</button>
+<button class="btn ghost" onclick="reset(true)">Сброс + перемешать</button>
+</div>
+<div class="cols">
+<div class="panel"><h3>🃏 Карточки (12)</h3><div class="cards" id="deck"></div></div>
+<div class="panel"><h3>🧺 Корзины формул</h3><div class="bins" id="bins"></div></div>
+</div>
+<p style="color:#6B7280;text-align:center;margin-top:12px;font-size:.85rem">Можно перетаскивать мышью (drag-and-drop) и пальцем через нажатия. Кнопка «Проверить» подсвечивает верно/неверно.</p>
+</div>
+<div class="modal" id="modal"><div class="modal-box"><h2 id="mTitle">🏆 Готово!</h2><p id="mText"></p><button class="btn" onclick="closeModal()">Играть ещё</button></div></div>
+<script>
+var BINS=[
+{id:'abc',t:'V = a·b·c',f:'параллелепипед'},
+{id:'a3',t:'V = a³',f:'куб'},
+{id:'sh',t:'V = Sосн·h',f:'призма / цилиндр'},
+{id:'tsh',t:'V = ⅓Sосн·h',f:'пирамида'},
+{id:'pir2',t:'V = πR²h',f:'цилиндр'},
+{id:'k13',t:'V = ⅓πR²h',f:'конус'},
+{id:'b43',t:'V = 4/3πR³',f:'шар (объём)'},
+{id:'s4',t:'S = 4πR²',f:'шар (площадь)'},
+{id:'k3',t:'×k³',f:'объёмы при подобии'},
+{id:'k2',t:'×k²',f:'площади при подобии'}
+];
+var CARDS=[
+{t:'Измерения 4, 5, 6 — найти V',b:'abc'},
+{t:'Куб с ребром a',b:'a3'},
+{t:'Sосн = 15, h = 8 (призма)',b:'sh'},
+{t:'Пирамида: Sосн = 18, h = 7',b:'tsh'},
+{t:'Цилиндр R = 3, h = 5',b:'pir2'},
+{t:'Конус R = 3, h = 4',b:'k13'},
+{t:'Шар R = 3 — найти V',b:'b43'},
+{t:'S круга 7 → S шара',b:'s4'},
+{t:'R ×3 → V увеличился во…',b:'k3'},
+{t:'R ×2 → S увеличилась во…',b:'k2'},
+{t:'Пирамида ABCA₁ внутри призмы',b:'tsh'},
+{t:'Сечение конуса, k = 3 → S',b:'k2'}
+];
+var placed={},selCard=null,okN=0,att=0,startT=null,timerI=null,mode='classic',blitzLeft=120,done=false;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function setMode(m){mode=m;document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.m===m)});reset(true)}
+function fmt(s){return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
+function startTimer(){stopTimer();startT=Date.now();timerI=setInterval(function(){var s=Math.floor((Date.now()-startT)/1000);if(mode==='blitz'){var left=120-s;if(left<=0){left=0;stopTimer();finish(true)}document.getElementById('timer').textContent=fmt(left)}else{document.getElementById('timer').textContent=fmt(s)}},500)}
+function stopTimer(){if(timerI)clearInterval(timerI);timerI=null}
+function build(){
+var bins=document.getElementById('bins');bins.innerHTML='';
+BINS.forEach(function(b){var d=document.createElement('div');d.className='bin';d.dataset.b=b.id;d.innerHTML='<h4>'+b.t+'</h4><div class="f">'+b.f+'</div><div class="slot"></div>';
+d.addEventListener('click',function(){onBin(d)});d.addEventListener('dragover',function(e){e.preventDefault()});d.addEventListener('drop',function(e){e.preventDefault();var id=e.dataTransfer.getData('text/plain');placeCard(id,b.id)});bins.appendChild(d)});
+render();
+}
+function render(){
+var deck=document.getElementById('deck');deck.innerHTML='';
+shuffle(CARDS.map(function(c,i){return{txt:c.t,b:c.b,idx:i}})).forEach(function(c){
+if(placed['c'+c.idx]!==undefined)return;
+var d=document.createElement('div');d.className='cardx'+(selCard==='c'+c.idx?' sel':'');d.textContent=c.txt;d.draggable=true;d.dataset.id='c'+c.idx;
+d.addEventListener('click',function(){selCard=(selCard===d.dataset.id?null:d.dataset.id);render()});
+d.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',d.dataset.id)});
+deck.appendChild(d);
+});
+document.querySelectorAll('.bin').forEach(function(bin){
+var slot=bin.querySelector('.slot');slot.innerHTML='';
+Object.keys(placed).forEach(function(cid){
+if(placed[cid]===bin.dataset.b){var i=parseInt(cid.slice(1));var p=document.createElement('div');p.className='placed';p.textContent=CARDS[i].t;p.title='Нажми, чтобы вернуть';p.addEventListener('click',function(e){e.stopPropagation();delete placed[cid];unmark();render()});slot.appendChild(p)}
+});
+bin.classList.toggle('sel',selCard&&placed[selCard]===undefined&&false);
+});
+document.getElementById('okC').textContent=Object.keys(placed).length;
+}
+function onBin(bin){if(!selCard)return;placeCard(selCard,bin.dataset.b)}
+function placeCard(cid,bid){placed[cid]=bid;selCard=null;unmark();render();if(Object.keys(placed).length===12)checkAll(true)}
+function unmark(){document.querySelectorAll('.cardx,.placed').forEach(function(x){x.classList.remove('ok','bad')})}
+function checkAll(auto){
+att++;var good=0;
+Object.keys(placed).forEach(function(cid){var i=parseInt(cid.slice(1));if(CARDS[i].b===placed[cid])good++});
+okN=good;
+var acc=Object.keys(placed).length?Math.round(good/Object.keys(placed).length*100)+'%':'—';
+document.getElementById('acc').textContent=acc;
+// подсветка
+document.querySelectorAll('.bin').forEach(function(bin){
+bin.querySelectorAll('.placed').forEach(function(p){
+var found=null;Object.keys(placed).forEach(function(cid){var i=parseInt(cid.slice(1));if(CARDS[i].t===p.textContent&&placed[cid]===bin.dataset.b)found=cid});
+if(found){var i2=parseInt(found.slice(1));p.style.borderColor=(CARDS[i2].b===placed[found])?'#10B981':'#EF4444';p.style.background=(CARDS[i2].b===placed[found])?'rgba(16,185,129,.15)':'rgba(239,68,68,.15)'}
+});
+});
+if(auto&&good===12)finish(false);
+else if(!auto){if(good===12)finish(false);else alert('Верно: '+good+' из 12. Исправь красные и проверь снова!')}
+}
+function finish(time){stopTimer();var good=0;Object.keys(placed).forEach(function(cid){var i=parseInt(cid.slice(1));if(CARDS[i].b===placed[cid])good++});
+document.getElementById('mTitle').textContent=good===12?'🏆 Идеально!':'⏱ Время! / Готово';
+document.getElementById('mText').innerHTML='Верных сопоставлений: <b>'+good+' / 12</b><br>Точность последней проверки: <b>'+document.getElementById('acc').textContent+'</b><br>Время: <b>'+document.getElementById('timer').textContent+'</b>'+(time?'<br>Блиц окончен — попробуй ещё раз!':'');
+document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show');reset(true)}
+function reset(fresh){placed={};selCard=null;att=0;document.getElementById('acc').textContent='—';document.getElementById('okC').textContent='0';build();startTimer()}
+build();startTimer();
+</script>
+</body>
+</html>

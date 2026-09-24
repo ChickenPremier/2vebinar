@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Стереометрия: объёмы тел и параллельность — Вебинар 3</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;overflow-x:hidden}
+.header{background:#171A23;border-bottom:2px solid #2A2E3A;padding:12px 16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.logo{color:#FBBF24;font-size:1.4rem;font-weight:700;text-shadow:0 2px 10px rgba(251,191,36,.3);white-space:nowrap}
+.burger-btn{display:none;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);border:none;border-radius:6px;width:42px;height:42px;cursor:pointer;font-size:1.3rem;color:#0F1117;font-weight:700;transition:all .3s;align-items:center;justify-content:center}
+.burger-btn.burger-open{background:linear-gradient(135deg,#EF4444 0%,#DC2626 100%);color:#fff}
+.nav-tabs{display:flex;gap:10px;flex-wrap:wrap}
+.tab-btn{padding:12px 22px;background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #2A2E3A;border-radius:8px;color:#D1D5DB;font-size:.95rem;cursor:pointer;transition:all .3s;font-weight:600;font-family:inherit}
+.tab-btn:hover{border-color:#FBBF24;transform:translateY(-2px)}
+.tab-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.home-link{display:inline-flex;align-items:center;gap:6px;color:#9CA3AF;text-decoration:none;font-size:.9rem;padding:8px 14px;border:1px solid #2A2E3A;border-radius:6px;transition:all .3s}
+.home-link:hover{color:#FBBF24;border-color:#FBBF24}
+.container{max-width:1400px;margin:0 auto;padding:40px 20px}
+.section{display:none}
+.section.active{display:block;animation:fadeIn .5s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.welcome-section{text-align:center;padding:60px 20px 20px}
+.welcome-title{color:#FBBF24;font-size:3rem;margin-bottom:20px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.welcome-subtitle{color:#9CA3AF;font-size:1.3rem;margin-bottom:20px}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-top:40px}
+.module-card{background:#171A23;border-radius:10px;padding:30px;border:2px solid #2A2E3A;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.module-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,#FBBF24 0%,#F59E0B 100%);transform:scaleX(0);transition:transform .3s}
+.module-card:hover{transform:translateY(-5px);border-color:#FBBF24;box-shadow:0 8px 30px rgba(251,191,36,.2)}
+.module-card:hover::before{transform:scaleX(1)}
+.module-icon{font-size:3rem;margin-bottom:15px}
+.module-title{color:#FBBF24;font-size:1.5rem;margin-bottom:10px;font-weight:700}
+.module-description{color:#9CA3AF;line-height:1.6;margin-bottom:20px}
+.module-stats{display:flex;gap:20px;margin-top:20px;padding-top:20px;border-top:1px solid #2A2E3A}
+.stat{display:flex;align-items:center;gap:8px;color:#22D3EE;font-size:.9rem}
+iframe{width:100%;height:calc(100vh - 130px);border:none;border-radius:10px;background:#0F1117}
+.tips-section{background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #22D3EE;border-radius:10px;padding:25px;margin-top:30px}
+.tips-title{color:#22D3EE;font-size:1.3rem;margin-bottom:15px;font-weight:700}
+.tips-list{color:#D1D5DB;line-height:2;padding-left:20px}
+.tips-list li{margin-bottom:10px}
+@media(max-width:900px){.header-content{flex-wrap:wrap}.burger-btn{display:flex}.home-link{display:none}.nav-tabs{display:none;width:100%;flex-direction:column;gap:8px}.nav-tabs.show{display:flex;animation:fadeIn .3s}.tab-btn{width:100%;text-align:left;padding:14px 18px;font-size:1rem}.welcome-title{font-size:1.8rem}.modules-grid{grid-template-columns:1fr;gap:15px;margin-top:20px}.welcome-section{padding:30px 0}.welcome-subtitle{font-size:1.05rem}.container{padding:20px 14px}.module-card{padding:20px}.module-icon{font-size:2.2rem;margin-bottom:10px}.module-title{font-size:1.25rem}.module-stats{gap:15px}.tips-section{padding:20px}}
+@media(max-width:768px){.logo{font-size:1.05rem}.welcome-title{font-size:1.5rem}iframe{height:calc(100vh - 140px);border-radius:6px}}
+@media(max-width:480px){.logo{font-size:1.05rem}.welcome-title{font-size:1.5rem}}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="header-content">
+<div class="logo">🧊 Стереометрия · Вебинар 3</div>
+<div style="display:flex;align-items:center;gap:10px">
+<a href="../index.html" class="home-link">← Все вебинары</a>
+<button class="burger-btn" id="burgerBtn" onclick="toggleMenu(event)">☰</button>
+</div>
+<div class="nav-tabs" id="navTabs">
+<button class="tab-btn active" data-tab="home" onclick="showTab('home')">Главная</button>
+<button class="tab-btn" data-tab="glossary" onclick="showTab('glossary')">Глоссарий</button>
+<button class="tab-btn" data-tab="volumes" onclick="showTab('volumes')">Объёмы</button>
+<button class="tab-btn" data-tab="similarity" onclick="showTab('similarity')">Подобие</button>
+<button class="tab-btn" data-tab="game" onclick="showTab('game')">Игра</button>
+<button class="tab-btn" data-tab="quiz" onclick="showTab('quiz')">Квиз</button>
+<button class="tab-btn" data-tab="tasks" onclick="showTab('tasks')">Разбор заданий</button>
+</div>
+</div>
+</div>
+<div class="container">
+<div id="home" class="section active">
+<div class="welcome-section">
+<h1 class="welcome-title">Добро пожаловать!</h1>
+<p class="welcome-subtitle">Вебинар 3 «Стереометрия: объёмы тел и параллельность» — все формулы, параллельность прямых и плоскостей, подобие и 30 заданий с разбором</p>
+</div>
+<div class="tips-section">
+<div class="tips-title">💡 Как проходить тренажёр</div>
+<ul class="tips-list">
+<li><strong>Начни с глоссария</strong> — аксиомы С1–С3, случаи взаимного расположения, все формулы объёмов</li>
+<li><strong>Посчитай на калькуляторе</strong> — вкладка «Объёмы»: меняй параметры и смотри подстановку в формулу</li>
+<li><strong>Выучи k / k² / k³</strong> — вкладка «Подобие»: длины ×k, площади ×k², объёмы ×k³</li>
+<li><strong>Поиграй в игру</strong> — сопоставь каждое тело с его формулой объёма</li>
+<li><strong>Проверь себя квизом</strong> — 20 вопросов с объяснениями</li>
+<li><strong>Разбери все 30 заданий</strong> — сначала реши сам, потом открой пошаговое решение</li>
+</ul>
+</div>
+<div class="modules-grid">
+<div class="module-card" onclick="showTab('glossary')">
+<div class="module-icon">📖</div>
+<div class="module-title">Глоссарий</div>
+<div class="module-description">Аксиомы, параллельность, все формулы объёмов: призма, пирамида, цилиндр, конус, шар, куб, параллелепипед.</div>
+<div class="module-stats"><div class="stat"><span>⏱</span><span>~10 мин</span></div><div class="stat"><span>📊</span><span>Теория</span></div></div>
+</div>
+<div class="module-card" onclick="showTab('volumes')">
+<div class="module-icon">🧊</div>
+<div class="module-title">Калькулятор объёмов</div>
+<div class="module-description">Считай V и S для 6 тел, меняя параметры: параллелепипед, куб, призма, пирамида, цилиндр, конус, шар.</div>
+<div class="module-stats"><div class="stat"><span>⏱</span><span>~15 мин</span></div><div class="stat"><span>📊</span><span>Практика</span></div></div>
+</div>
+<div class="module-card" onclick="showTab('similarity')">
+<div class="module-icon">📏</div>
+<div class="module-title">Подобие k/k²/k³</div>
+<div class="module-description">Drill: площади ×k², объёмы ×k³ + генератор заданий на подобие тел и сечений.</div>
+<div class="module-stats"><div class="stat"><span>⏱</span><span>~10 мин</span></div><div class="stat"><span>📊</span><span>Практика</span></div></div>
+</div>
+<div class="module-card" onclick="showTab('game')">
+<div class="module-icon">🎮</div>
+<div class="module-title">Игра: тело ↔ формула</div>
+<div class="module-description">Drag-and-drop + игра нажатиями: сопоставь тела и ситуации с формулами. Классика и блиц.</div>
+<div class="module-stats"><div class="stat"><span>⏱</span><span>~10 мин</span></div><div class="stat"><span>📊</span><span>Игра</span></div></div>
+</div>
+<div class="module-card" onclick="showTab('quiz')">
+<div class="module-icon">🎓</div>
+<div class="module-title">Квиз</div>
+<div class="module-description">20 вопросов с перемешиванием и объяснениями: формулы, теория и мини-задачи.</div>
+<div class="module-stats"><div class="stat"><span>⏱</span><span>~20 мин</span></div><div class="stat"><span>📊</span><span>Тест</span></div></div>
+</div>
+<div class="module-card" onclick="showTab('tasks')">
+<div class="module-icon">📝</div>
+<div class="module-title">Разбор заданий</div>
+<div class="module-description">Все 30 заданий вебинара с пошаговыми решениями: параллелепипеды, призмы, цилиндры, шары, подобие, параллельность.</div>
+<div class="module-stats"><div class="stat"><span>⏱</span><span>~25 мин</span></div><div class="stat"><span>📊</span><span>Разбор</span></div></div>
+</div>
+</div>
+</div>
+<div id="glossary" class="section"><iframe src="Глоссарий_стереометрия.html"></iframe></div>
+<div id="volumes" class="section"><iframe src="Тренажер_объемы.html"></iframe></div>
+<div id="similarity" class="section"><iframe src="Тренажер_подобие.html"></iframe></div>
+<div id="game" class="section"><iframe src="Игра_тело_формула.html"></iframe></div>
+<div id="quiz" class="section"><iframe src="Квиз_стереометрия.html"></iframe></div>
+<div id="tasks" class="section"><iframe src="Разбор_заданий.html"></iframe></div>
+</div>
+<script>
+function showTab(tabName){var s=document.querySelectorAll('.section');s.forEach(function(x){x.classList.remove('active')});document.getElementById(tabName).classList.add('active');var b=document.querySelectorAll('.tab-btn');b.forEach(function(x){x.classList.remove('active')});var a=document.querySelector('.tab-btn[data-tab="'+tabName+'"]');if(a)a.classList.add('active');var n=document.getElementById('navTabs');var bb=document.getElementById('burgerBtn');if(n.classList.contains('show')){n.classList.remove('show');bb.classList.remove('burger-open');bb.textContent='☰'}window.scrollTo(0,0)}
+function toggleMenu(e){e.stopPropagation();var n=document.getElementById('navTabs');var bb=document.getElementById('burgerBtn');var o=n.classList.toggle('show');bb.classList.toggle('burger-open',o);bb.textContent=o?'✕':'☰'}
+</script>
+</body>
+</html>
