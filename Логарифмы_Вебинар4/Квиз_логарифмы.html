@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Квиз: логарифмы</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.4rem;margin-bottom:6px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:16px}
+.score-panel{background:#171A23;border-radius:10px;padding:20px;margin-bottom:20px;border:2px solid #2A2E3A;display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:10px}
+.score-item{text-align:center}.score-label{color:#9CA3AF;font-size:.9rem;margin-bottom:5px}.score-value{color:#FBBF24;font-size:2rem;font-weight:700}
+.progress-bar{width:100%;height:10px;background:#2A2E3A;border-radius:5px;overflow:hidden;margin-bottom:24px}
+.progress-fill{height:100%;background:linear-gradient(90deg,#FBBF24 0%,#F59E0B 100%);width:0%;transition:width .3s}
+.quiz-card{background:#171A23;border-radius:10px;padding:36px;border:2px solid #2A2E3A;margin-bottom:20px}
+.question-number{color:#9CA3AF;font-size:.9rem;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.question-text{color:#E5E7EB;font-size:1.4rem;margin-bottom:26px;line-height:1.7}
+.options{display:grid;gap:14px}
+.option{background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #2A2E3A;border-radius:8px;padding:18px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:14px;font-size:1.05rem;line-height:1.5}
+.option:hover{border-color:#FBBF24;transform:translateX(5px)}
+.option.correct{border-color:#10B981;background:rgba(16,185,129,.15)}
+.option.wrong{border-color:#EF4444;background:rgba(239,68,68,.15)}
+.option.disabled{pointer-events:none;opacity:.85}
+.explain{margin-top:18px;padding:16px;border-radius:8px;background:rgba(34,211,238,.08);border:1px solid #22D3EE;line-height:1.7;display:none}
+.explain.show{display:block}
+.next-row{text-align:center;margin-top:18px}
+.btn{padding:13px 30px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1rem}
+.result-card{background:#171A23;border:2px solid #FBBF24;border-radius:10px;padding:40px;text-align:center;display:none}
+.result-card.show{display:block}
+.result-card h2{color:#FBBF24;font-size:2rem;margin-bottom:14px}
+@media(max-width:768px){h1{font-size:1.6rem}.quiz-card{padding:22px 16px}.question-text{font-size:1.15rem}.btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎓 Квиз: логарифмы</h1>
+<div class="subtitle">20 вопросов по вебинару: определение, ОДЗ, свойства, графики, клетки, уравнения.</div>
+<div class="score-panel">
+<div class="score-item"><div class="score-label">Вопрос</div><div class="score-value" id="qNum">1/20</div></div>
+<div class="score-item"><div class="score-label">Верно</div><div class="score-value" id="okN" style="color:#10B981">0</div></div>
+<div class="score-item"><div class="score-label">Ошибки</div><div class="score-value" id="badN" style="color:#EF4444">0</div></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+<div class="quiz-card" id="quizCard">
+<div class="question-number" id="qTag">Вопрос 1</div>
+<div class="question-text" id="qText"></div>
+<div class="options" id="opts"></div>
+<div class="explain" id="expl"></div>
+<div class="next-row"><button class="btn" id="nextBtn" onclick="next()" style="display:none">Дальше →</button></div>
+</div>
+<div class="result-card" id="resCard"><h2 id="resTitle"></h2><p id="resText" style="line-height:2"></p><br><button class="btn" onclick="restart()">Пройти заново (перемешать)</button></div>
+</div>
+<script>
+var Q=[
+{q:'Что означает запись log₂ 8 = 3?',opts:['2³ = 8','3² = 8','8² = 3','2·3 = 8'],correct:0,why:'Определение: log_a b = c ⟺ a^c = b. Проверяем: 2³ = 8. Логарифм — это показатель степени.'},
+{q:'Какое выражение НЕ имеет смысла (запрещено ОДЗ)?',opts:['log₂ 8','log₅ 1','log₃(−9)','log₁₀ 10'],correct:2,why:'Под логарифмом может стоять только строго положительное число. −9 < 0, поэтому log₃(−9) не существует.'},
+{q:'Какое основание логарифма недопустимо?',opts:['2','10','e (≈2,7)','−3'],correct:3,why:'Основание a должно удовлетворять: a > 0 и a ≠ 1. Отрицательное −3 запрещено.'},
+{q:'Вычисли: log₃ 1,8 + log₃ 5',opts:['1','2','3','9'],correct:1,why:'Сумма → произведение: log₃(1,8·5) = log₃ 9 = 2, так как 3² = 9.'},
+{q:'Вычисли: log₅ 60 − log₅ 12',opts:['1','2','5','48'],correct:0,why:'Разность → частное: log₅(60/12) = log₅ 5 = 1.'},
+{q:'Вычисли: 3^(log₃ 7)',opts:['7','3','9','21'],correct:0,why:'Основное тождество: a^(log_a b) = b. Ответ 7.'},
+{q:'Уравнение logₓ 25 = 2 (x — основание). Корни получились x = 5 и x = −5. Какой ответ записать?',opts:['5','−5','оба','нет корней'],correct:0,why:'Основание должно быть > 0 и ≠ 1. x = −5 отбрасываем (мотив вебинара: так же отбросили −2 при основании-букве). Ответ 5.'},
+{q:'Чему равен log₅ 1?',opts:['0','1','5','не существует'],correct:0,why:'Любое a⁰ = 1, поэтому log_a 1 = 0 при любом допустимом a.'},
+{q:'Чему равен log₄ 2?',opts:['2','1/2','1','8'],correct:1,why:'4^(1/2) = √4 = 2, значит log₄ 2 = 1/2. Приём: 4 = 2², поэтому log_{2²} 2 = 1/2.'},
+{q:'Чему равно log₃ 7⁴?',opts:['4·log₃ 7','log₃ 28','(log₃ 7)/4','7·log₃ 4'],correct:0,why:'Свойство степени: log M^k = k·log M. Показатель 4 выносится вперёд.'},
+{q:'Чему равно log_{a³} M?',opts:['(1/3)·log_a M','3·log_a M','log_a M³','log_a (M/3)'],correct:0,why:'Степень в основании превращается в 1/k: log_{a^k} M = (1/k)·log_a M. Здесь k = 3.'},
+{q:'Вычисли через переход: log₈ 4',opts:['2/3','3/2','2','1/2'],correct:0,why:'log₈ 4 = log₂ 4 / log₂ 8 = 2/3. Или: 8 = 2³, 4 = 2², ответ 2/3.'},
+{q:'Вычисли: log₂ 5 · log₅ 8',opts:['3','5','10','13'],correct:0,why:'Произведение-цепочка: log_a b · log_b c = log_a c. Получаем log₂ 8 = 3.'},
+{q:'Какая функция возрастает на всей области определения?',opts:['y = log₂ x','y = log_{0,5} x','y = log_{1/3} x','y = (1/2)^x'],correct:0,why:'Логарифм растёт при основании a > 1 (как log₂ x). При 0 < a < 1 — убывает.'},
+{q:'Область определения и значений y = log₂ x:',opts:['D = (0;+∞), E = R','D = R, E = (0;+∞)','D = [0;+∞), E = R','D = R, E = R'],correct:0,why:'Под логарифмом только x > 0, значит D = (0;+∞). А значениями может быть любое число: E = R.'},
+{q:'Какая точка лежит на графике ЛЮБОЙ функции y = log_a x?',opts:['(1; 0)','(0; 1)','(0; 0)','(1; 1)'],correct:0,why:'a⁰ = 1 всегда, поэтому log_a 1 = 0: точка (1; 0) — общая для всех логарифмов.'},
+{q:'По клеткам: f(x) = −3 + log₂ x. Найди f(32).',opts:['2','5','−2','29'],correct:0,why:'log₂ 32 = 5 (2⁵ = 32). f(32) = −3 + 5 = 2. Две целые точки (2;−2) и (4;−1) дают b = −3.'},
+{q:'По клеткам: f(x) = log₂ (x+5). Найди f(11).',opts:['4','3','5','16'],correct:0,why:'f(11) = log₂ (11+5) = log₂ 16 = 4.'},
+{q:'Показательная по клеткам: f(x) = 2^x − 3. Найди f(6).',opts:['61','9','29','35'],correct:0,why:'2⁶ = 64, 64 − 3 = 61. Мотив вебинара: точки (0;1+b) и (1;a+b) задают a и b.'},
+{q:'Решаем log₂ (x²−…) = …, получились корни x = 5 и x = −3, а по условию x > 0. Что в ответ?',opts:['5','−3','оба','нет корней'],correct:0,why:'ОДЗ x > 0 отбрасывает x = −3 (под логарифмом было бы отрицательное). В ответ только 5.'}
+];
+var order=[],idx=0,ok=0,bad=0,lock=false;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function start(){order=shuffle(Q.map(function(_,i){return i}));idx=0;ok=0;bad=0;document.getElementById('resCard').classList.remove('show');document.getElementById('quizCard').style.display='';render()}
+function render(){
+lock=false;var d=Q[order[idx]];
+document.getElementById('qNum').textContent=(idx+1)+'/'+Q.length;
+document.getElementById('okN').textContent=ok;document.getElementById('badN').textContent=bad;
+document.getElementById('prog').style.width=(idx/Q.length*100)+'%';
+document.getElementById('qTag').textContent='Вопрос '+(idx+1)+' из '+Q.length+(idx<8?' · Теория и ОДЗ':(idx<14?' · Свойства':' · Графики, клетки, уравнения'));
+document.getElementById('qText').textContent=d.q;
+document.getElementById('expl').classList.remove('show');document.getElementById('nextBtn').style.display='none';
+var box=document.getElementById('opts');box.innerHTML='';
+var oo=d.opts.map(function(t,i){return{t:t,ok:i===d.correct}});shuffle(oo);
+oo.forEach(function(o){var el=document.createElement('div');el.className='option';el.textContent=o.t;el.addEventListener('click',function(){answer(el,o.ok,d)});box.appendChild(el)});
+}
+function answer(el,isOk,d){
+if(lock)return;lock=true;
+var opts=document.querySelectorAll('.option');opts.forEach(function(x){x.classList.add('disabled')});
+if(isOk){el.classList.add('correct');ok++}else{el.classList.add('wrong');bad++;opts.forEach(function(x){if(x.textContent===d.opts[d.correct])x.classList.add('correct')})}
+var ex=document.getElementById('expl');ex.innerHTML='<b>'+(isOk?'✅ Верно!':'❌ Правильный ответ: '+d.opts[d.correct])+'</b><br>'+d.why;ex.classList.add('show');
+document.getElementById('okN').textContent=ok;document.getElementById('badN').textContent=bad;
+document.getElementById('prog').style.width=((idx+1)/Q.length*100)+'%';
+document.getElementById('nextBtn').style.display='';document.getElementById('nextBtn').textContent=(idx+1===Q.length)?'Показать результаты':'Дальше →';
+}
+function next(){if(idx+1>=Q.length){finish()}else{idx++;render()}}
+function finish(){
+document.getElementById('quizCard').style.display='none';var rc=document.getElementById('resCard');rc.classList.add('show');
+var p=Math.round(ok/Q.length*100),t=p>=90?'🏆 Отлично!':(p>=70?'👍 Хорошо!':(p>=50?'🙂 Неплохо':'📚 Повтори свойства'));
+document.getElementById('resTitle').textContent=t;
+document.getElementById('resText').innerHTML='Верно: <b>'+ok+' / '+Q.length+'</b> ('+p+'%)<br>ОДЗ решает всё: сначала выписывай запреты, потом считай.';
+}
+function restart(){start()}
+start();
+</script>
+</body>
+</html>

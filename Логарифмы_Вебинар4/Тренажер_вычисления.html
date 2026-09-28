@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: вычисление логарифмов</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:8px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:20px}
+.rule{background:#171A23;border:2px solid #22D3EE;border-radius:10px;padding:18px;margin-bottom:18px;text-align:center;line-height:2;font-size:1.05rem}
+.rule b{color:#22D3EE}.rule .y{color:#FBBF24;font-weight:800}
+.panel{background:#171A23;border-radius:10px;padding:16px;border:2px solid #2A2E3A;margin-bottom:16px}
+.mode-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.mode-btn{padding:11px 20px;background:#1E222E;border:2px solid #2A2E3A;border-radius:8px;color:#D1D5DB;cursor:pointer;font-weight:700;font-family:inherit;transition:all .3s}
+.mode-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.stat-box{background:#171A23;border:2px solid #2A2E3A;border-radius:8px;padding:10px 22px;text-align:center;min-width:100px}
+.stat-v{font-size:1.5rem;font-weight:800;color:#FBBF24}.stat-v.g{color:#10B981}.stat-v.r{color:#EF4444}.stat-v.b{color:#22D3EE}.stat-l{color:#9CA3AF;font-size:.82rem}
+.q-card{background:#171A23;border-radius:10px;padding:32px;border:2px solid #FBBF24;text-align:center}
+.q-tag{display:inline-block;background:rgba(34,211,238,.12);border:1px solid #22D3EE;color:#22D3EE;padding:5px 15px;border-radius:20px;font-size:.85rem;font-weight:700;margin-bottom:12px}
+.q-text{font-size:1.7rem;color:#fff;margin-bottom:8px}
+.q-hint{color:#9CA3AF;font-size:.92rem;margin-bottom:16px}
+.ans-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ans-row input{width:200px;padding:13px;background:#0F1117;border:2px solid #FBBF24;border-radius:8px;color:#fff;font-size:1.25rem;text-align:center;font-family:inherit}
+.ans-row input:focus{outline:none;box-shadow:0 0 14px rgba(251,191,36,.4)}
+.btn{padding:13px 28px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;font-size:1rem;cursor:pointer;font-family:inherit}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,191,36,.4)}
+.btn.ghost{background:#1E222E;color:#FBBF24;border:2px solid #FBBF24}
+.feedback{margin-top:16px;padding:15px;border-radius:8px;display:none;line-height:1.7;text-align:left}
+.feedback.show{display:block}.feedback.ok{background:rgba(16,185,129,.12);border:2px solid #10B981}.feedback.bad{background:rgba(239,68,68,.12);border:2px solid #EF4444}
+.streak{text-align:center;color:#FBBF24;font-weight:700;margin-top:10px;min-height:24px}
+.help{color:#6B7280;font-size:.85rem;text-align:center;margin-top:14px;line-height:1.7}
+@media(max-width:768px){h1{font-size:1.5rem}.q-card{padding:22px 16px}.q-text{font-size:1.3rem}.ans-row input{width:100%}.btn{width:100%}.ans-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔢 Логарифмы: вычисления</h1>
+<div class="subtitle">Блок А вебинара: сумма, разность, тождество, степени, переход. Набей руку на генераторе.</div>
+<div class="rule">📚 log<sub>a</sub> m + log<sub>a</sub> n = <b>log<sub>a</sub>(m·n)</b> &nbsp;·&nbsp; log<sub>a</sub> m − log<sub>a</sub> n = <b class="y">log<sub>a</sub>(m/n)</b> &nbsp;·&nbsp; a<sup>log<sub>a</sub> b</sup> = <b>b</b><br><span style="color:#9CA3AF;font-size:.9rem">log<sub>a</sub> b · log<sub>b</sub> c = log<sub>a</sub> c ··· log<sub>a</sub> b / log<sub>a</sub> c = p/q ··· lg = log<sub>10</sub></span></div>
+<div class="panel"><div class="mode-row">
+<button class="mode-btn active" data-m="mix">🎲 Всё подряд</button>
+<button class="mode-btn" data-m="sum">➕ Сумма/разность</button>
+<button class="mode-btn" data-m="id">🔑 Тождество</button>
+<button class="mode-btn" data-m="pw">⚡ Степень</button>
+<button class="mode-btn" data-m="ch">🔄 Переход</button>
+</div></div>
+<div class="stats">
+<div class="stat-box"><div class="stat-v g" id="okV">0</div><div class="stat-l">Верно</div></div>
+<div class="stat-box"><div class="stat-v r" id="badV">0</div><div class="stat-l">Ошибки</div></div>
+<div class="stat-box"><div class="stat-v b" id="nV">1</div><div class="stat-l">Задание</div></div>
+<div class="stat-box"><div class="stat-v" id="accV">—</div><div class="stat-l">Точность</div></div>
+</div>
+<div class="q-card">
+<div class="q-tag" id="qTag">Логарифмы</div>
+<div class="q-text" id="qText">…</div>
+<div class="q-hint" id="qHint"></div>
+<div class="ans-row"><input id="ansInput" placeholder="Ответ" autocomplete="off"><button class="btn" onclick="check()">Проверить</button></div>
+<div class="feedback" id="fb"></div>
+<div class="streak" id="streak"></div>
+<div class="ans-row" style="margin-top:14px"><button class="btn ghost" onclick="next(true)">Пропустить →</button><button class="btn ghost" onclick="reset()">Заново</button></div>
+</div>
+<div class="help">Вводи число (десятичные через точку или запятую, дроби вида 3/2). Enter — проверить, после проверки Enter — дальше.<br>Мотивы вебинара: сумма/разность, тождество a<sup>log</sup>, степени, переход к новому основанию.</div>
+</div>
+<script>
+var mode='mix',cur=null,okN=0,badN=0,nN=0,streakN=0,answered=false;
+var SUB={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+var SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+function sb(x){return String(x).replace(/[0-9]/g,function(d){return SUB[d]})}
+function sp(x){return String(x).replace(/[0-9]/g,function(d){return SUP[d]})}
+function fmt(x){return String(x).replace('.',',')}
+function dsp(v){var s=Math.round(v*1000)/1000;return String(s).replace('.',',')}
+function r(a){return a[Math.floor(Math.random()*a.length)]}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function numEq(a,b){return Math.abs(a-b)<0.011}
+function parseAns(s){s=(s||'').trim().replace(',','.');if(/^-?\d+\/\d+$/.test(s)){var p=s.split('/');return parseFloat(p[0])/parseFloat(p[1])}return parseFloat(s)}
+document.querySelectorAll('.mode-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.mode-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');mode=b.dataset.m;next()})});
+function pickCat(){if(mode!=='mix')return mode;return r(['sum','sum','id','pw','ch'])}
+var FIX=[
+{m:'sum',tag:'Сумма',text:'log₃1,8 + log₃5',ans:2,hint:'Сумма логарифмов → логарифм произведения',how:'log₃(1,8 · 5) = log₃9 = 2, так как 3² = 9.'},
+{m:'sum',tag:'Разность',text:'log₅60 − log₅12',ans:1,hint:'Разность логарифмов → логарифм частного',how:'log₅(60 : 12) = log₅5 = 1.'},
+{m:'sum',tag:'Сумма',text:'log₃8,1 + log₃10',ans:4,hint:'Сначала перемножь числа под логарифмом',how:'log₃(8,1 · 10) = log₃81 = 4, так как 3⁴ = 81.'},
+{m:'sum',tag:'Сумма',text:'lg250 + lg4',ans:3,hint:'lg — десятичный логарифм; сложи → произведение',how:'lg(250 · 4) = lg1000 = 3 (при этом 250 = 5³ · 2 = 125 · 2).'},
+{m:'sum',tag:'Сумма',text:'log₂(1/6) + log₂12',ans:1,hint:'Сумма → произведение дробей',how:'log₂((1/6) · 12) = log₂2 = 1.'},
+{m:'sum',tag:'Разность',text:'log₃63 − log₃7 − log₃√3',ans:1.5,disp:'1,5',hint:'Сначала первые два логарифма, потом вычти log₃√3 = 0,5',how:'log₃63 − log₃7 = log₃9 = 2; log₃√3 = 0,5; 2 − 0,5 = 1,5.'},
+{m:'id',tag:'Тождество',text:'7 · 5^(log₅4)',ans:28,hint:'Основное логарифмическое тождество: a^(log_a b) = b',how:'5^(log₅4) = 4, значит 7 · 4 = 28.'},
+{m:'pw',tag:'Степень',text:'log₆36',ans:2,hint:'36 — степень шестёрки: 36 = 6²',how:'log₆36 = 2, так как 6² = 36.'},
+{m:'pw',tag:'Степень',text:'log₂(4³)',ans:6,hint:'Сначала возведи в степень, потом бери логарифм',how:'4³ = 64 = 2⁶, значит log₂(4³) = 6.'},
+{m:'ch',tag:'Переход',text:'log₂3 · log₃2',ans:1,hint:'Произведение взаимно-обратных логарифмов',how:'log₂3 · log₃2 = (ln3/ln2) · (ln2/ln3) = 1.'}
+];
+function gen(){
+var c=pickCat(),t,i;
+if(Math.random()<0.35){var pool=[];for(i=0;i<FIX.length;i++)if(FIX[i].m===c)pool.push(FIX[i]);if(pool.length)return r(pool)}
+if(c==='sum'){
+if(Math.random()<0.55){
+var a=r([2,3,5,7,10]),p=ri(2,3),S=Math.pow(a,p);
+var cand=[];
+for(var d=2;d<S;d++)if(S%d===0)cand.push([d,S/d]);
+var dn=[2,4,5,8,10,12,20,25],j,nn,mm,mmr;
+for(j=0;j<dn.length;j++){nn=dn[j];if(nn>=S)continue;mm=S/nn;mmr=Math.round(mm*10)/10;if(mmr>1&&mmr!==S&&Math.abs(mmr*nn-S)<1e-9)cand.push([mmr,nn])}
+if(!cand.length)cand.push([a,S/a]);
+var pr=r(cand),m=pr[0],n=pr[1];
+var an=a===10?'lg':'log'+sb(a);
+var pw=a===10?'10'+sp(p):a+sp(p);
+return{tag:'Сумма',text:an+fmt(m)+' + '+an+fmt(n),ans:p,hint:'Сумма → произведение: '+fmt(m)+' · '+fmt(n)+' = '+S,how:an+'('+fmt(m)+' · '+fmt(n)+') = '+an+S+' = '+p+', так как '+pw+' = '+S+'.'};
+}
+var a2=r([2,3,5,7,10]),p2=ri(1,3),D=Math.pow(a2,p2),n2=r([2,3,4,5,6,8,9,12]),m2=D*n2;
+var an2=a2===10?'lg':'log'+sb(a2);
+var pw2=a2===10?'10'+sp(p2):a2+sp(p2);
+return{tag:'Разность',text:an2+m2+' − '+an2+n2,ans:p2,hint:'Разность → частное: '+m2+' : '+n2,how:an2+'('+m2+' : '+n2+') = '+an2+D+' = '+p2+', так как '+pw2+' = '+D+'.'};
+}
+if(c==='id'){
+var a3=r([2,3,4,5,7,10]),b3=ri(2,9),k3=ri(2,9);
+var pw3=a3===10?'10^(lg'+b3+')':a3+'^(log'+sb(a3)+b3+')';
+return{tag:'Тождество',text:k3+' · '+pw3,ans:k3*b3,hint:'Основное логарифмическое тождество: a^(log_a b) = b',how:pw3+' = '+b3+', значит '+k3+' · '+b3+' = '+(k3*b3)+'.'};
+}
+if(c==='pw'){
+t=ri(0,3);
+if(t===0){var a4=r([2,3,5,6,7]),p4=ri(2,4),V4=Math.pow(a4,p4);return{tag:'Степень',text:'log'+sb(a4)+V4,ans:p4,hint:'Под логарифмом — степень основания ('+V4+' = '+a4+sp(p4)+')',how:'log'+sb(a4)+V4+' = '+p4+', так как '+a4+sp(p4)+' = '+V4+'.'}}
+if(t===1){var a5=r([2,3]),p5=ri(2,3),k5=ri(2,3),in5=Math.pow(a5,p5);return{tag:'Степень',text:'log'+sb(a5)+'('+in5+sp(k5)+')',ans:p5*k5,hint:'Сначала возведи в степень: ('+a5+sp(p5)+')'+sp(k5),how:'('+a5+sp(p5)+')'+sp(k5)+' = '+a5+sp(p5*k5)+' = '+Math.pow(a5,p5*k5)+', значит ответ '+(p5*k5)+'.'}}
+if(t===2){var V=[[4,8,2,2,3],[9,27,3,2,3],[25,125,5,2,3],[8,32,2,3,5],[4,2,2,2,1],[9,3,3,2,1]],vv=r(V),bb=vv[0],cc=vv[1],bp=vv[2],u=vv[3],v=vv[4],av=v/u;av=Math.round(av*1000)/1000;return{tag:'Степень',text:'log'+sb(bb)+cc,ans:av,disp:dsp(av)+' ('+v+'/'+u+')',hint:'Основание и число — степени одного числа ('+bp+')',how:bb+' = '+bp+sp(u)+', '+cc+' = '+bp+sp(v)+' ⇒ ('+bp+sp(u)+')ʸ = '+bp+sp(v)+' ⇒ y = '+v+'/'+u+' = '+dsp(av)+'.'}}
+var a6=r([2,3,5]),p6=ri(1,2),V6=Math.pow(a6,p6);
+return{tag:'Степень',text:'log'+sb(a6)+'(1/'+V6+')',ans:-p6,disp:'−'+p6,hint:'Дробь 1/N под логарифмом — отрицательная степень',how:'1/'+V6+' = '+a6+'⁻'+sp(p6)+', значит ответ −'+p6+'.'};
+}
+// ch
+t=ri(0,1);
+if(t===0){var a7=r([2,3,5]),p7=ri(2,4),q7=ri(1,3);if(q7>=p7)q7=1;var B7=Math.pow(a7,p7),C7=Math.pow(a7,q7),A7=p7/q7;A7=Math.round(A7*1000)/1000;return{tag:'Переход',text:'log'+sb(a7)+B7+' / log'+sb(a7)+C7,ans:A7,disp:dsp(A7),hint:'Числитель и знаменатель — степени '+a7,how:'log'+sb(a7)+B7+' = '+p7+', log'+sb(a7)+C7+' = '+q7+' ⇒ '+p7+' / '+q7+' = '+dsp(A7)+'.'}}
+var a8=r([2,3]),rr=ri(2,3),qq=ri(2,3),B8=Math.pow(a8,rr),C8=Math.pow(B8,qq);
+return{tag:'Переход',text:'log'+sb(a8)+B8+' · log'+sb(B8)+C8,ans:rr*qq,hint:'Формула: log_a b · log_b c = log_a c = ?',how:'log'+sb(a8)+B8+' = '+rr+', log'+sb(B8)+C8+' = '+qq+' ⇒ '+rr+' · '+qq+' = '+(rr*qq)+' (это и есть log'+sb(a8)+C8+').'};
+}
+function next(skip){if(!answered&&nN>0&&!skip){}cur=gen();answered=false;nN++;document.getElementById('qTag').textContent=cur.tag;document.getElementById('qText').textContent=cur.text;document.getElementById('qHint').textContent=cur.hint||'';document.getElementById('ansInput').value='';var fb=document.getElementById('fb');fb.className='feedback';fb.innerHTML='';upd();document.getElementById('ansInput').focus()}
+function upd(){document.getElementById('okV').textContent=okN;document.getElementById('badV').textContent=badN;document.getElementById('nV').textContent=nN;document.getElementById('accV').textContent=(okN+badN)>0?Math.round(okN/(okN+badN)*100)+'%':'—';var st=document.getElementById('streak');st.textContent=streakN>=2?('🔥 Серия: '+streakN):''}
+function check(){if(answered){next(true);return}var v=parseAns(document.getElementById('ansInput').value);var fb=document.getElementById('fb');if(isNaN(v)){fb.className='feedback show bad';fb.innerHTML='<b>Введи число.</b>';return}answered=true;if(numEq(v,cur.ans)){okN++;streakN++;fb.className='feedback show ok';fb.innerHTML='<b style="color:#10B981">✅ Верно!</b><br>'+cur.how}else{badN++;streakN=0;fb.className='feedback show bad';fb.innerHTML='<b style="color:#EF4444">❌ Неверно.</b> Правильно: <b>'+(cur.disp||cur.ans)+'</b><br>'+cur.how}upd()}
+function reset(){okN=0;badN=0;nN=0;streakN=0;next(true)}
+document.getElementById('ansInput').addEventListener('keydown',function(e){if(e.key==='Enter')check()});
+next(true);
+</script>
+</body>
+</html>

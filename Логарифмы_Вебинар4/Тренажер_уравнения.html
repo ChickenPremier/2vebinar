@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренажёр: логарифмические уравнения</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:8px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:20px}
+.rule{background:#171A23;border:2px solid #22D3EE;border-radius:10px;padding:18px;margin-bottom:18px;text-align:center;line-height:2;font-size:1.05rem}
+.rule b{color:#22D3EE}.rule .y{color:#FBBF24;font-weight:800}
+.panel{background:#171A23;border-radius:10px;padding:16px;border:2px solid #2A2E3A;margin-bottom:16px}
+.mode-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.mode-btn{padding:11px 20px;background:#1E222E;border:2px solid #2A2E3A;border-radius:8px;color:#D1D5DB;cursor:pointer;font-weight:700;font-family:inherit;transition:all .3s}
+.mode-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.stat-box{background:#171A23;border:2px solid #2A2E3A;border-radius:8px;padding:10px 22px;text-align:center;min-width:100px}
+.stat-v{font-size:1.5rem;font-weight:800;color:#FBBF24}.stat-v.g{color:#10B981}.stat-v.r{color:#EF4444}.stat-v.b{color:#22D3EE}.stat-l{color:#9CA3AF;font-size:.82rem}
+.q-card{background:#171A23;border-radius:10px;padding:32px;border:2px solid #FBBF24;text-align:center}
+.q-tag{display:inline-block;background:rgba(34,211,238,.12);border:1px solid #22D3EE;color:#22D3EE;padding:5px 15px;border-radius:20px;font-size:.85rem;font-weight:700;margin-bottom:12px}
+.q-text{font-size:1.7rem;color:#fff;margin-bottom:8px}
+.q-hint{color:#9CA3AF;font-size:.92rem;margin-bottom:16px}
+.ans-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ans-row input{width:200px;padding:13px;background:#0F1117;border:2px solid #FBBF24;border-radius:8px;color:#fff;font-size:1.25rem;text-align:center;font-family:inherit}
+.ans-row input:focus{outline:none;box-shadow:0 0 14px rgba(251,191,36,.4)}
+.btn{padding:13px 28px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;font-size:1rem;cursor:pointer;font-family:inherit}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,191,36,.4)}
+.btn.ghost{background:#1E222E;color:#FBBF24;border:2px solid #FBBF24}
+.feedback{margin-top:16px;padding:15px;border-radius:8px;display:none;line-height:1.7;text-align:left}
+.feedback.show{display:block}.feedback.ok{background:rgba(16,185,129,.12);border:2px solid #10B981}.feedback.bad{background:rgba(239,68,68,.12);border:2px solid #EF4444}
+.streak{text-align:center;color:#FBBF24;font-weight:700;margin-top:10px;min-height:24px}
+.help{color:#6B7280;font-size:.85rem;text-align:center;margin-top:14px;line-height:1.7}
+@media(max-width:768px){h1{font-size:1.5rem}.q-card{padding:22px 16px}.q-text{font-size:1.3rem}.ans-row input{width:100%}.btn{width:100%}.ans-row{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🧮 Логарифмы: уравнения</h1>
+<div class="subtitle">Блок Б вебинара: по определению, равные логарифмы, ловушки с ОДЗ. Набей руку на генераторе.</div>
+<div class="rule">📚 log<sub>a</sub> f = b ⇒ f = <b>a<sup>b</sup></b> &nbsp;·&nbsp; log<sub>a</sub> f = log<sub>a</sub> g ⇒ f = <b class="y">g</b> &nbsp;·&nbsp; проверка: <b>f &gt; 0</b><br><span style="color:#9CA3AF;font-size:.9rem">под логарифмом — только положительное · основание &gt; 0 и ≠ 1</span></div>
+<div class="panel"><div class="mode-row">
+<button class="mode-btn active" data-m="mix">🎲 Всё подряд</button>
+<button class="mode-btn" data-m="def">📖 По определению</button>
+<button class="mode-btn" data-m="eq">⚖️ Равные логарифмы</button>
+<button class="mode-btn" data-m="odz">⚠️ С ОДЗ-ловушкой</button>
+</div></div>
+<div class="stats">
+<div class="stat-box"><div class="stat-v g" id="okV">0</div><div class="stat-l">Верно</div></div>
+<div class="stat-box"><div class="stat-v r" id="badV">0</div><div class="stat-l">Ошибки</div></div>
+<div class="stat-box"><div class="stat-v b" id="nV">1</div><div class="stat-l">Задание</div></div>
+<div class="stat-box"><div class="stat-v" id="accV">—</div><div class="stat-l">Точность</div></div>
+</div>
+<div class="q-card">
+<div class="q-tag" id="qTag">Уравнения</div>
+<div class="q-text" id="qText">…</div>
+<div class="q-hint" id="qHint"></div>
+<div class="ans-row"><input id="ansInput" placeholder="x = ?" autocomplete="off"><button class="btn" onclick="check()">Проверить</button></div>
+<div class="feedback" id="fb"></div>
+<div class="streak" id="streak"></div>
+<div class="ans-row" style="margin-top:14px"><button class="btn ghost" onclick="next(true)">Пропустить →</button><button class="btn ghost" onclick="reset()">Заново</button></div>
+</div>
+<div class="help">Вводи число (отрицательные и десятичные — через точку или запятую). Enter — проверить, после проверки Enter — дальше.<br>Не забывай про ОДЗ: под логарифмом только &gt; 0, основание &gt; 0 и ≠ 1.</div>
+</div>
+<script>
+var mode='mix',cur=null,okN=0,badN=0,nN=0,streakN=0,answered=false;
+var SUB={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+var SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+function sb(x){return String(x).replace(/[0-9]/g,function(d){return SUB[d]})}
+function sp(x){return String(x).replace(/[0-9]/g,function(d){return SUP[d]})}
+function r(a){return a[Math.floor(Math.random()*a.length)]}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function numEq(a,b){return Math.abs(a-b)<0.011}
+function parseAns(s){s=(s||'').trim().replace(',','.');if(/^-?\d+\/\d+$/.test(s)){var p=s.split('/');return parseFloat(p[0])/parseFloat(p[1])}return parseFloat(s)}
+function fstr(k,m){var s;if(k===1)s='x';else if(k===-1)s='−x';else s=k+'x';if(m>0)s+=' + '+m;else if(m<0)s+=' − '+(-m);return s}
+document.querySelectorAll('.mode-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.mode-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');mode=b.dataset.m;next()})});
+function pickCat(){if(mode!=='mix')return mode;return r(['def','def','eq','eq','odz'])}
+var FIX=[
+{m:'def',tag:'По определению',text:'log₂(4 − x) = 7',ans:-124,disp:'−124',hint:'log_a f = b ⇒ f = a^b: 4 − x = 2⁷',how:'4 − x = 2⁷ = 128 ⇒ x = −124. Проверка ОДЗ: 4 − (−124) = 128 > 0 ✓.'},
+{m:'def',tag:'По определению',text:'log₃(5 − x) = 1',ans:2,hint:'log_a f = 1 ⇒ f = a',how:'5 − x = 3¹ = 3 ⇒ x = 2. Проверка ОДЗ: 5 − 2 = 3 > 0 ✓.'},
+{m:'def',tag:'По определению',text:'log₇(7 − x) = 2',ans:-42,disp:'−42',hint:'log_a f = 2 ⇒ f = a²',how:'7 − x = 7² = 49 ⇒ x = −42. Проверка ОДЗ: 7 − (−42) = 49 > 0 ✓.'},
+{m:'eq',tag:'Равные логарифмы',text:'log₅(5 − x) = log₅9',ans:-4,disp:'−4',hint:'Основания равны ⇒ приравняй выражения',how:'5 − x = 9 ⇒ x = −4. Проверка ОДЗ: 5 − (−4) = 9 > 0 ✓.'},
+{m:'eq',tag:'Равные логарифмы',text:'log₂(x² + 2x) = log₂(x² + 10)',ans:5,hint:'Приравняй: x² сократятся',how:'x² + 2x = x² + 10 ⇒ 2x = 10 ⇒ x = 5. Проверка ОДЗ: 25 + 10 = 35 > 0 ✓.'},
+{m:'eq',tag:'Равные логарифмы',text:'log₅(2x + 1) = log₅(5(3 − x))',ans:2,hint:'Раскрой скобки справа: 5(3 − x) = 15 − 5x',how:'2x + 1 = 5(3 − x) = 15 − 5x ⇒ 7x = 14 ⇒ x = 2. Проверка ОДЗ: 2·2 + 1 = 5 > 0 и 5(3 − 2) = 5 > 0 ✓.'},
+{m:'odz',tag:'С ОДЗ-ловушкой',text:'log₃(x − 5) + log₃(x − 5) = 2·log₃7',ans:12,hint:'Слева 2·log₃(x − 5). Осторожно: под логарифмом только > 0!',how:'2·log₃(x − 5) = 2·log₃7 ⇒ формально x − 5 = ±7 ⇒ x = 12 или x = −2. Проверка ОДЗ: x − 5 > 0 ⇒ x = −2 (даёт log₃(−7)) — посторонний. Ответ 12.'},
+{m:'def',tag:'По определению',text:'log₅(5x − 3) = 2',ans:5.6,disp:'5,6',hint:'5x − 3 = 5² = 25',how:'5x − 3 = 25 ⇒ 5x = 28 ⇒ x = 28/5 = 5,6. Проверка ОДЗ: 5·5,6 − 3 = 25 > 0 ✓.'},
+{m:'odz',tag:'Основание-буква',text:'log_x 32 = 5',ans:2,hint:'Основание в степени: x⁵ = 32',how:'x⁵ = 32 = 2⁵ ⇒ x = 2 (основание логарифма > 0 и ≠ 1 ✓).'},
+{m:'odz',tag:'С ОДЗ-ловушкой',text:'log₀,₅x + log₀,₅(x + 1) = log₀,₅6',ans:2,hint:'Сумма → произведение, затем проверь ОДЗ (x > 0)',how:'x(x + 1) = 6 ⇒ x² + x − 6 = 0 ⇒ x = 2 или x = −3. Проверка ОДЗ: x > 0 ⇒ x = −3 — посторонний. Ответ 2.'}
+];
+function gen(){
+var c=pickCat(),i,tr;
+if(Math.random()<0.4){var pool=[];for(i=0;i<FIX.length;i++)if(FIX[i].m===c)pool.push(FIX[i]);if(pool.length)return r(pool)}
+if(c==='def'){
+var a=r([2,3,4,5,7]),b=ri(1,3),V=Math.pow(a,b),x0=ri(-9,10),k=r([1,1,2,2,3,-1]),m=V-k*x0;
+var f=fstr(k,m),step;
+if(k===1)step='x = '+V+(m>=0?' − '+m:' + '+(-m))+' = '+x0;
+else if(k===-1)step='−x = '+(V-m)+' ⇒ x = '+x0;
+else step=k+'x = '+(V-m)+' ⇒ x = '+x0;
+return{tag:'По определению',text:'log'+sb(a)+'('+f+') = '+b,ans:x0,hint:'log_a f = b ⇒ f = a^b = '+V,how:'log'+sb(a)+'('+f+') = '+b+' ⇒ '+f+' = '+a+sp(b)+' = '+V+' ⇒ '+step+'. Проверка ОДЗ: '+V+' > 0 ✓.'};
+}
+if(c==='eq'){
+for(tr=0;tr<60;tr++){
+var a2=r([2,3,5,7]),X0=ri(-5,10),k2=r([1,2,3]),g2=r([1,2,3]);
+if(k2===g2)continue;
+var h2=ri(-9,9),m2=(g2-k2)*X0+h2,v1=k2*X0+m2,v2=g2*X0+h2;
+if(v1<=0||v2<=0||v1>200||v2>200)continue;
+return{tag:'Равные логарифмы',text:'log'+sb(a2)+'('+fstr(k2,m2)+') = log'+sb(a2)+'('+fstr(g2,h2)+')',ans:X0,hint:'Основания равны ⇒ приравняй подлогарифмические выражения',how:fstr(k2,m2)+' = '+fstr(g2,h2)+' ⇒ x = '+X0+'. Проверка ОДЗ: '+v1+' > 0 и '+v2+' > 0 ✓.'};
+}
+return{tag:'Равные логарифмы',text:'log₅(5 − x) = log₅9',ans:-4,disp:'−4',hint:'Приравняй: 5 − x = 9',how:'5 − x = 9 ⇒ x = −4. Проверка ОДЗ: 5 − (−4) = 9 > 0 ✓.'};
+}
+// odz
+var t=ri(0,2);
+if(t===0){
+for(tr=0;tr<80;tr++){
+var a3=r([2,3,5]),p3=ri(1,5),q3=ri(1,5),Y0=ri(0,8);
+var R=(Y0+p3)*(Y0+q3),Y1=-(p3+q3)-Y0;
+if(Y1===Y0)continue;
+if(!((Y1+p3<=0)||(Y1+q3<=0)))continue;
+if(R<=0||R>500)continue;
+var bad=(Y1+p3<=0)?('(x + '+p3+') = '+(Y1+p3)):('(x + '+q3+') = '+(Y1+q3));
+return{tag:'С ОДЗ-ловушкой',text:'log'+sb(a3)+'(x + '+p3+') + log'+sb(a3)+'(x + '+q3+') = log'+sb(a3)+R,ans:Y0,hint:'Сумма → произведение, затем ОБЯЗАТЕЛЬНО проверь ОДЗ',how:'(x + '+p3+')(x + '+q3+') = '+R+' ⇒ x = '+Y0+' или x = '+Y1+'. Проверка ОДЗ: при x = '+Y1+' '+bad+' ≤ 0 — посторонний корень. Ответ '+Y0+'.'};
+}
+}
+if(t===1){
+var a4=r([2,3,5]),m4=ri(1,6),t4=ri(4,9);
+return{tag:'С ОДЗ-ловушкой',text:'log'+sb(a4)+'(x − '+m4+') + log'+sb(a4)+'(x − '+m4+') = 2·log'+sb(a4)+t4,ans:m4+t4,hint:'Слева удвоенный логарифм. Формально ±, но ОДЗ!',how:'2·log'+sb(a4)+'(x − '+m4+') = 2·log'+sb(a4)+t4+' ⇒ формально x − '+m4+' = ±'+t4+' ⇒ x = '+(m4+t4)+' или x = '+(m4-t4)+'. Проверка ОДЗ: x − '+m4+' > 0 ⇒ x = '+(m4-t4)+' (даёт log'+sb(a4)+'('+(0-t4)+')) — посторонний. Ответ '+(m4+t4)+'.'};
+}
+var PB=[[4,2,2],[8,3,2],[9,2,3],[27,3,3],[16,2,4],[25,2,5],[49,2,7],[32,5,2],[16,4,2]],pb=r(PB);
+return{tag:'Основание-буква',text:'log_x '+pb[0]+' = '+pb[1],ans:pb[2],hint:'Основание в степени: x^'+pb[1]+' = '+pb[0],how:'x^'+pb[1]+' = '+pb[0]+' ⇒ x = '+pb[2]+' (основание логарифма > 0 и ≠ 1 ✓).'};
+}
+function next(skip){if(!answered&&nN>0&&!skip){}cur=gen();answered=false;nN++;document.getElementById('qTag').textContent=cur.tag;document.getElementById('qText').textContent=cur.text;document.getElementById('qHint').textContent=cur.hint||'';document.getElementById('ansInput').value='';var fb=document.getElementById('fb');fb.className='feedback';fb.innerHTML='';upd();document.getElementById('ansInput').focus()}
+function upd(){document.getElementById('okV').textContent=okN;document.getElementById('badV').textContent=badN;document.getElementById('nV').textContent=nN;document.getElementById('accV').textContent=(okN+badN)>0?Math.round(okN/(okN+badN)*100)+'%':'—';var st=document.getElementById('streak');st.textContent=streakN>=2?('🔥 Серия: '+streakN):''}
+function check(){if(answered){next(true);return}var v=parseAns(document.getElementById('ansInput').value);var fb=document.getElementById('fb');if(isNaN(v)){fb.className='feedback show bad';fb.innerHTML='<b>Введи число.</b>';return}answered=true;if(numEq(v,cur.ans)){okN++;streakN++;fb.className='feedback show ok';fb.innerHTML='<b style="color:#10B981">✅ Верно!</b><br>'+cur.how}else{badN++;streakN=0;fb.className='feedback show bad';fb.innerHTML='<b style="color:#EF4444">❌ Неверно.</b> Правильно: <b>'+(cur.disp||cur.ans)+'</b><br>'+cur.how}upd()}
+function reset(){okN=0;badN=0;nN=0;streakN=0;next(true)}
+document.getElementById('ansInput').addEventListener('keydown',function(e){if(e.key==='Enter')check()});
+next(true);
+</script>
+</body>
+</html>

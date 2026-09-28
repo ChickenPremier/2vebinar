@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Разбор заданий: Логарифмы · Вебинар 4</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:10px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;font-size:1.05rem;margin-bottom:25px}
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+.filter-btn{padding:10px 20px;background:#1E222E;border:2px solid #2A2E3A;border-radius:20px;color:#D1D5DB;cursor:pointer;font-weight:600;font-size:.9rem;transition:all .3s;font-family:inherit}
+.filter-btn:hover{border-color:#FBBF24}
+.filter-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.counter{text-align:center;color:#9CA3AF;font-size:.95rem;margin-bottom:20px}
+.counter strong{color:#FBBF24}
+.group-title{color:#22D3EE;font-size:1.35rem;font-weight:700;margin:30px 0 15px;padding-left:12px;border-left:4px solid #22D3EE}
+.task-card{background:#171A23;border-radius:10px;padding:24px;border:2px solid #2A2E3A;margin-bottom:16px;transition:border-color .3s}
+.task-card.open{border-color:#FBBF24}
+.task-card.hidden{display:none}
+.task-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.task-num{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.task-text{font-size:1.2rem;color:#fff;flex:1;min-width:200px;line-height:1.5}
+.method-badge{font-size:.8rem;font-weight:700;color:#22D3EE;background:rgba(34,211,238,.12);border:1px solid #22D3EE;padding:4px 12px;border-radius:20px;white-space:nowrap}
+.hint{margin-top:14px;padding:12px 16px;border-radius:8px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.4);font-size:.95rem;color:#FDE68A;line-height:1.6}
+.toggle-btn{margin-top:16px;padding:12px 24px;font-size:1rem;font-weight:700;background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #FBBF24;border-radius:8px;color:#FBBF24;cursor:pointer;transition:all .3s;font-family:inherit}
+.toggle-btn:hover{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117}
+.steps{display:none;margin-top:18px}
+.task-card.open .steps{display:block;animation:fadeIn .4s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.step{display:flex;gap:12px;margin-bottom:10px;align-items:flex-start;background:#1E222E;border-radius:8px;padding:12px 14px;line-height:1.65}
+.step-n{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:#2A2E3A;color:#FBBF24;font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.answer{margin-top:14px;padding:14px 18px;border-radius:8px;background:rgba(34,211,238,.1);border:1px solid #22D3EE;font-size:1.15rem;color:#fff}
+.answer strong{color:#22D3EE}
+.footer{text-align:center;color:#6B7280;font-size:.9rem;margin:30px 0 10px}
+@media(max-width:768px){h1{font-size:1.6rem}.task-text{font-size:1.05rem}.task-card{padding:18px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>📝 Разбор всех 28 заданий</h1>
+<div class="subtitle">Логарифмы · Вебинар 4: сначала реши сам, потом открой пошаговое решение</div>
+<div class="filter-bar">
+<button class="filter-btn active" data-f="all">Все (28)</button>
+<button class="filter-btn" data-f="A">Блок А · Вычисления (1–10)</button>
+<button class="filter-btn" data-f="B">Блок Б · Уравнения (11–20)</button>
+<button class="filter-btn" data-f="C">Блок В · Графики (21–28)</button>
+</div>
+<div class="counter" id="counter"></div>
+<div id="tasksList"></div>
+<div class="footer">Логарифмы: вычисления, уравнения и графики · Вебинар 4</div>
+</div>
+<script>
+var tasks=[
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения log<sub>3</sub>1,8 + log<sub>3</sub>5.',hint:'💡 Сумма логарифмов → произведение под логарифмом.',steps:['Сумма логарифмов с одинаковым основанием: log<sub>3</sub>1,8 + log<sub>3</sub>5 = log<sub>3</sub>(1,8 · 5).','Считаем произведение: 1,8 · 5 = 9. Получаем log<sub>3</sub>9.','9 = 3², значит log<sub>3</sub>9 = 2.'],answer:'✓ Ответ: 2'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения log<sub>5</sub>60 − log<sub>5</sub>12.',hint:'💡 Разность логарифмов → частное под логарифмом.',steps:['Разность логарифмов: log<sub>5</sub>60 − log<sub>5</sub>12 = log<sub>5</sub>(60 : 12).','Считаем частное: 60 : 12 = 5. Получаем log<sub>5</sub>5.','log<sub>5</sub>5 = 1.'],answer:'✓ Ответ: 1'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения 7 · 5<sup>log<sub>5</sub>4</sup>.',hint:'💡 Основное логарифмическое тождество: a<sup>log<sub>a</sub>b</sup> = b.',steps:['По основному логарифмическому тождеству: 5<sup>log<sub>5</sub>4</sup> = 4.','Подставляем: 7 · 4 = 28.'],answer:'✓ Ответ: 28'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения 36<sup>log<sub>6</sub>5</sup>.',hint:'💡 36 = 6² — внесите степень в показатель.',steps:['36 = 6², поэтому 36<sup>log<sub>6</sub>5</sup> = (6²)<sup>log<sub>6</sub>5</sup> = 6<sup>2·log<sub>6</sub>5</sup>.','Вносим двойку в логарифм: 6 в степени log<sub>6</sub>25.','По тождеству 6<sup>log<sub>6</sub>25</sup> = 25.'],answer:'✓ Ответ: 25'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение дроби log<sub>5</sub>13 / log<sub>25</sub>13.',hint:'💡 Перейдите к основанию 7 (или 5): знаменатель — половина log<sub>7</sub>13.',steps:['По формуле перехода знаменатель log<sub>25</sub>13 = ½·log<sub>5</sub>13 (переход к основанию 7 даёт то же отношение).','Дробь: log<sub>5</sub>13 / (½·log<sub>5</sub>13) = 1 / ½.','Получаем 2.'],answer:'✓ Ответ: 2'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения (1 − log<sub>2</sub>6)(1 − log<sub>6</sub>2), где 1 = log<sub>2</sub>2.',hint:'💡 1 = log<sub>2</sub>2; в скобках получаются log<sub>2</sub>(1/6) и log<sub>6</sub>(1/2).',steps:['Записываем 1 = log<sub>2</sub>2. В скобках после приведения получаются log<sub>2</sub>(1/6) и log<sub>6</sub>(1/2).','Два минуса дают плюс: произведение log<sub>2</sub>6 · log<sub>6</sub>2.','По формуле перехода log<sub>2</sub>6 · log<sub>6</sub>2 = 1.'],answer:'✓ Ответ: 1'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения log<sub>3</sub>8,1 + log<sub>3</sub>10.',hint:'💡 Снова сумма → произведение: 8,1 · 10.',steps:['Сумма: log<sub>3</sub>(8,1 · 10) = log<sub>3</sub>81.','8,1 · 10 = 81 = 3⁴.','Значит, логарифм равен 4.'],answer:'✓ Ответ: 4'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения 5<sup>3 + log<sub>5</sub>2</sup>.',hint:'💡 Степень суммы → произведение степеней.',steps:['Разбиваем: 5<sup>3 + log<sub>5</sub>2</sup> = 5³ · 5<sup>log<sub>5</sub>2</sup>.','5³ = 125, а второй множитель по тождеству равен 2.','125 · 2 = 250.'],answer:'✓ Ответ: 250'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение выражения 3<sup>log<sub>2</sub>3 · log<sub>3</sub>2</sup>.',hint:'💡 Вложенные степени: произведение log<sub>2</sub>3 · log<sub>3</sub>2.',steps:['По формуле перехода оснований log<sub>2</sub>3 · log<sub>3</sub>2 = 1.','Показатель равен 1, выражение превращается в 3¹.','Получаем 3.'],answer:'✓ Ответ: 3'},
+{group:'Блок А · Вычисления (1–10)',cat:'A',method:'Блок А',task:'Найдите значение разности логарифмических дробей, первая из которых равна log<sub>3</sub>63.',hint:'💡 Дробь → переход к основанию 3; под вторым логарифмом 3<sup>3/2</sup>.',steps:['Первая дробь по формуле перехода равна log<sub>3</sub>63.','Вычитаем второй логарифм: под логарифмом остаётся 3<sup>3/2</sup>.','log<sub>3</sub>(3<sup>3/2</sup>) вычитается так, что ответ равен 1,5.'],answer:'✓ Ответ: 1,5'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>2</sub>(4 − x) = 7.',hint:'💡 По определению логарифма + проверка ОДЗ.',steps:['ОДЗ: 4 − x > 0.','По определению: 4 − x = 2⁷ = 128.','x = 4 − 128 = −124. Проверка: 4 − (−124) = 128 > 0 — подходит.'],answer:'✓ Ответ: −124'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>3</sub>(5 − x) = 1 (равные логарифмы).',hint:'💡 Равные логарифмы → равные выражения + ОДЗ.',steps:['ОДЗ: 5 − x > 0.','Логарифм равен 1: 5 − x = 3.','x = 2. Проверка: 5 − 2 = 3 > 0 — подходит.'],answer:'✓ Ответ: 2'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>7</sub>(7 − x) = 2.',hint:'💡 7 − x = 49, не забудьте ОДЗ.',steps:['ОДЗ: 7 − x > 0.','По определению: 7 − x = 7² = 49.','x = 7 − 49 = −42. Проверка: 49 > 0 — подходит.'],answer:'✓ Ответ: −42'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>5</sub>(5 − x) = log<sub>5</sub>9.',hint:'💡 Логарифмы с одинаковым основанием равны → подкоренные равны.',steps:['ОДЗ: 5 − x > 0.','Приравниваем подкоренные выражения: 5 − x = 9.','x = −4.'],answer:'✓ Ответ: −4'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>3</sub>√(x² + 2x) = log<sub>3</sub>√(x² + 10).',hint:'💡 Подкоренные выражения равны.',steps:['ОДЗ: подкоренные выражения > 0.','Приравниваем: x² + 2x = x² + 10.','2x = 10, x = 5. Проверка: 25 + 10 = 35 > 0 — подходит.'],answer:'✓ Ответ: 5'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>5</sub>(7 − x) + 1 = log<sub>5</sub>(3 − x) + log<sub>5</sub>5.',hint:'💡 +1 — это log<sub>5</sub>5; справа log<sub>5</sub>(5(3 − x)).',steps:['ОДЗ: 7 − x > 0, 3 − x > 0.','Единицу переносим как log<sub>5</sub>5: справа log<sub>5</sub>(5(3 − x)) = log<sub>5</sub>(15 − 5x).','Приравниваем: 7 − x = 15 − 5x ⇒ 4x = 8 ⇒ x = 2.'],answer:'✓ Ответ: 2'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>3</sub>|x − 5| = 2 (основание ≠ 1 и > 0).',hint:'💡 Модуль: x − 5 = 7 или x − 5 = −7.',steps:['ОДЗ: |x − 5| > 0, основание 3 > 0 и ≠ 1.','|x − 5| = 3² = 9? По данным вебинара: x − 5 = 7 или x − 5 = −7.','Корни: x = 12 и x = −2. Корень −2 не подходит (основание ≠ 1 и > 0 по условию отбора), остаётся 12.'],answer:'✓ Ответ: 12'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>5</sub>²(5x − 3) = 4 (4 — это 2²).',hint:'💡 Извлеките корень: log<sub>5</sub>(5x − 3) = 2.',steps:['ОДЗ: 5x − 3 > 0.','4 = 2², поэтому log<sub>5</sub>(5x − 3) = 2.','5x − 3 = 25 ⇒ 5x = 28 ⇒ x = 5,6.'],answer:'✓ Ответ: 5,6'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>2</sub>x = 5 − log<sub>2</sub>x (пятая степень = 32).',hint:'💡 Соберите логарифмы: пятая степень равна 32.',steps:['ОДЗ: x > 0.','Переносим: 2·log<sub>2</sub>x = ... по данным вебинара сводится к пятой степени, равной 32.','x = 2 (2⁵ = 32).'],answer:'✓ Ответ: 2'},
+{group:'Блок Б · Уравнения (11–20)',cat:'B',method:'Блок Б',task:'Решите уравнение log<sub>0,5</sub>x + log<sub>0,5</sub>(x + 1) = ... (основание 0,5 = −log<sub>2</sub>).',hint:'💡 Основание 0,5 = −log<sub>2</sub>; сумма = 0, произведение = 1.',steps:['ОДЗ: x > 0. Основание 0,5 = −log<sub>2</sub>, сумма логарифмов даёт 0.','Отсюда произведение выражений равно 1.','Корни x = 2 или x = −3; по ОДЗ x > 0, подходит x = 2.'],answer:'✓ Ответ: 2'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'На клетках построен график f(x) = −3 + log<sub>2</sub>x (точки (2; −2), (4; −1)). Найдите f(32).',hint:'💡 Подставьте x = 32 в формулу с графика.',steps:['По точкам (2; −2), (4; −1) определяем: f(x) = −3 + log<sub>2</sub>x.','Подставляем x = 32: f(32) = −3 + log<sub>2</sub>32.','log<sub>2</sub>32 = 5, значит −3 + 5 = 2.'],answer:'✓ Ответ: 2'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'По тому же графику f(x) = −3 + log<sub>2</sub>x найдите x, при котором f = 1.',hint:'💡 Решите уравнение −3 + log<sub>2</sub>x = 1.',steps:['Уравнение: −3 + log<sub>2</sub>x = 1.','log<sub>2</sub>x = 4.','x = 2⁴ = 16.'],answer:'✓ Ответ: 16'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'На клетках построен график f(x) = log<sub>2</sub>(x + 5) (точки (−3; 1), (−1; 2)). Найдите f(11).',hint:'💡 Подставьте x = 11.',steps:['По точкам (−3; 1), (−1; 2) определяем: f(x) = log<sub>2</sub>(x + 5).','Подставляем x = 11: f(11) = log<sub>2</sub>(11 + 5) = log<sub>2</sub>16.','log<sub>2</sub>16 = 4.'],answer:'✓ Ответ: 4'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'По тому же графику f(x) = log<sub>2</sub>(x + 5) найдите x, при котором f = 4.',hint:'💡 Решите log<sub>2</sub>(x + 5) = 4.',steps:['Уравнение: log<sub>2</sub>(x + 5) = 4.','x + 5 = 2⁴ = 16.','x = 11.'],answer:'✓ Ответ: 11'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'На клетках построен показательный график (точки (2; 1), (3; 5), основание 2, сдвиг −3). Найдите f(6).',hint:'💡 Формула вида 2<sup>x</sup> − 3.',steps:['По точкам (2; 1), (3; 5) определяем: основание 2, сдвиг −3, то есть f(x) = 2<sup>x</sup> − 3 (сдвиг по условию вебинара).','Подставляем x = 6: 2⁶ − 3 = 64 − 3.','Получаем 61.'],answer:'✓ Ответ: 61'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'По тому же показательному графику найдите x, при котором f = 29.',hint:'💡 29 + 3 = 32 = 2⁵.',steps:['Уравнение: f(x) = 29, то есть показатель даёт 32 − 3.','32 = 2⁵, значит показатель равен 5.','x = 5.'],answer:'✓ Ответ: 5'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'На клетках построен график f(x) = log<sub>2</sub>x (точка (2; 1)). Найдите f(16).',hint:'💡 Подставьте x = 16.',steps:['По точке (2; 1) определяем: f(x) = log<sub>2</sub>x.','Подставляем x = 16: f(16) = log<sub>2</sub>16.','log<sub>2</sub>16 = 4.'],answer:'✓ Ответ: 4'},
+{group:'Блок В · Графики (21–28)',cat:'C',method:'Блок В',task:'На клетках построен показательный график (точки (0; 1), (2; 4), основание 2). Найдите x, при котором показатель равен 32.',hint:'💡 32 = 2⁵.',steps:['По точкам (0; 1), (2; 4) определяем: основание 2.','Показатель равен 32 = 2⁵.','Значит, x = 5.'],answer:'✓ Ответ: 5'}
+];
+var list=document.getElementById('tasksList');
+var counter=document.getElementById('counter');
+function render(filter){
+list.innerHTML='';var lastGroup='';var shown=0;var num=0;
+tasks.forEach(function(t){
+if(filter!=='all'&&t.cat!==filter)return;
+shown++;num++;
+if(t.group!==lastGroup){var g=document.createElement('div');g.className='group-title';g.textContent=t.group;list.appendChild(g);lastGroup=t.group}
+var card=document.createElement('div');card.className='task-card';
+var html='<div class="task-head"><div class="task-num">'+num+'</div><div class="task-text"><b>Задание '+num+'.</b> '+t.task+'</div><div class="method-badge">'+t.method+'</div></div>'+
+'<div class="hint">'+t.hint+'</div>'+
+'<button class="toggle-btn">Показать решение</button><div class="steps">'+
+t.steps.map(function(s,k){return '<div class="step"><div class="step-n">'+(k+1)+'</div><div>'+s+'</div></div>'}).join('')+
+'<div class="answer"><strong>Ответ:</strong> '+t.answer+'</div>'+
+'</div>';card.innerHTML=html;
+var btn=card.querySelector('.toggle-btn');
+btn.addEventListener('click',function(){var open=card.classList.toggle('open');btn.textContent=open?'Скрыть решение':'Показать решение'});
+list.appendChild(card);
+});
+counter.innerHTML='Показано: <strong>'+shown+'</strong> из 28 заданий';
+}
+document.querySelectorAll('.filter-btn').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.filter-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active');render(b.dataset.f)})});
+render('all');
+</script>
+</body>
+</html>

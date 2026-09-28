@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Игра: свойство ↔ формула (логарифмы)</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.1rem;margin-bottom:8px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:18px;line-height:1.6}
+.topbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.pill{background:#171A23;border:2px solid #2A2E3A;border-radius:20px;padding:8px 18px;font-weight:700}
+.pill b{color:#FBBF24}.pill.cy b{color:#22D3EE}.pill.g b{color:#10B981}
+.mode-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.mode-btn{padding:10px 20px;background:#1E222E;border:2px solid #2A2E3A;border-radius:8px;color:#D1D5DB;cursor:pointer;font-weight:700;font-family:inherit}
+.mode-btn.active{background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border-color:#FBBF24}
+.btn{padding:12px 26px;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;border:none;border-radius:8px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1rem}
+.btn.ghost{background:#1E222E;color:#FBBF24;border:2px solid #FBBF24}
+.btn:hover{transform:translateY(-2px)}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px}
+.card{background:linear-gradient(135deg,#1E222E 0%,#252936 100%);border:2px solid #2A2E3A;border-radius:10px;min-height:110px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;cursor:pointer;font-weight:700;font-size:1rem;line-height:1.5;transition:all .25s;user-select:none}
+.card small{display:block;color:#9CA3AF;font-weight:400;font-size:.78rem;margin-top:6px}
+.card:hover{border-color:#FBBF24}
+.card.open{border-color:#22D3EE;background:#171A23;box-shadow:0 0 14px rgba(34,211,238,.4)}
+.card.done{border-color:#10B981;background:rgba(16,185,129,.15);cursor:default}
+.card.bad{border-color:#EF4444;background:rgba(239,68,68,.15)}
+.legend{background:#171A23;border:2px solid #2A2E3A;border-radius:10px;padding:14px 18px;margin-top:16px;color:#9CA3AF;font-size:.88rem;line-height:1.8;text-align:center}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal.show{display:flex}
+.modal-box{background:#171A23;border:2px solid #FBBF24;border-radius:12px;padding:30px;max-width:440px;text-align:center}
+.modal-box h2{color:#FBBF24;margin-bottom:12px}
+.modal-box p{line-height:1.9;margin-bottom:18px}
+@media(max-width:768px){h1{font-size:1.5rem}.board{grid-template-columns:repeat(2,1fr)}.card{min-height:96px;font-size:.9rem}.btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎮 Игра: свойство ↔ формула</h1>
+<div class="subtitle">Найди 8 пар: название свойства ↔ формула. Кликай по двум карточкам — совпавшие остаются открытыми.<br>«Классика» — без времени · «Блиц» — 60 секунд.</div>
+<div class="topbar">
+<div class="pill">⏱ <b id="timer">0:00</b></div>
+<div class="pill cy">✅ Пары: <b id="okC">0 / 8</b></div>
+<div class="pill g">👣 Ходы: <b id="mvC">0</b></div>
+<div class="pill">🎯 Точность: <b id="acc">—</b></div>
+</div>
+<div class="mode-row">
+<button class="mode-btn active" data-m="classic" onclick="setMode('classic')">📚 Классика</button>
+<button class="mode-btn" data-m="blitz" onclick="setMode('blitz')">⚡ Блиц (60 сек)</button>
+</div>
+<div class="mode-row">
+<button class="btn ghost" onclick="reset(true)">🔀 Сброс + перемешать</button>
+</div>
+<div class="board" id="board"></div>
+<div class="legend">💡 Подсказка: Определение — «показатель», Тождество — «a в степени логарифм», Сумма — «плюс → умножить», Разность — «минус → делить», Степень — «показатель выносится», Основание-степень — «1/k», Переход — «дробь логарифмов», Произведение — «цепочка сокращается».</div>
+</div>
+<div class="modal" id="modal"><div class="modal-box"><h2 id="mTitle">🏆 Победа!</h2><p id="mText"></p><button class="btn" onclick="closeModal()">Играть ещё</button></div></div>
+<script>
+var PAIRS=[
+{id:0,name:'📖 Определение',formula:'log<sub>a</sub> b = c ⟺ a<sup>c</sup> = b'},
+{id:1,name:'🔑 Основное тождество',formula:'a<sup>log<sub>a</sub> b</sup> = b'},
+{id:2,name:'➕ Сумма',formula:'log M + log N = log (M·N)'},
+{id:3,name:'➖ Разность',formula:'log M − log N = log (M/N)'},
+{id:4,name:'🔺 Степень',formula:'log M<sup>k</sup> = k · log M'},
+{id:5,name:'🔻 Степень в основании',formula:'log<sub>a<sup>k</sup></sub> M = (1/k) · log<sub>a</sub> M'},
+{id:6,name:'🔀 Переход к новому основанию',formula:'log<sub>a</sub> b = log<sub>c</sub> b / log<sub>c</sub> a'},
+{id:7,name:'⛓ Произведение логарифмов',formula:'log<sub>a</sub> b · log<sub>b</sub> c = log<sub>a</sub> c'}
+];
+var deck=[],first=null,lock=false,found=0,moves=0,hits=0,mode='classic',timerI=null,startT=null,done=false;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function fmt(s){return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
+function setMode(m){mode=m;document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.m===m)});reset(true)}
+function build(){
+deck=[];
+PAIRS.forEach(function(p){deck.push({pid:p.id,html:p.name,sub:'название'});deck.push({pid:p.id,html:p.formula,sub:'формула'})});
+shuffle(deck);
+var b=document.getElementById('board');b.innerHTML='';
+deck.forEach(function(c,i){
+var d=document.createElement('div');d.className='card';d.dataset.i=i;
+d.innerHTML='<div>'+c.html+'<small>'+c.sub+'</small></div>';
+d.addEventListener('click',function(){flip(d)});
+b.appendChild(d);
+});
+}
+function upd(){document.getElementById('okC').textContent=found+' / 8';document.getElementById('mvC').textContent=moves;document.getElementById('acc').textContent=moves?Math.round(hits/moves*100)+'%':'—'}
+function startTimer(){
+stopTimer();startT=Date.now();
+if(mode==='blitz'){document.getElementById('timer').textContent=fmt(60)}
+else{document.getElementById('timer').textContent=fmt(0)}
+timerI=setInterval(function(){
+var s=Math.floor((Date.now()-startT)/1000);
+if(mode==='blitz'){var left=60-s;if(left<=0){left=0;document.getElementById('timer').textContent=fmt(0);stopTimer();finish(true);}else{document.getElementById('timer').textContent=fmt(left)}}
+else{document.getElementById('timer').textContent=fmt(s)}
+},500);
+}
+function stopTimer(){if(timerI)clearInterval(timerI);timerI=null}
+function flip(el){
+if(done||lock)return;
+if(el.classList.contains('done')||el.classList.contains('open'))return;
+el.classList.add('open');
+if(!first){first=el;return}
+moves++;
+var a=deck[parseInt(first.dataset.i)],b=deck[parseInt(el.dataset.i)];
+if(a.pid===b.pid){
+lock=true;
+var f=first,s=el;first=null;
+setTimeout(function(){
+f.classList.remove('open');s.classList.remove('open');
+f.classList.add('done');s.classList.add('done');
+found++;hits++;upd();lock=false;
+if(found===8)finish(false);
+},400);
+}else{
+lock=true;
+var f2=first,s2=el;first=null;
+setTimeout(function(){
+f2.classList.remove('open');s2.classList.remove('open');
+f2.classList.add('bad');s2.classList.add('bad');
+setTimeout(function(){f2.classList.remove('bad');s2.classList.remove('bad')},350);
+upd();lock=false;
+},650);
+}
+upd();
+}
+function finish(time){
+done=true;stopTimer();
+var t=document.getElementById('timer').textContent;
+var m=document.getElementById('modal');
+if(found===8){
+document.getElementById('mTitle').textContent='🏆 Победа!';
+document.getElementById('mText').innerHTML='Все 8 пар найдены!<br>Ходов: <b>'+moves+'</b><br>Точность: <b>'+(moves?Math.round(hits/moves*100)+'%':'—')+'</b><br>Время: <b>'+t+'</b>'+(mode==='blitz'?'<br>Успел в блице — красавчик!':'');
+}else{
+document.getElementById('mTitle').textContent='⏱ Время вышло!';
+document.getElementById('mText').innerHTML='Найдено пар: <b>'+found+' / 8</b><br>Ходов: <b>'+moves+'</b><br>Попробуй ещё раз — свойства уже запоминаются!';
+}
+m.classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show');reset(true)}
+function reset(fresh){first=null;lock=false;found=0;moves=0;hits=0;done=false;upd();build();startTimer()}
+reset(true);
+</script>
+</body>
+</html>

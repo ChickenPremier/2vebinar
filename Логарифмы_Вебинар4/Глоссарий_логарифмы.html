@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Глоссарий: логарифмы</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0F1117 0%,#1E222E 100%);color:#E5E7EB;min-height:100vh;padding:20px}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;color:#FBBF24;font-size:2.2rem;margin-bottom:10px;text-shadow:0 2px 20px rgba(251,191,36,.3)}
+.subtitle{text-align:center;color:#9CA3AF;margin-bottom:25px}
+.search-box{max-width:600px;margin:0 auto 25px;position:relative}
+.search-box input{width:100%;padding:14px 18px 14px 46px;background:#171A23;border:2px solid #2A2E3A;border-radius:10px;color:#E5E7EB;font-size:1rem;font-family:inherit;outline:none;transition:border-color .3s}
+.search-box input:focus{border-color:#FBBF24}
+.search-box input::placeholder{color:#6B7280}
+.search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.2rem}
+.card{background:#171A23;border:2px solid #2A2E3A;border-radius:10px;padding:22px;margin-bottom:16px}
+.card h2{color:#FBBF24;font-size:1.25rem;margin-bottom:10px}
+.card h3{color:#22D3EE;font-size:1.05rem;margin:12px 0 6px}
+.card p,.card li{line-height:1.7;color:#D1D5DB}
+.card ul{padding-left:20px}
+.formula{display:block;background:#0F1117;border:1px solid #FBBF24;border-radius:8px;padding:12px 16px;margin:10px 0;font-size:1.15rem;color:#fff;text-align:center}
+.ex{background:rgba(34,211,238,.08);border:1px solid #22D3EE;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.95rem}
+.ex strong{color:#22D3EE}
+.warn{background:rgba(239,68,68,.1);border:1px solid #EF4444;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.95rem;color:#FCA5A5}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.95rem}
+th,td{border:1px solid #2A2E3A;padding:10px;text-align:left}
+th{background:#1E222E;color:#FBBF24}
+td{color:#D1D5DB}
+.num{display:inline-block;background:linear-gradient(135deg,#FBBF24 0%,#F59E0B 100%);color:#0F1117;font-weight:800;border-radius:50%;width:28px;height:28px;text-align:center;line-height:28px;margin-right:8px;font-size:.9rem}
+.no-results{display:none;text-align:center;color:#9CA3AF;padding:30px;font-size:1.1rem}
+@media(max-width:768px){h1{font-size:1.6rem}.card{padding:16px}table{font-size:.82rem}th,td{padding:6px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🪵 Глоссарий: логарифмы</h1>
+<div class="subtitle">Вебинар 4 · определение, все свойства, ОДЗ-ловушки, функции и приём с клетками</div>
+
+<div class="search-box">
+<span class="search-icon">🔍</span>
+<input type="text" id="searchInput" placeholder="Найти термин: например, ОДЗ, степень, клетки..." oninput="filterCards()">
+</div>
+
+<div id="cards">
+<div class="card"><h2><span class="num">1</span>Определение логарифма</h2>
+<p>Логарифм — это показатель степени, в которую нужно возвести основание, чтобы получить число.</p>
+<span class="formula">log<sub>a</sub> b = c ⟺ a<sup>c</sup> = b, где a &gt; 0, a ≠ 1, b &gt; 0</span>
+<p>Читается: «логарифм числа b по основанию a». Основание a — то, что возводим; b — то, что получаем.</p>
+<div class="ex"><strong>Пример:</strong> log<sub>2</sub> 8 = 3, потому что 2<sup>3</sup> = 8. Вопрос «в какую степень возвести 2, чтобы получить 8?» — ответ 3.</div>
+</div>
+
+<div class="card"><h2><span class="num">2</span>ОДЗ логарифма</h2>
+<p>Логарифм существует только при строгих условиях на основание и подлогарифмическое выражение:</p>
+<span class="formula">основание: a &gt; 0 и a ≠ 1 &nbsp;·&nbsp; число: b &gt; 0</span>
+<ul>
+<li>Основание <strong>положительно</strong> и <strong>не равно 1</strong> (единица в любой степени даёт 1 — логарифм бессмыслен).</li>
+<li>Под логарифмом — <strong>только строго положительное</strong> число: log ноля и отрицательных чисел не существует.</li>
+</ul>
+<div class="ex"><strong>Пример:</strong> log<sub>3</sub>(x − 2) существует при x − 2 &gt; 0, то есть x &gt; 2. А запись log<sub>−2</sub> 8 или log<sub>1</sub> 5 — запрещена.</div>
+</div>
+
+<div class="card"><h2><span class="num">3</span>Простейшие значения</h2>
+<p>Пять значений, которые надо знать наизусть — они встречаются в каждом варианте ЕГЭ:</p>
+<span class="formula">log<sub>2</sub> 8 = 3 &nbsp;·&nbsp; log<sub>3</sub> 1 = 0 &nbsp;·&nbsp; log<sub>5</sub> 5 = 1 &nbsp;·&nbsp; lg 100 = 2 &nbsp;·&nbsp; ln e = 1</span>
+<ul>
+<li><strong>log<sub>a</sub> 1 = 0</strong> при любом a — нулевая степень даёт 1 (поэтому log<sub>3</sub> 1 = 0).</li>
+<li><strong>log<sub>a</sub> a = 1</strong> — первая степень даёт само основание (поэтому log<sub>5</sub> 5 = 1).</li>
+<li><strong>lg</strong> — десятичный логарифм (основание 10): lg 100 = 2, так как 10<sup>2</sup> = 100.</li>
+<li><strong>ln</strong> — натуральный логарифм (основание e ≈ 2,7): ln e = 1.</li>
+</ul>
+<div class="ex"><strong>Пример:</strong> log<sub>2</sub> 8 = 3, потому что 2<sup>3</sup> = 8; lg 100 = 2; ln e = 1.</div>
+</div>
+
+<div class="card"><h2><span class="num">4</span>Основное логарифмическое тождество</h2>
+<p>Степень и логарифм с одинаковым основанием «съедают» друг друга:</p>
+<span class="formula">a<sup>log<sub>a</sub> b</sup> = b (при a &gt; 0, a ≠ 1, b &gt; 0)</span>
+<div class="ex"><strong>Пример:</strong> 2<sup>log<sub>2</sub> 7</sup> = 7; 5<sup>log<sub>5</sub> 12</sup> = 12. Тождество превращает «этаж» в обычное число.</div>
+</div>
+
+<div class="card"><h2><span class="num">5</span>Сумма логарифмов → произведение</h2>
+<p>Сумма логарифмов с одинаковым основанием сворачивается в логарифм произведения:</p>
+<span class="formula">log<sub>a</sub> M + log<sub>a</sub> N = log<sub>a</sub>(M·N)</span>
+<div class="ex"><strong>Пример из вебинара:</strong> log<sub>3</sub> 1,8 + log<sub>3</sub> 5 = log<sub>3</sub>(1,8·5) = log<sub>3</sub> 9 = 2.</div>
+</div>
+
+<div class="card"><h2><span class="num">6</span>Разность логарифмов → частное</h2>
+<p>Разность логарифмов с одинаковым основанием сворачивается в логарифм частного:</p>
+<span class="formula">log<sub>a</sub> M − log<sub>a</sub> N = log<sub>a</sub>(M / N)</span>
+<div class="ex"><strong>Пример из вебинара:</strong> log<sub>5</sub> 60 − log<sub>5</sub> 12 = log<sub>5</sub>(60 / 12) = log<sub>5</sub> 5 = 1.</div>
+</div>
+
+<div class="card"><h2><span class="num">7</span>Степень внутри и в основании</h2>
+<p>Показатель подлогарифмического выражения выносится множителем, а показатель основания — обратным числом:</p>
+<span class="formula">log<sub>a</sub> M<sup>k</sup> = k·log<sub>a</sub> M &nbsp;&nbsp;·&nbsp;&nbsp; log<sub>a<sup>k</sup></sub> M = (1/k)·log<sub>a</sub> M</span>
+<div class="ex"><strong>Пример:</strong> log<sub>2</sub> 8<sup>3</sup> = 3·log<sub>2</sub> 8 = 3·3 = 9; log<sub>8</sub> 4 = log<sub>2<sup>3</sup></sub> 2<sup>2</sup> = (2/3)·log<sub>2</sub> 2 = 2/3.</div>
+<div class="warn">⚠️ Формула log<sub>a</sub> M<sup>k</sup> = k·log<sub>a</sub> M при чётном k требует M &gt; 0. Нельзя писать log x<sup>2</sup> = 2·log x без оговорки: при x &lt; 0 левая часть существует, а правая — нет. Корректно: log x<sup>2</sup> = 2·log|x|.</div>
+</div>
+
+<div class="card"><h2><span class="num">8</span>Переход к новому основанию и следствия</h2>
+<p>Любой логарифм можно выразить через логарифмы с удобным основанием c:</p>
+<span class="formula">log<sub>a</sub> b = log<sub>c</sub> b / log<sub>c</sub> a</span>
+<p>Два полезных следствия:</p>
+<span class="formula">log<sub>a</sub> b = 1 / log<sub>b</sub> a &nbsp;&nbsp;·&nbsp;&nbsp; log<sub>a</sub> b · log<sub>b</sub> c = log<sub>a</sub> c</span>
+<div class="ex"><strong>Пример:</strong> log<sub>8</sub> 16 = ln 16 / ln 8 = (4·ln 2) / (3·ln 2) = 4/3. А цепочка log<sub>2</sub> 3 · log<sub>3</sub> 5 = log<sub>2</sub> 5 — среднее звено «сократилось».</div>
+</div>
+
+<div class="card"><h2><span class="num">9</span>Логарифмическая функция y = log<sub>a</sub> x</h2>
+<ul>
+<li><strong>Область определения:</strong> D: x &gt; 0 (график живёт только справа от оси Oy).</li>
+<li><strong>Множество значений:</strong> E: все y (любое число достижимо).</li>
+<li><strong>Общая точка:</strong> всегда проходит через (1; 0), ведь log<sub>a</sub> 1 = 0.</li>
+<li>При <strong>a &gt; 1</strong> — возрастает; при <strong>0 &lt; a &lt; 1</strong> — убывает.</li>
+</ul>
+<span class="formula">a &gt; 1: растёт ↗ &nbsp;·&nbsp; 0 &lt; a &lt; 1: убывает ↘ &nbsp;·&nbsp; точка (1; 0)</span>
+<div class="ex"><strong>Пример:</strong> y = log<sub>2</sub> x растёт и проходит через (1; 0), (2; 1), (8; 3). А y = log<sub>1/2</sub> x убывает: чем больше x, тем меньше y.</div>
+</div>
+
+<div class="card"><h2><span class="num">10</span>Показательная функция y = a<sup>x</sup> — пара логарифма</h2>
+<p>Показательная и логарифмическая функции взаимно обратны — их графики симметричны относительно прямой y = x:</p>
+<span class="formula">y = a<sup>x</sup>: D — все x, E: y &gt; 0, точка (0; 1)</span>
+<ul>
+<li><strong>D:</strong> все x; <strong>E:</strong> только y &gt; 0 (степень положительного числа всегда положительна).</li>
+<li>Всегда проходит через <strong>(0; 1)</strong>, ведь a<sup>0</sup> = 1.</li>
+<li>При a &gt; 1 растёт, при 0 &lt; a &lt; 1 убывает — как и логарифм с тем же основанием.</li>
+</ul>
+<div class="ex"><strong>Пример:</strong> y = 2<sup>x</sup> проходит через (0; 1), (3; 8); а y = log<sub>2</sub> x — её зеркальное отражение: точки (1; 0), (8; 3).</div>
+</div>
+
+<div class="card"><h2><span class="num">11</span>Приём с клетками: две целые точки дают a и b</h2>
+<p>На ЕГЭ график логарифма y = log<sub>a</sub>(x + b) или y = a<sup>x</sup> + b узнают по клеткам: берут две точки с целыми координатами и подставляют в уравнение.</p>
+<ul>
+<li><strong>Шаг 1.</strong> Найди на графике две точки с целыми координатами (например, (1; 0) и (4; 1)).</li>
+<li><strong>Шаг 2.</strong> Подставь их в формулу — получишь систему из двух уравнений на a и b.</li>
+<li><strong>Шаг 3.</strong> Реши систему: обычно одна точка сразу даёт b, вторая — основание a.</li>
+</ul>
+<div class="ex"><strong>Пример:</strong> график проходит через (1; 0) и (4; 1): 0 = log<sub>a</sub>(1 + b), 1 = log<sub>a</sub>(4 + b). Из первого: 1 + b = 1 ⇒ b = 0; из второго: a<sup>1</sup> = 4 ⇒ a = 4.</div>
+</div>
+
+<div class="card"><h2><span class="num">12</span>ОДЗ-ловушки</h2>
+<ul>
+<li><strong>Нельзя опускать логарифмы без проверки:</strong> из log<sub>a</sub> f(x) = log<sub>a</sub> g(x) следует f(x) = g(x) <strong>только при условии</strong> f(x) &gt; 0 и g(x) &gt; 0. Найденные корни обязательно подставляй в ОДЗ — посторонние отбрасывай.</li>
+<li><strong>Основание-буква требует проверки ≠ 1:</strong> если в основании параметр или выражение с x, отдельно проверь a &gt; 0 и a ≠ 1 для каждого кандидата.</li>
+<li><strong>Сумма логарифмов уже, чем логарифм произведения:</strong> log f + log g требует f &gt; 0 и g &gt; 0, а log(f·g) — только f·g &gt; 0. При «схлопывании» область может расшириться — проверяй исходное ОДЗ.</li>
+</ul>
+<div class="warn">⚠️ Главная ошибка вебинара: решить log<sub>3</sub>(x − 1) = log<sub>3</sub>(5 − x), получить x = 3 и забыть проверку. Здесь повезло: 3 − 1 = 2 &gt; 0 и 5 − 3 = 2 &gt; 0 — корень подходит. Но соседний пример с нулём или минусом под логарифмом дал бы посторонний корень!</div>
+</div>
+
+<div class="card"><h2>📌 Шпаргалка: все свойства одним взглядом</h2>
+<table>
+<tr><th>Свойство</th><th>Формула</th></tr>
+<tr><td>Определение</td><td>log<sub>a</sub> b = c ⟺ a<sup>c</sup> = b</td></tr>
+<tr><td>ОДЗ</td><td>a &gt; 0, a ≠ 1; b &gt; 0</td></tr>
+<tr><td>Ноль и единица</td><td>log<sub>a</sub> 1 = 0; log<sub>a</sub> a = 1</td></tr>
+<tr><td>Основное тождество</td><td>a<sup>log<sub>a</sub> b</sup> = b</td></tr>
+<tr><td>Сумма → произведение</td><td>log<sub>a</sub> M + log<sub>a</sub> N = log<sub>a</sub>(MN)</td></tr>
+<tr><td>Разность → частное</td><td>log<sub>a</sub> M − log<sub>a</sub> N = log<sub>a</sub>(M/N)</td></tr>
+<tr><td>Степень числа</td><td>log<sub>a</sub> M<sup>k</sup> = k·log<sub>a</sub> M</td></tr>
+<tr><td>Степень основания</td><td>log<sub>a<sup>k</sup></sub> M = (1/k)·log<sub>a</sub> M</td></tr>
+<tr><td>Смена основания</td><td>log<sub>a</sub> b = log<sub>c</sub> b / log<sub>c</sub> a</td></tr>
+<tr><td>Переворот</td><td>log<sub>a</sub> b = 1 / log<sub>b</sub> a</td></tr>
+<tr><td>Цепочка</td><td>log<sub>a</sub> b · log<sub>b</sub> c = log<sub>a</sub> c</td></tr>
+<tr><td>Функция y = log<sub>a</sub> x</td><td>D: x &gt; 0; E: все y; точка (1; 0)</td></tr>
+<tr><td>Функция y = a<sup>x</sup></td><td>D: все x; E: y &gt; 0; точка (0; 1)</td></tr>
+</table>
+</div>
+
+<div class="card"><h2>🔢 Примеры с числами из вебинара</h2>
+<ul>
+<li>log<sub>2</sub> 8 = <strong>3</strong>; log<sub>3</sub> 1 = <strong>0</strong>; log<sub>5</sub> 5 = <strong>1</strong>; lg 100 = <strong>2</strong>; ln e = <strong>1</strong></li>
+<li>log<sub>3</sub> 1,8 + log<sub>3</sub> 5 = log<sub>3</sub> 9 = <strong>2</strong></li>
+<li>log<sub>5</sub> 60 − log<sub>5</sub> 12 = log<sub>5</sub> 5 = <strong>1</strong></li>
+<li>2<sup>log<sub>2</sub> 7</sup> = <strong>7</strong>; log<sub>8</sub> 16 = <strong>4/3</strong></li>
+<li>График через (1; 0) и (4; 1) ⇒ b = <strong>0</strong>, a = <strong>4</strong></li>
+</ul>
+</div>
+</div>
+
+<div class="no-results" id="noResults">Ничего не найдено. Попробуй другое слово: например «ОДЗ», «степень», «график».</div>
+
+</div>
+<script>
+function filterCards(){
+var q=document.getElementById('searchInput').value.toLowerCase().trim();
+var cards=document.querySelectorAll('#cards .card');
+var found=0;
+cards.forEach(function(c){
+var t=c.textContent.toLowerCase();
+if(t.indexOf(q)!==-1){c.style.display='';found++}
+else{c.style.display='none'}
+});
+document.getElementById('noResults').style.display=found===0?'block':'none';
+}
+</script>
+</body>
+</html>
